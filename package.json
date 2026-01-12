@@ -1,7 +1,7 @@
 {
-	"name": "@sext-stories/editor",
+	"name": "@sms-stories/editor",
 	"version": "1.0.0",
-	"description": "Story editor package for Sext-Stories platform",
+	"description": "Story editor package for sms-Stories platform",
 	"type": "module",
 	"main": "./src/index.ts",
 	"types": "./src/index.ts",
