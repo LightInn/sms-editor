@@ -1,5 +1,5 @@
 {
-	"name": "sms-stories",
+	"name": "sms-editor",
 	"version": "1.0.0",
 	"description": "Story editor package for sms-Stories platform",
 	"type": "module",
