@@ -1,4 +1,4 @@
-# @sext-stories/editor
+# @sms-stories/editor
 
 Story editor package for Sext-Stories platform with support for rich text, SMS-style conversations, and media chapters.
 
