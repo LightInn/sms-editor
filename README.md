@@ -1,6 +1,6 @@
 # @sms-stories/editor
 
-Story editor package for Sext-Stories platform with support for rich text, SMS-style conversations, and media chapters.
+Story editor package for sms-Stories platform with support for rich text, SMS-style conversations, and media chapters.
 
 ## Features
 
@@ -15,7 +15,7 @@ Story editor package for Sext-Stories platform with support for rich text, SMS-s
 ## Installation
 
 ```bash
-pnpm add @sext-stories/editor
+pnpm add @sms-stories/editor
 ```
 
 ## Usage
@@ -23,19 +23,19 @@ pnpm add @sext-stories/editor
 ### Basic Setup
 
 ```typescript
-import { StoryEditorClient } from '@sext-stories/editor'
+import { StoryEditorClient } from '@sms-stories/editor'
 
 export default function EditorPage({ params }: { params: { storyId: string } }) {
   return <StoryEditorClient storyId={params.storyId} />
 }
 ```
 
-**⚠️ Note on Hooks**: Hooks are client-only and NOT exported from the main package. Import them from `@sext-stories/editor/hooks` in Client Components only.
+**⚠️ Note on Hooks**: Hooks are client-only and NOT exported from the main package. Import them from `@sms-stories/editor/hooks` in Client Components only.
 
 ### Using Actions
 
 ```typescript
-import { createStoryAction, updateStoryAction } from '@sext-stories/editor/actions'
+import { createStoryAction, updateStoryAction } from '@sms-stories/editor/actions'
 
 // Create a story
 const result = await createStoryAction(null, formData)
@@ -52,7 +52,7 @@ const updated = await updateStoryAction(storyId, {
 **New Pattern (Recommended):**
 
 ```typescript
-import { creatorStoryService } from '@sext-stories/editor/services'
+import { creatorStoryService } from '@sms-stories/editor/services'
 import '@/lib/pocketbase' // Important: ensures initialization
 
 // Use singleton directly - no instantiation needed
@@ -63,7 +63,7 @@ const stories = await creatorStoryService.getUserStories(userId)
 **Legacy Pattern (Still Supported):**
 
 ```typescript
-import { CreatorStoryService } from '@sext-stories/editor/services'
+import { CreatorStoryService } from '@sms-stories/editor/services'
 import '@/lib/pocketbase'
 
 const storyService = new CreatorStoryService()
@@ -81,7 +81,7 @@ Before using services, you must initialize PocketBase once in your app:
 ```typescript
 // lib/pocketbase.ts
 import PocketBase from 'pocketbase'
-import { initializePocketBase } from '@sext-stories/editor/lib'
+import { initializePocketBase } from '@sms-stories/editor/lib'
 
 export const pb = new PocketBase(process.env.NEXT_PUBLIC_POCKETBASE_URL)
 
@@ -99,7 +99,7 @@ Then in your pages/components, just import the file to ensure initialization:
 
 ```typescript
 import '@/lib/pocketbase' // Ensures PocketBase is initialized
-import { creatorStoryService } from '@sext-stories/editor/services'
+import { creatorStoryService } from '@sms-stories/editor/services'
 
 // Use services directly
 const stories = await creatorStoryService.getUserStories(userId)
@@ -111,7 +111,7 @@ Add to `next.config.mjs`:
 
 ```javascript
 const nextConfig = {
-  transpilePackages: ['@sext-stories/editor'],
+  transpilePackages: ['@sms-stories/editor'],
 }
 ```
 
@@ -123,8 +123,8 @@ Add to `tsconfig.json`:
 {
   "compilerOptions": {
     "paths": {
-      "@sext-stories/editor": ["./packages/editor/src"],
-      "@sext-stories/editor/*": ["./packages/editor/src/*"]
+      "@sms-stories/editor": ["./packages/editor/src"],
+      "@sms-stories/editor/*": ["./packages/editor/src/*"]
     }
   }
 }
