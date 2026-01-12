@@ -1,0 +1,261 @@
+/* Tiptap Advanced Editor Styles */
+
+/* Drag Handle Styles */
+.drag-handle {
+	position: absolute;
+	left: -2rem;
+	top: 0.25rem;
+	width: 1.5rem;
+	height: 1.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: grab;
+	color: var(--muted-foreground);
+	font-size: 1rem;
+	opacity: 0;
+	transition: opacity 200ms ease;
+	user-select: none;
+	border-radius: var(--radius-md);
+	background: transparent;
+	font-weight: bold;
+	letter-spacing: -2px;
+}
+
+.drag-handle:hover {
+	background: var(--muted);
+	color: var(--foreground);
+	opacity: 1 !important;
+}
+
+.drag-handle:active {
+	cursor: grabbing;
+}
+
+/* Show drag handle on block hover */
+.tiptap .ProseMirror-selectednode .drag-handle,
+.tiptap p:hover .drag-handle,
+.tiptap ul:hover .drag-handle,
+.tiptap ol:hover .drag-handle,
+.tiptap blockquote:hover .drag-handle {
+	opacity: 0.6;
+}
+
+/* Improved prose styles for dark theme */
+.tiptap.prose-invert {
+	--tw-prose-body: var(--foreground);
+	--tw-prose-headings: var(--foreground);
+	--tw-prose-links: var(--accent);
+	--tw-prose-bold: var(--foreground);
+	--tw-prose-quotes: var(--muted-foreground);
+	--tw-prose-code: var(--accent-foreground);
+	--tw-prose-hr: var(--border);
+}
+
+/* Paragraphs with font sizes maintain consistent styling */
+.tiptap p {
+	margin-bottom: 1em;
+	line-height: 1.7;
+}
+
+/* Enhanced blockquote */
+.tiptap blockquote {
+	border-left: 4px solid var(--accent);
+	padding: 1rem;
+	padding-left: 1rem;
+	margin: 1.5rem 0;
+	font-style: italic;
+	color: var(--muted-foreground);
+	background: color-mix(in srgb, var(--muted) 30%, transparent);
+	border-radius: var(--radius-md);
+}
+
+/* Code blocks */
+.tiptap code {
+	background: color-mix(in srgb, var(--muted) 60%, transparent);
+	color: var(--accent-foreground);
+	padding: 0.15rem 0.4rem;
+	border-radius: var(--radius-md);
+	font-family: var(--font-mono);
+	font-size: 0.875em;
+}
+
+.tiptap pre {
+	background: color-mix(in srgb, var(--muted) 70%, transparent);
+	padding: 1rem;
+	border-radius: var(--radius);
+	overflow-x: auto;
+	margin: 1.5rem 0;
+	border: 1px solid var(--border);
+}
+
+.tiptap pre code {
+	background: transparent;
+	padding: 0;
+	font-size: 0.875rem;
+	line-height: 1.7;
+}
+
+/* Lists */
+.tiptap ul,
+.tiptap ol {
+	padding-left: 1.5rem;
+	margin: 1rem 0;
+}
+
+.tiptap ul li,
+.tiptap ol li {
+	margin-bottom: 0.5rem;
+	line-height: 1.7;
+}
+
+.tiptap ul {
+	list-style-type: disc;
+}
+
+.tiptap ol {
+	list-style-type: decimal;
+}
+
+/* Nested lists */
+.tiptap ul ul,
+.tiptap ol ul {
+	list-style-type: circle;
+}
+
+.tiptap ul ul ul,
+.tiptap ol ul ul {
+	list-style-type: square;
+}
+
+/* Horizontal rule */
+.tiptap hr {
+	border: none;
+	border-top: 2px solid var(--border);
+	margin: 2rem 0;
+}
+
+/* Removed image styles - images not supported */
+
+/* Placeholder */
+.tiptap .is-editor-empty:first-child::before {
+	content: attr(data-placeholder);
+	float: left;
+	color: var(--muted-foreground);
+	pointer-events: none;
+	height: 0;
+	opacity: 0.5;
+}
+
+/* Selection styles */
+.tiptap ::selection {
+	background-color: color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+/* Focus styles for better accessibility */
+.tiptap:focus-visible {
+	outline: 2px solid var(--ring);
+	outline-offset: 2px;
+}
+
+/* Drop cursor (for drag and drop) */
+.tiptap .ProseMirror-dropcursor {
+	background-color: var(--primary);
+	width: 2px;
+	position: relative;
+}
+
+.tiptap .ProseMirror-dropcursor::before {
+	content: "";
+	position: absolute;
+	top: -4px;
+	left: -4px;
+	width: 10px;
+	height: 10px;
+	background-color: var(--primary);
+	border-radius: 50%;
+}
+
+/* Selected node highlight */
+.tiptap .ProseMirror-selectednode {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+	border-radius: var(--radius-md);
+}
+
+/* Text alignment classes */
+.tiptap [style*="text-align: left"] {
+	text-align: left;
+}
+
+.tiptap [style*="text-align: center"] {
+	text-align: center;
+}
+
+.tiptap [style*="text-align: right"] {
+	text-align: right;
+}
+
+.tiptap [style*="text-align: justify"] {
+	text-align: justify;
+}
+
+/* Smooth transitions for interactive elements */
+.tiptap a,
+.tiptap button {
+	transition:
+		color 160ms ease,
+		background-color 160ms ease;
+}
+
+/* Removed loading state - no image uploads */
+
+/* Typography extension enhancements */
+.tiptap .typography-quote-open::before {
+	content: '"';
+}
+
+.tiptap .typography-quote-close::after {
+	content: '"';
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+	.drag-handle {
+		left: -1.5rem;
+		width: 1.25rem;
+		height: 1.25rem;
+		font-size: 0.875rem;
+	}
+}
+
+/* Animation for smooth interactions */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.tiptap .ProseMirror-menubar,
+.tiptap .bubble-menu,
+.tiptap .floating-menu {
+	animation: fadeIn 150ms ease-out;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+	.tiptap * {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+
+	.drag-handle {
+		transition: none;
+	}
+}
