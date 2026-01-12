@@ -15,7 +15,7 @@ export * from './tiptap-image-upload'
 
 // Image utilities - DO NOT export (contains Node.js modules: sharp, ffmpeg)
 // Import directly when needed in server components only:
-// import { ... } from '@sext-stories/editor/lib/image-utils'
+// import { ... } from 'sms-stories/editor/lib/image-utils'
 
 // Validation schemas
 export * from './schema/creator-story-validation'

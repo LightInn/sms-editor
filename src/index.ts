@@ -1,8 +1,8 @@
 // Main exports
 // Note: Hooks are NOT exported from main index to avoid Server Component issues
 // Note: Actions are NOT exported from main index to avoid Server Component issues
-// Import hooks from '@sext-stories/editor/hooks' in Client Components only
-// Import actions from '@sext-stories/editor/actions' in Server Components only
+// Import hooks from 'sms-stories/editor/hooks' in Client Components only
+// Import actions from 'sms-stories/editor/actions' in Server Components only
 
 export * from './components'
 export * from './lib'

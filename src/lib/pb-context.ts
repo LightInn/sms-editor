@@ -17,7 +17,7 @@ let pbInstance: PocketBase | null = null
  * @example
  * ```typescript
  * // In your app initialization (e.g., lib/pocketbase.ts)
- * import { initializePocketBase } from '@sext-stories/editor/lib'
+ * import { initializePocketBase } from 'sms-stories/editor/lib'
  * import PocketBase from 'pocketbase'
  *
  * const pb = new PocketBase(process.env.NEXT_PUBLIC_POCKETBASE_URL)

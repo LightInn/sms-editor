@@ -5,7 +5,7 @@
 
 'use client'
 
-import type { ExportPreviewData } from '@sext-stories/editor/services'
+import type { ExportPreviewData } from '../../services'
 import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
 import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
