@@ -33,6 +33,6 @@
 		]
 	},
 	"include": ["next-env.d.ts", ".next/types/**/*.ts", "src/**/*.ts", "src/**/*.tsx", ".next/dev/types/**/*.ts",  "../src/components/ui/**/*.ts",
-        "../src/components/ui/**/*.tsx"],
+        "../src/components/ui/**/*.tsx" , "../src/lib/utils.ts"],
 	"exclude": ["node_modules","dist"]
 }
