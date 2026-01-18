@@ -5,7 +5,7 @@
 
 'use server'
 
-import { pb } from '@/lib/pocketbase'
+import { pb } from '@smseditor/lib/pocketbase'
 import type { ChapterWithExpand, CreatorChapter } from '../../types/creator-stories'
 import {
 	getAuthenticatedPB,

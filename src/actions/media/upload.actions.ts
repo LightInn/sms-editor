@@ -6,10 +6,10 @@
 'use server'
 
 import { headers } from 'next/headers'
-import { auth } from '@/lib/auth/auth.server'
-import { pb } from '@/lib/pocketbase'
-import { checkRateLimit } from '@/lib/rate-limit'
-import { createImageService } from '@/services/imageService'
+import { auth } from '@smseditor/lib/auth/auth.server'
+import { pb } from '@smseditor/lib/pocketbase'
+import { checkRateLimit } from '@smseditor/lib/rate-limit'
+import { createImageService } from '@smseditor/services/imageService'
 import { validateMediaFile } from './validation'
 
 // ============================================================================

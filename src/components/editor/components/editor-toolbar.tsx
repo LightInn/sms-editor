@@ -18,9 +18,9 @@ import {
 	Undo,
 } from 'lucide-react'
 import { useCallback, useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
+import { Button } from '@smseditor/components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@smseditor/components/ui/select'
+import { Separator } from '@smseditor/components/ui/separator'
 import { LinkInputDialog } from './link-input-dialog'
 
 interface EditorToolbarProps {

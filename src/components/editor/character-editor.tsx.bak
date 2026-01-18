@@ -11,9 +11,9 @@ import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid'
-import { uploadAvatarAction } from '@/actions/mediaActions'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { uploadAvatarAction } from '@smseditor/actions/mediaActions'
+import { Button } from '@smseditor/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@smseditor/components/ui/card'
 import {
 	Dialog,
 	DialogContent,
@@ -21,11 +21,11 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { sanitizeName } from '@/lib/sanitization'
-import { cn } from '@/lib/utils'
+} from '@smseditor/components/ui/dialog'
+import { Input } from '@smseditor/components/ui/input'
+import { Label } from '@smseditor/components/ui/label'
+import { sanitizeName } from '@smseditor/lib/sanitization'
+import { cn } from '@smseditor/lib/utils'
 import type { Character } from '../../types/creator-stories'
 
 export interface CharacterEditorProps {

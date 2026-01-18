@@ -7,7 +7,7 @@
 
 import { formatDistanceToNow } from 'date-fns'
 import { AlertCircle, Check, Circle, Loader2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@smseditor/lib/utils'
 
 export interface SaveIndicatorProps {
 	isSaving: boolean

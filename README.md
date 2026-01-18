@@ -53,7 +53,7 @@ const updated = await updateStoryAction(storyId, {
 
 ```typescript
 import { creatorStoryService } from '@sms-stories/editor/services'
-import '@/lib/pocketbase' // Important: ensures initialization
+import '@smseditor/lib/pocketbase' // Important: ensures initialization
 
 // Use singleton directly - no instantiation needed
 const story = await creatorStoryService.getStoryById(storyId)
@@ -64,7 +64,7 @@ const stories = await creatorStoryService.getUserStories(userId)
 
 ```typescript
 import { CreatorStoryService } from '@sms-stories/editor/services'
-import '@/lib/pocketbase'
+import '@smseditor/lib/pocketbase'
 
 const storyService = new CreatorStoryService()
 const story = await storyService.getStoryById(storyId)
@@ -98,7 +98,7 @@ initializePocketBase(pb)
 Then in your pages/components, just import the file to ensure initialization:
 
 ```typescript
-import '@/lib/pocketbase' // Ensures PocketBase is initialized
+import '@smseditor/lib/pocketbase' // Ensures PocketBase is initialized
 import { creatorStoryService } from '@sms-stories/editor/services'
 
 // Use services directly

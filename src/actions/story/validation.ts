@@ -10,7 +10,7 @@ import {
 	sanitizeDescription,
 	sanitizeSlug,
 	sanitizeText,
-} from '@/lib/sanitization'
+} from '@smseditor/lib/sanitization'
 import type { Character } from '../../types/creator-stories'
 
 // ============================================================================

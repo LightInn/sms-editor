@@ -4,7 +4,7 @@
  */
 
 import type PocketBase from 'pocketbase'
-import { createImageService } from '@/services/imageService'
+import { createImageService } from '@smseditor/services/imageService'
 
 /**
  * Upload an image file and return the URL for Tiptap

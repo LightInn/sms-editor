@@ -23,8 +23,8 @@ import {
 	Trash2,
 } from 'lucide-react'
 import { useState } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Badge } from '@smseditor/components/ui/badge'
+import { Button } from '@smseditor/components/ui/button'
 import {
 	Dialog,
 	DialogContent,
@@ -32,18 +32,18 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '@/components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { useEditorDragDrop } from '@/hooks/use-editor-drag-drop'
-import { useEditorNavigation } from '@/hooks/use-editor-navigation'
-import { useEditorSaveState } from '@/hooks/use-editor-save-state'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { useStoryEditorData } from '@/hooks/use-story-editor-data'
-import { cn } from '@/lib/utils'
+} from '@smseditor/components/ui/dialog'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@smseditor/components/ui/dropdown-menu'
+import { Input } from '@smseditor/components/ui/input'
+import { Label } from '@smseditor/components/ui/label'
+import { ScrollArea } from '@smseditor/components/ui/scroll-area'
+import { Sheet, SheetContent, SheetTrigger } from '@smseditor/components/ui/sheet'
+import { useEditorDragDrop } from '@smseditor/hooks/use-editor-drag-drop'
+import { useEditorNavigation } from '@smseditor/hooks/use-editor-navigation'
+import { useEditorSaveState } from '@smseditor/hooks/use-editor-save-state'
+import { useMediaQuery } from '@smseditor/hooks/use-media-query'
+import { useStoryEditorData } from '@smseditor/hooks/use-story-editor-data'
+import { cn } from '@smseditor/lib/utils'
 import type { ChapterWithExpand, CreatorBlock, CreatorStory } from '../../types/creator-stories'
 import { BlockSidebar } from './block-sidebar'
 import { BlockTypeSelector } from './block-type-selector'

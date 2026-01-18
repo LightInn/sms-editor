@@ -3,7 +3,7 @@
  * Centralized save status formatting extracted from editor components
  */
 
-import { formatSaveTime } from '@/lib/date-utils'
+import { formatSaveTime } from '@smseditor/lib/date-utils'
 
 // ============================================================================
 // TYPES

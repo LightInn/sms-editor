@@ -7,7 +7,7 @@
 
 import { redirect } from 'next/navigation'
 import * as v from 'valibot'
-import { sanitizeCategories, sanitizeCharacters, sanitizeDescription } from '@/lib/sanitization'
+import { sanitizeCategories, sanitizeCharacters, sanitizeDescription } from '@smseditor/lib/sanitization'
 import type { Character, CreatorStory } from '../../types/creator-stories'
 import { getAuthenticatedPB, handleActionError, unauthorizedResult } from '../utils/action-utils'
 import {

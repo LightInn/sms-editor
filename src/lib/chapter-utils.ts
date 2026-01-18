@@ -3,7 +3,7 @@
  * Centralized chapter status logic extracted from components
  */
 
-import { isFuture, isPast } from '@/lib/date-utils'
+import { isFuture, isPast } from '@smseditor/lib/date-utils'
 import type { CreatorChapter } from '../types/creator-stories'
 
 // ============================================================================

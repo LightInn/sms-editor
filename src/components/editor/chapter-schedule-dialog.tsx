@@ -8,10 +8,10 @@
 import { Calendar, Info } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { DateTimePicker } from '@/components/ui/date-time-picker'
+import { Badge } from '@smseditor/components/ui/badge'
+import { Button } from '@smseditor/components/ui/button'
+import { Card, CardContent } from '@smseditor/components/ui/card'
+import { DateTimePicker } from '@smseditor/components/ui/date-time-picker'
 import {
 	Dialog,
 	DialogContent,
@@ -19,13 +19,13 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Switch } from '@/components/ui/switch'
-import { type ChapterStatus, getChapterStatus, getStatusFromState } from '@/lib/chapter-utils'
-import { formatRelativeOrAbsolute, getUserTimezone, isPast } from '@/lib/date-utils'
-import { cn } from '@/lib/utils'
+} from '@smseditor/components/ui/dialog'
+import { Label } from '@smseditor/components/ui/label'
+import { ScrollArea } from '@smseditor/components/ui/scroll-area'
+import { Switch } from '@smseditor/components/ui/switch'
+import { type ChapterStatus, getChapterStatus, getStatusFromState } from '@smseditor/lib/chapter-utils'
+import { formatRelativeOrAbsolute, getUserTimezone, isPast } from '@smseditor/lib/date-utils'
+import { cn } from '@smseditor/lib/utils'
 import { batchUpdateChaptersProgrammedAction } from '../../actions/chapter'
 import type { CreatorChapter, CreatorStory } from '../../types/creator-stories'
 

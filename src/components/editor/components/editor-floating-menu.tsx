@@ -3,8 +3,8 @@
 import type { Editor } from '@tiptap/react'
 import { List, ListOrdered, Plus, Quote } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
+import { Button } from '@smseditor/components/ui/button'
+import { Separator } from '@smseditor/components/ui/separator'
 
 interface EditorFloatingMenuProps {
 	editor: Editor

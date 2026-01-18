@@ -11,9 +11,9 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { CategoryInput } from '@/components/creator-stories/category-input'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { CategoryInput } from '@smseditor/components/creator-stories/category-input'
+import { Button } from '@smseditor/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@smseditor/components/ui/card'
 import {
 	Dialog,
 	DialogContent,
@@ -21,12 +21,12 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
-import { pb } from '@/lib/pocketbase'
+} from '@smseditor/components/ui/dialog'
+import { Input } from '@smseditor/components/ui/input'
+import { Label } from '@smseditor/components/ui/label'
+import { Switch } from '@smseditor/components/ui/switch'
+import { Textarea } from '@smseditor/components/ui/textarea'
+import { pb } from '@smseditor/lib/pocketbase'
 import { deleteStoryAction, updateStoryAction } from '../../actions/story'
 import type { Character, CreatorStory, StoryWithExpand } from '../../types/creator-stories'
 import { generateSlug } from '../../types/creator-stories'

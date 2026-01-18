@@ -4,8 +4,8 @@
  */
 
 import { headers } from 'next/headers'
-import { auth } from '@/lib/auth/auth.server'
-import { pb } from '@/lib/pocketbase'
+import { auth } from '@smseditor/lib/auth/auth.server'
+import { pb } from '@smseditor/lib/pocketbase'
 
 // ============================================================================
 // TYPES

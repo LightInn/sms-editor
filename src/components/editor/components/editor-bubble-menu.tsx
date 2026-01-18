@@ -3,8 +3,8 @@
 import type { Editor } from '@tiptap/react'
 import { Bold, Italic, Link2, Underline as UnderlineIcon } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
+import { Button } from '@smseditor/components/ui/button'
+import { Separator } from '@smseditor/components/ui/separator'
 import { LinkInputDialog } from './link-input-dialog'
 
 interface EditorBubbleMenuProps {

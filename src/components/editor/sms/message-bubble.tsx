@@ -8,11 +8,11 @@
 import { Image as ImageIcon, MoreVertical, Play, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { CharacterAvatar } from '@/components/ui/character-avatar'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { cn } from '@/lib/utils'
+import { Button } from '@smseditor/components/ui/button'
+import { CharacterAvatar } from '@smseditor/components/ui/character-avatar'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@smseditor/components/ui/dialog'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@smseditor/components/ui/dropdown-menu'
+import { cn } from '@smseditor/lib/utils'
 import type { Message } from '../../../types/creator-stories'
 
 export interface MessageBubbleProps {
