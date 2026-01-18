@@ -5,8 +5,6 @@
 
 'use client'
 
-import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
 import { CategoryInput } from '@smseditor/components/creator-stories/category-input'
 import { Button } from '@smseditor/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@smseditor/components/ui/card'
@@ -23,6 +21,8 @@ import { Label } from '@smseditor/components/ui/label'
 import { Switch } from '@smseditor/components/ui/switch'
 import { Textarea } from '@smseditor/components/ui/textarea'
 import { pb } from '@smseditor/lib/pocketbase'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { updateStoryAction } from '../../actions/story'
 import type { Character, CreatorStory, StoryWithExpand } from '../../types/creator-stories'
 import { generateSlug } from '../../types/creator-stories'

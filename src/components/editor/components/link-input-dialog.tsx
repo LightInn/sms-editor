@@ -1,7 +1,5 @@
 'use client'
 
-import { Link2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import { Button } from '@smseditor/components/ui/button'
 import {
 	Dialog,
@@ -13,6 +11,8 @@ import {
 } from '@smseditor/components/ui/dialog'
 import { Input } from '@smseditor/components/ui/input'
 import { Label } from '@smseditor/components/ui/label'
+import { Link2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 interface LinkInputDialogProps {
 	open: boolean

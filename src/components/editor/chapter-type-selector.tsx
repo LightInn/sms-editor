@@ -5,8 +5,8 @@
 
 'use client'
 
-import { FileText, Image, MessageSquare } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@smseditor/components/ui/card'
+import { FileText, Image, MessageSquare } from 'lucide-react'
 import type { ChapterType } from '../../types/creator-stories'
 
 export interface ChapterTypeSelectorProps {

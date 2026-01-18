@@ -3,8 +3,8 @@
  * Integrates PocketBase ImageService with Tiptap editor
  */
 
-import type PocketBase from 'pocketbase'
 import { createImageService } from '@smseditor/services/imageService'
+import type PocketBase from 'pocketbase'
 
 /**
  * Upload an image file and return the URL for Tiptap

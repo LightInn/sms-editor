@@ -1,8 +1,5 @@
 'use client'
 
-import { Settings, Trash2 } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { toast } from 'sonner'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -20,6 +17,9 @@ import { Label } from '@smseditor/components/ui/label'
 import { useAutosave } from '@smseditor/hooks/use-autosave'
 import { formatSaveTime, getSaveStatusColorClass } from '@smseditor/lib/format-save-time'
 import { cn } from '@smseditor/lib/utils'
+import { Settings, Trash2 } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
 import type { CreatorBlock, MediaContent } from '../../types/creator-stories'
 import { MediaUpload } from './media-upload'
 

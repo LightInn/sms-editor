@@ -5,9 +5,9 @@
 
 'use client'
 
+import { cn } from '@smseditor/lib/utils'
 import { formatDistanceToNow } from 'date-fns'
 import { AlertCircle, Check, Loader2 } from 'lucide-react'
-import { cn } from '@smseditor/lib/utils'
 
 export interface AutosaveIndicatorProps {
 	isSaving: boolean

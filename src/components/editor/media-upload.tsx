@@ -5,15 +5,15 @@
 
 'use client'
 
+import { uploadMediaAction } from '@smseditor/actions/mediaActions'
+import { Button } from '@smseditor/components/ui/button'
+import { Card, CardContent } from '@smseditor/components/ui/card'
+import { cn } from '@smseditor/lib/utils'
 import { Loader2, Upload, X } from 'lucide-react'
 import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
-import { uploadMediaAction } from '@smseditor/actions/mediaActions'
-import { Button } from '@smseditor/components/ui/button'
-import { Card, CardContent } from '@smseditor/components/ui/card'
-import { cn } from '@smseditor/lib/utils'
 
 export interface MediaUploadProps {
 	onUpload: (recordId: string, url: string, alt: string, type: 'image' | 'video') => void

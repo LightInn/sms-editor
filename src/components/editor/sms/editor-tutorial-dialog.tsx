@@ -5,8 +5,6 @@
 
 'use client'
 
-import { Info } from 'lucide-react'
-import { useState } from 'react'
 import { Button } from '@smseditor/components/ui/button'
 import {
 	Dialog,
@@ -16,6 +14,8 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@smseditor/components/ui/dialog'
+import { Info } from 'lucide-react'
+import { useState } from 'react'
 
 export function EditorTutorialDialog() {
 	const [open, setOpen] = useState(false)

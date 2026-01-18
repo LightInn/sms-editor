@@ -3,9 +3,9 @@
  * Authentication, ownership verification, and error handling
  */
 
-import { headers } from 'next/headers'
 import { auth } from '@smseditor/lib/auth/auth.server'
 import { pb } from '@smseditor/lib/pocketbase'
+import { headers } from 'next/headers'
 
 // ============================================================================
 // TYPES

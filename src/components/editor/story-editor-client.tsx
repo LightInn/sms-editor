@@ -8,6 +8,32 @@
 import { closestCenter, DndContext } from '@dnd-kit/core'
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { Badge } from '@smseditor/components/ui/badge'
+import { Button } from '@smseditor/components/ui/button'
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@smseditor/components/ui/dialog'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@smseditor/components/ui/dropdown-menu'
+import { Input } from '@smseditor/components/ui/input'
+import { Label } from '@smseditor/components/ui/label'
+import { ScrollArea } from '@smseditor/components/ui/scroll-area'
+import { Sheet, SheetContent, SheetTrigger } from '@smseditor/components/ui/sheet'
+import { useEditorDragDrop } from '@smseditor/hooks/use-editor-drag-drop'
+import { useEditorNavigation } from '@smseditor/hooks/use-editor-navigation'
+import { useEditorSaveState } from '@smseditor/hooks/use-editor-save-state'
+import { useMediaQuery } from '@smseditor/hooks/use-media-query'
+import { useStoryEditorData } from '@smseditor/hooks/use-story-editor-data'
+import { cn } from '@smseditor/lib/utils'
 import {
 	ArrowLeft,
 	ChevronLeft,
@@ -23,27 +49,6 @@ import {
 	Trash2,
 } from 'lucide-react'
 import { useState } from 'react'
-import { Badge } from '@smseditor/components/ui/badge'
-import { Button } from '@smseditor/components/ui/button'
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from '@smseditor/components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@smseditor/components/ui/dropdown-menu'
-import { Input } from '@smseditor/components/ui/input'
-import { Label } from '@smseditor/components/ui/label'
-import { ScrollArea } from '@smseditor/components/ui/scroll-area'
-import { Sheet, SheetContent, SheetTrigger } from '@smseditor/components/ui/sheet'
-import { useEditorDragDrop } from '@smseditor/hooks/use-editor-drag-drop'
-import { useEditorNavigation } from '@smseditor/hooks/use-editor-navigation'
-import { useEditorSaveState } from '@smseditor/hooks/use-editor-save-state'
-import { useMediaQuery } from '@smseditor/hooks/use-media-query'
-import { useStoryEditorData } from '@smseditor/hooks/use-story-editor-data'
-import { cn } from '@smseditor/lib/utils'
 import type { ChapterWithExpand, CreatorBlock, CreatorStory } from '../../types/creator-stories'
 import { BlockSidebar } from './block-sidebar'
 import { BlockTypeSelector } from './block-type-selector'

@@ -5,12 +5,6 @@
 
 'use client'
 
-import { Edit2, Loader2, Plus, Trash2, Upload, User, X } from 'lucide-react'
-import Image from 'next/image'
-import { useCallback, useState } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { toast } from 'sonner'
-import { v4 as uuidv4 } from 'uuid'
 import { uploadAvatarAction } from '@smseditor/actions/mediaActions'
 import { Button } from '@smseditor/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@smseditor/components/ui/card'
@@ -26,6 +20,12 @@ import { Input } from '@smseditor/components/ui/input'
 import { Label } from '@smseditor/components/ui/label'
 import { sanitizeName } from '@smseditor/lib/sanitization'
 import { cn } from '@smseditor/lib/utils'
+import { Edit2, Loader2, Plus, Trash2, Upload, User, X } from 'lucide-react'
+import Image from 'next/image'
+import { useCallback, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { toast } from 'sonner'
+import { v4 as uuidv4 } from 'uuid'
 import type { Character } from '../../types/creator-stories'
 
 export interface CharacterEditorProps {

@@ -1,7 +1,7 @@
 'use client'
 
-import type { Editor } from '@tiptap/react'
 import { cn } from '@smseditor/lib/utils'
+import type { Editor } from '@tiptap/react'
 
 interface CharacterCountDisplayProps {
 	editor: Editor

@@ -5,17 +5,24 @@
 
 'use client'
 
-import { Settings2 } from 'lucide-react'
-import Image from 'next/image'
-import { useState } from 'react'
 import { Button } from '@smseditor/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@smseditor/components/ui/card'
 import { Input } from '@smseditor/components/ui/input'
 import { Label } from '@smseditor/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@smseditor/components/ui/select'
 import { Separator } from '@smseditor/components/ui/separator'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@smseditor/components/ui/sheet'
+import {
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from '@smseditor/components/ui/sheet'
 import { Switch } from '@smseditor/components/ui/switch'
+import { Settings2 } from 'lucide-react'
+import Image from 'next/image'
+import { useState } from 'react'
 import type { AppTarget, Character, ConversationType, Participant } from '../../../types/creator-stories'
 import { appTargets } from '../../../types/creator-stories'
 
