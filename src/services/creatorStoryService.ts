@@ -3,7 +3,7 @@
  * Handles CRUD operations for the c_stories collection
  */
 
-import { getPocketBase } from '../lib/pb-context'
+import { pb } from '@/lib/pocketbase'
 import type {
 	Character,
 	CreateStoryData,
@@ -15,15 +15,12 @@ import type {
 
 export class CreatorStoryService {
 	private collectionName = 'c_stories'
-	private get pb() {
-		return getPocketBase()
-	}
 
 	/**
 	 * Create a new story
 	 */
 	async createStory(data: CreateStoryData): Promise<CreatorStory> {
-		const authModel = this.pb.authStore.model
+		const authModel = pb.authStore.model
 
 		if (!authModel?.id) {
 			throw new Error('User must be authenticated to create a story')
@@ -60,7 +57,7 @@ export class CreatorStoryService {
 			formData.append('coverImage', data.coverImage)
 		}
 
-		const record = await this.pb.collection(this.collectionName).create<CreatorStory>(formData)
+		const record = await pb.collection(this.collectionName).create<CreatorStory>(formData)
 
 		return record
 	}
@@ -109,7 +106,7 @@ export class CreatorStoryService {
 			formData.append('coverImage', data.coverImage || '')
 		}
 
-		const record = await this.pb.collection(this.collectionName).update<CreatorStory>(id, formData)
+		const record = await pb.collection(this.collectionName).update<CreatorStory>(id, formData)
 
 		return record
 	}
@@ -120,7 +117,7 @@ export class CreatorStoryService {
 	async getStory(id: string, expand = false): Promise<StoryWithExpand> {
 		const expandParam = expand ? 'author,chapters,coverImage' : ''
 
-		const record = await this.pb.collection(this.collectionName).getOne<StoryWithExpand>(id, {
+		const record = await pb.collection(this.collectionName).getOne<StoryWithExpand>(id, {
 			expand: expandParam,
 		})
 
@@ -134,7 +131,7 @@ export class CreatorStoryService {
 		try {
 			const expandParam = expand ? 'author,chapters,coverImage' : ''
 
-			const record = await this.pb.collection(this.collectionName).getFirstListItem<StoryWithExpand>(`slug="${slug}"`, {
+			const record = await pb.collection(this.collectionName).getFirstListItem<StoryWithExpand>(`slug="${slug}"`, {
 				expand: expandParam,
 			})
 
@@ -149,14 +146,14 @@ export class CreatorStoryService {
 	 * Get all stories for the current user
 	 */
 	async getUserStories(userId?: string, page = 1, perPage = 20): Promise<StoryWithExpand[]> {
-		const authModel = this.pb.authStore.model
+		const authModel = pb.authStore.model
 		const targetUserId = userId || authModel?.id
 
 		if (!targetUserId) {
 			throw new Error('User ID required')
 		}
 
-		const records = await this.pb.collection(this.collectionName).getList<StoryWithExpand>(page, perPage, {
+		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(page, perPage, {
 			filter: `author="${targetUserId}"`,
 			sort: '-created',
 			expand: 'author,coverImage',
@@ -165,7 +162,7 @@ export class CreatorStoryService {
 		// Manually fetch chapters for each story since the relation is inverse (chapter -> story)
 		const storiesWithChapters = await Promise.all(
 			records.items.map(async story => {
-				const chapterRecords = await this.pb.collection('c_chapters').getFullList({
+				const chapterRecords = await pb.collection('c_chapters').getFullList({
 					filter: `story="${story.id}"`,
 					sort: 'order',
 				})
@@ -200,7 +197,7 @@ export class CreatorStoryService {
 	 * Get all published stories (public)
 	 */
 	async getPublishedStories(page = 1, perPage = 20): Promise<StoryWithExpand[]> {
-		const records = await this.pb.collection(this.collectionName).getList<StoryWithExpand>(page, perPage, {
+		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(page, perPage, {
 			filter: 'isPublished=true',
 			sort: '-created',
 			expand: 'author,coverImage',
@@ -214,7 +211,7 @@ export class CreatorStoryService {
 	 */
 	async getLatestOriginalStories(limit = 5): Promise<StoryWithExpand[]> {
 		const safeLimit = Math.max(1, Math.min(limit, 12))
-		const records = await this.pb.collection(this.collectionName).getList<StoryWithExpand>(1, safeLimit, {
+		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(1, safeLimit, {
 			filter: 'isPublished=true',
 			sort: '-created',
 			expand: 'author,coverImage',
@@ -227,7 +224,7 @@ export class CreatorStoryService {
 	 * Delete a story
 	 */
 	async deleteStory(id: string): Promise<boolean> {
-		await this.pb.collection(this.collectionName).delete(id)
+		await pb.collection(this.collectionName).delete(id)
 		return true
 	}
 
@@ -279,7 +276,7 @@ export class CreatorStoryService {
 		try {
 			const filter = excludeId ? `slug="${slug}" && id!="${excludeId}"` : `slug="${slug}"`
 
-			const result = await this.pb.collection(this.collectionName).getList(1, 1, {
+			const result = await pb.collection(this.collectionName).getList(1, 1, {
 				filter,
 			})
 
@@ -318,14 +315,14 @@ export class CreatorStoryService {
 	 * Get story count for a user
 	 */
 	async getStoryCount(userId?: string): Promise<number> {
-		const authModel = this.pb.authStore.model
+		const authModel = pb.authStore.model
 		const targetUserId = userId || authModel?.id
 
 		if (!targetUserId) {
 			return 0
 		}
 
-		const result = await this.pb.collection(this.collectionName).getList(1, 1, {
+		const result = await pb.collection(this.collectionName).getList(1, 1, {
 			filter: `author="${targetUserId}"`,
 		})
 
@@ -336,7 +333,7 @@ export class CreatorStoryService {
 	 * Search stories by title
 	 */
 	async searchStories(query: string, page = 1, perPage = 20): Promise<StoryWithExpand[]> {
-		const records = await this.pb.collection(this.collectionName).getList<StoryWithExpand>(page, perPage, {
+		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(page, perPage, {
 			filter: `title~"${query}" && isPublished=true`,
 			sort: '-created',
 			expand: 'author,coverImage',
@@ -349,7 +346,7 @@ export class CreatorStoryService {
 	 * Get stories by category
 	 */
 	async getStoriesByCategory(category: string, page = 1, perPage = 20): Promise<StoryWithExpand[]> {
-		const records = await this.pb.collection(this.collectionName).getList<StoryWithExpand>(page, perPage, {
+		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(page, perPage, {
 			filter: `categories~"${category}" && isPublished=true`,
 			sort: '-created',
 			expand: 'author,coverImage',
@@ -367,7 +364,7 @@ export class CreatorStoryService {
 			collectionId: this.collectionName,
 			collectionName: this.collectionName,
 		}
-		return this.pb.files.getURL(pbRecord, filename)
+		return pb.files.getURL(pbRecord, filename)
 	}
 
 	/**
@@ -387,7 +384,7 @@ export class CreatorStoryService {
 				alt: string
 			}
 			// Construct URL from image record
-			return `${this.pb.baseUrl}/api/files/images/${imageRecord.id}/${imageRecord.image}`
+			return `${pb.baseUrl}/api/files/images/${imageRecord.id}/${imageRecord.image}`
 		}
 
 		// Fallback: If we only have the record ID without expand
@@ -403,7 +400,7 @@ export class CreatorStoryService {
 	 * Get trending stories (sorted by likes)
 	 */
 	async getTrendingStories(limit = 5): Promise<StoryWithExpand[]> {
-		const records = await this.pb.collection(this.collectionName).getList<StoryWithExpand>(1, limit, {
+		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(1, limit, {
 			filter: 'isPublished=true',
 			sort: '-likes',
 			expand: 'author',
@@ -415,7 +412,7 @@ export class CreatorStoryService {
 	 * Get all published stories (for category aggregation)
 	 */
 	async getAllPublishedStories(): Promise<StoryWithExpand[]> {
-		return await this.pb.collection(this.collectionName).getFullList<StoryWithExpand>({
+		return await pb.collection(this.collectionName).getFullList<StoryWithExpand>({
 			filter: 'isPublished=true',
 		})
 	}

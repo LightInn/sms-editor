@@ -4,14 +4,12 @@
  * Chapters are now simple containers that group blocks
  */
 
-import { getPocketBase } from '../lib/pb-context'
+import {pb } from '@/lib/pocketbase'
 import type { ChapterWithExpand, CreateChapterData, CreatorChapter, UpdateChapterData } from '../types/creator-stories'
 
 export class CreatorChapterService {
 	private collectionName = 'c_chapters'
-	private get pb() {
-		return getPocketBase()
-	}
+
 
 	/**
 	 * Create a new chapter (container)
@@ -33,7 +31,7 @@ export class CreatorChapterService {
 			createData.coverImage = data.coverImage || null
 		}
 
-		const record = await this.pb.collection(this.collectionName).create<CreatorChapter>(createData)
+		const record = await pb.collection(this.collectionName).create<CreatorChapter>(createData)
 
 		return record
 	}
@@ -50,7 +48,7 @@ export class CreatorChapterService {
 		if (data.isPublished !== undefined) updateData.isPublished = data.isPublished
 		if (data.coverImage !== undefined) updateData.coverImage = data.coverImage
 
-		const record = await this.pb.collection(this.collectionName).update<CreatorChapter>(id, updateData)
+		const record = await pb.collection(this.collectionName).update<CreatorChapter>(id, updateData)
 
 		return record
 	}
@@ -61,7 +59,7 @@ export class CreatorChapterService {
 	async getChapter(id: string, expand = false): Promise<ChapterWithExpand> {
 		const expandParam = expand ? 'story,blocks,coverImage' : ''
 
-		const record = await this.pb.collection(this.collectionName).getOne<ChapterWithExpand>(id, {
+		const record = await pb.collection(this.collectionName).getOne<ChapterWithExpand>(id, {
 			expand: expandParam,
 		})
 
@@ -78,7 +76,7 @@ export class CreatorChapterService {
 			expandParts.push('blocks')
 		}
 
-		const records = await this.pb.collection(this.collectionName).getFullList<ChapterWithExpand>({
+		const records = await pb.collection(this.collectionName).getFullList<ChapterWithExpand>({
 			filter: `story="${storyId}"`,
 			sort: 'order',
 			expand: expandParts.join(','),
@@ -91,7 +89,7 @@ export class CreatorChapterService {
 	 * Delete a chapter (and potentially cascade delete blocks if configured)
 	 */
 	async deleteChapter(id: string): Promise<boolean> {
-		await this.pb.collection(this.collectionName).delete(id)
+		await pb.collection(this.collectionName).delete(id)
 		return true
 	}
 
@@ -143,7 +141,7 @@ export class CreatorChapterService {
 	 * Get chapter count for a story
 	 */
 	async getChapterCount(storyId: string): Promise<number> {
-		const result = await this.pb.collection(this.collectionName).getList(1, 1, {
+		const result = await pb.collection(this.collectionName).getList(1, 1, {
 			filter: `story="${storyId}"`,
 		})
 
