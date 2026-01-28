@@ -1,6 +1,7 @@
 /**
  * Service for managing creator stories (user-generated stories)
  * Handles CRUD operations for the c_stories collection
+ * NOTE: This service should only be used on the server side
  */
 
 import { pb } from '@/lib/pocketbase'

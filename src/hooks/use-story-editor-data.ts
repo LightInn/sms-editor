@@ -8,7 +8,21 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { creatorBlockService, creatorChapterService } from '../services'
+import {
+	createBlockAction,
+	createChapterAction,
+	deleteBlockAction,
+	deleteChapterAction,
+	findPreviousConversationDataAction,
+	getBlockAction,
+	getChapterAction,
+	getChapterBlocksAction,
+	getStoryAction,
+	getStoryChaptersAction,
+	reorderBlocksAction,
+	reorderChaptersAction,
+	updateBlockAction,
+} from '../actions/serviceActions'
 import type {
 	BlockType,
 	ChapterWithExpand,
@@ -113,7 +127,7 @@ export function useStoryEditorData({
 
 		const fetchBlocks = async () => {
 			try {
-				const response = await creatorBlockService.getChapterBlocks(activeChapterId)
+				const response = await getChapterBlocksAction(activeChapterId)
 				setBlocks(response)
 			} catch (error) {
 				console.error('Failed to fetch blocks:', error)
@@ -129,7 +143,7 @@ export function useStoryEditorData({
 			const counts: Record<string, number> = {}
 			for (const chapter of chapters) {
 				try {
-					const response = await creatorBlockService.getChapterBlocks(chapter.id)
+					const response = await getChapterBlocksAction(chapter.id)
 					counts[chapter.id] = response.length
 				} catch {
 					counts[chapter.id] = 0
@@ -159,7 +173,7 @@ export function useStoryEditorData({
 		}
 
 		try {
-			const newChapter = await creatorChapterService.createChapter({
+			const newChapter = await createChapterAction({
 				story: story.id,
 				title: newChapterTitle,
 				order: chapters.length,
@@ -180,7 +194,7 @@ export function useStoryEditorData({
 	const handleChapterDelete = useCallback(
 		async (chapterId: string) => {
 			try {
-				await creatorChapterService.deleteChapter(chapterId)
+				await deleteChapterAction(chapterId)
 				setChapters(prev => prev.filter(ch => ch.id !== chapterId))
 
 				if (activeChapterId === chapterId) {
@@ -204,7 +218,7 @@ export function useStoryEditorData({
 
 			try {
 				const chapterIds = reordered.map(ch => ch.id)
-				const updatedChapters = await creatorChapterService.reorderChapters(chapterIds)
+				const updatedChapters = await reorderChaptersAction(chapterIds)
 				const mergedChapters = updatedChapters.map(updated => {
 					const existing = reordered.find(ch => ch.id === updated.id)
 					return existing ? { ...existing, ...updated } : (updated as ChapterWithExpand)
@@ -244,7 +258,7 @@ export function useStoryEditorData({
 			} else {
 				// Full refetch
 				try {
-					const refreshedChapters = await creatorChapterService.getStoryChapters(story.id)
+					const refreshedChapters = await getStoryChaptersAction(story.id)
 					setChapters(refreshedChapters)
 				} catch (error) {
 					console.error('Failed to refresh chapters:', error)
@@ -287,7 +301,7 @@ export function useStoryEditorData({
 			}
 
 			try {
-				const newBlock = await creatorBlockService.createBlock({
+				const newBlock = await createBlockAction({
 					chapter: activeChapterId,
 					type,
 					order: blocks.length,
@@ -309,7 +323,7 @@ export function useStoryEditorData({
 	const handleBlockDelete = useCallback(
 		async (blockId: string) => {
 			try {
-				await creatorBlockService.deleteBlock(blockId)
+				await deleteBlockAction(blockId)
 				setBlocks(prev => prev.filter(bl => bl.id !== blockId))
 
 				if (activeBlockId === blockId) {
@@ -334,7 +348,7 @@ export function useStoryEditorData({
 
 			try {
 				const blockIds = reordered.map(bl => bl.id)
-				const updatedBlocks = await creatorBlockService.reorderBlocks(blockIds)
+				const updatedBlocks = await reorderBlocksAction(blockIds)
 				setBlocks(updatedBlocks)
 				toast.success('Block order updated')
 			} catch (error) {
@@ -368,7 +382,7 @@ export function useStoryEditorData({
 			payload.content = { messages: data.messages ?? [] }
 		}
 
-		const updated = await creatorBlockService.updateBlock(blockId, payload)
+		const updated = await updateBlockAction(blockId, payload)
 
 		setBlocks(prev => prev.map(bl => (bl.id === updated.id ? updated : bl)))
 

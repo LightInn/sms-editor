@@ -28,7 +28,12 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { uploadCharacterAvatar } from '../../actions/media'
-import { creatorBlockService, creatorChapterService, creatorStoryService } from '../../services'
+import {
+	findPreviousConversationDataAction,
+	getBlockAction,
+	getChapterAction,
+	getStoryAction,
+} from '../../actions/serviceActions'
 import type {
 	AppTarget,
 	BlockWithExpand,
@@ -141,9 +146,9 @@ export function SmsChapterEditor({
 			setIsLoadingRecovery(true)
 			try {
 				// Get the block with chapter expand
-				const block = await creatorBlockService.getBlock(chapter.id, true)
+				const block = await getBlockAction(chapter.id, true)
 				const chapterData: ChapterWithExpand | undefined =
-					block.expand?.chapter ?? (await creatorChapterService.getChapter(block.chapter, true))
+					block.expand?.chapter ?? (await getChapterAction(block.chapter, true))
 
 				if (!chapterData) {
 					console.error('[SmsChapterEditor] Chapter not found')
@@ -151,7 +156,7 @@ export function SmsChapterEditor({
 				}
 
 				// Get the story
-				const story = chapterData.expand?.story ?? (await creatorStoryService.getStory(chapterData.story))
+				const story = chapterData.expand?.story ?? (await getStoryAction(chapterData.story))
 
 				if (!story) {
 					console.error('[SmsChapterEditor] Story not found')
@@ -159,7 +164,7 @@ export function SmsChapterEditor({
 				}
 
 				// Find previous conversation data
-				const recoveredData = await creatorBlockService.findPreviousConversationData(participants, chapter.id, story.id)
+				const recoveredData = await findPreviousConversationDataAction(participants, chapter.id, story.id)
 
 				if (recoveredData) {
 					// Found previous data - pre-fill the fields
