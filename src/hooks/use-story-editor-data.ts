@@ -8,7 +8,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { request } from '../lib/api-helper'
+import { creatorBlockService, creatorChapterService } from '../services'
 import type {
 	BlockType,
 	ChapterWithExpand,
@@ -75,10 +75,6 @@ interface UseStoryEditorDataReturn {
 }
 
 // ============================================================================
-// HELPER: API Request
-// ============================================================================
-
-// ============================================================================
 // HOOK
 // ============================================================================
 
@@ -118,9 +114,7 @@ export function useStoryEditorData({
 
 		const fetchBlocks = async () => {
 			try {
-				const response = await request<CreatorBlock[]>(`/api/creator-stories/chapters/${activeChapterId}/blocks`, {
-					method: 'GET',
-				})
+				const response = await creatorBlockService.getChapterBlocks(activeChapterId)
 				setBlocks(response)
 			} catch (error) {
 				console.error('Failed to fetch blocks:', error)
@@ -136,9 +130,7 @@ export function useStoryEditorData({
 			const counts: Record<string, number> = {}
 			for (const chapter of chapters) {
 				try {
-					const response = await request<CreatorBlock[]>(`/api/creator-stories/chapters/${chapter.id}/blocks`, {
-						method: 'GET',
-					})
+					const response = await creatorBlockService.getChapterBlocks(chapter.id)
 					counts[chapter.id] = response.length
 				} catch {
 					counts[chapter.id] = 0
@@ -168,12 +160,13 @@ export function useStoryEditorData({
 		}
 
 		try {
-			const newChapter = await request<ChapterWithExpand>(`/api/creator-stories/${story.id}/chapters`, {
-				method: 'POST',
-				body: JSON.stringify({ title: newChapterTitle }),
+			const newChapter = await creatorChapterService.createChapter({
+				story: story.id,
+				title: newChapterTitle,
+				order: chapters.length,
 			})
 
-			setChapters(prev => [...prev, newChapter])
+			setChapters(prev => [...prev, newChapter as ChapterWithExpand])
 			setActiveChapterId(newChapter.id)
 			setActiveBlockId(null)
 			setIsCreatingChapter(false)
@@ -183,12 +176,12 @@ export function useStoryEditorData({
 			console.error('Failed to create chapter:', error)
 			toast.error('Failed to create chapter')
 		}
-	}, [newChapterTitle, story.id, setActiveChapterId, setActiveBlockId])
+	}, [newChapterTitle, story.id, chapters.length, setActiveChapterId, setActiveBlockId])
 
 	const handleChapterDelete = useCallback(
 		async (chapterId: string) => {
 			try {
-				await request(`/api/creator-stories/chapters/${chapterId}`, { method: 'DELETE' })
+				await creatorChapterService.deleteChapter(chapterId)
 				setChapters(prev => prev.filter(ch => ch.id !== chapterId))
 
 				if (activeChapterId === chapterId) {
@@ -212,10 +205,7 @@ export function useStoryEditorData({
 
 			try {
 				const chapterIds = reordered.map(ch => ch.id)
-				const updatedChapters = await request<CreatorChapter[]>(`/api/creator-stories/${story.id}/chapters/reorder`, {
-					method: 'POST',
-					body: JSON.stringify({ chapterIds }),
-				})
+				const updatedChapters = await creatorChapterService.reorderChapters(chapterIds)
 				const mergedChapters = updatedChapters.map(updated => {
 					const existing = reordered.find(ch => ch.id === updated.id)
 					return existing ? { ...existing, ...updated } : (updated as ChapterWithExpand)
@@ -255,9 +245,7 @@ export function useStoryEditorData({
 			} else {
 				// Full refetch
 				try {
-					const refreshedChapters = await request<ChapterWithExpand[]>(`/api/creator-stories/${story.id}/chapters`, {
-						method: 'GET',
-					})
+					const refreshedChapters = await creatorChapterService.getStoryChapters(story.id)
 					setChapters(refreshedChapters)
 				} catch (error) {
 					console.error('Failed to refresh chapters:', error)
@@ -280,10 +268,31 @@ export function useStoryEditorData({
 		async (type: BlockType) => {
 			if (!activeChapterId) return
 
+			// Prepare default content based on block type
+			let content: SMSContent | RichTextContent | MediaContent
+			switch (type) {
+				case 'sms_conversation':
+					content = { messages: [] }
+					break
+				case 'rich_text_content':
+					content = { plateJson: '' }
+					break
+				case 'media_content':
+					content = {
+						mediaAlt: '',
+						mediaType: 'image' as const,
+					}
+					break
+				default:
+					content = { plateJson: '' }
+			}
+
 			try {
-				const newBlock = await request<CreatorBlock>(`/api/creator-stories/chapters/${activeChapterId}/blocks`, {
-					method: 'POST',
-					body: JSON.stringify({ type }),
+				const newBlock = await creatorBlockService.createBlock({
+					chapter: activeChapterId,
+					type,
+					order: blocks.length,
+					content,
 				})
 
 				setBlocks(prev => [...prev, newBlock])
@@ -295,13 +304,13 @@ export function useStoryEditorData({
 				toast.error('Failed to create block')
 			}
 		},
-		[activeChapterId, setActiveBlockId]
+		[activeChapterId, blocks.length, setActiveBlockId]
 	)
 
 	const handleBlockDelete = useCallback(
 		async (blockId: string) => {
 			try {
-				await request(`/api/creator-stories/blocks/${blockId}`, { method: 'DELETE' })
+				await creatorBlockService.deleteBlock(blockId)
 				setBlocks(prev => prev.filter(bl => bl.id !== blockId))
 
 				if (activeBlockId === blockId) {
@@ -326,13 +335,7 @@ export function useStoryEditorData({
 
 			try {
 				const blockIds = reordered.map(bl => bl.id)
-				const updatedBlocks = await request<CreatorBlock[]>(
-					`/api/creator-stories/chapters/${activeChapterId}/blocks/reorder`,
-					{
-						method: 'POST',
-						body: JSON.stringify({ blockIds }),
-					}
-				)
+				const updatedBlocks = await creatorBlockService.reorderBlocks(blockIds)
 				setBlocks(updatedBlocks)
 				toast.success('Block order updated')
 			} catch (error) {
@@ -366,10 +369,7 @@ export function useStoryEditorData({
 			payload.content = { messages: data.messages ?? [] }
 		}
 
-		const updated = await request<CreatorBlock>(`/api/creator-stories/blocks/${blockId}`, {
-			method: 'PATCH',
-			body: JSON.stringify(payload),
-		})
+		const updated = await creatorBlockService.updateBlock(blockId, payload)
 
 		setBlocks(prev => prev.map(bl => (bl.id === updated.id ? updated : bl)))
 

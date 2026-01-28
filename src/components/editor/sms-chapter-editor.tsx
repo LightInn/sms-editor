@@ -11,6 +11,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useManualSave } from 'sms-editor/hooks/use-manual-save'
 import { cn } from 'sms-editor/lib/utils'
+import { creatorBlockService, creatorChapterService, creatorStoryService } from '../../services'
 import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -32,6 +33,7 @@ import type {
 	AppTarget,
 	BlockWithExpand,
 	Character,
+	ChapterWithExpand,
 	ConversationType,
 	CreatorBlock,
 	Message,
@@ -138,35 +140,39 @@ export function SmsChapterEditor({
 		const fetchPreviousData = async () => {
 			setIsLoadingRecovery(true)
 			try {
-				const response = await fetch(`/api/creator-stories/blocks/${chapter.id}/previous-conversation`, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					credentials: 'include',
-					body: JSON.stringify({ participants }),
-				})
+				// Get the block with chapter expand
+				const block = await creatorBlockService.getBlock(chapter.id, true)
+				const chapterData: ChapterWithExpand | undefined = block.expand?.chapter ?? await creatorChapterService.getChapter(block.chapter, true)
 
-				if (!response.ok) {
-					console.error('[SmsChapterEditor] Failed to fetch previous conversation data')
+				if (!chapterData) {
+					console.error('[SmsChapterEditor] Chapter not found')
 					return
 				}
 
-				const result = (await response.json()) as { data: RecoveredConversationData | null }
+				// Get the story
+				const story = chapterData.expand?.story ?? await creatorStoryService.getStory(chapterData.story)
 
-				if (result.data) {
+				if (!story) {
+					console.error('[SmsChapterEditor] Story not found')
+					return
+				}
+
+				// Find previous conversation data
+				const recoveredData = await creatorBlockService.findPreviousConversationData(participants, chapter.id, story.id)
+
+				if (recoveredData) {
 					// Found previous data - pre-fill the fields
-					setRecoveredData(result.data)
+					setRecoveredData(recoveredData)
 
 					// Pre-fill only if current values are empty
-					if (!conversationTitle && result.data.conversationTitle) {
-						setConversationTitle(result.data.conversationTitle)
+					if (!conversationTitle && recoveredData.conversationTitle) {
+						setConversationTitle(recoveredData.conversationTitle)
 					}
 
-					if (!conversationAvatar && result.data.conversationAvatar) {
-						setConversationAvatar(result.data.conversationAvatar)
-						if (result.data.conversationAvatarUrl) {
-							setConversationAvatarUrl(result.data.conversationAvatarUrl)
+					if (!conversationAvatar && recoveredData.conversationAvatar) {
+						setConversationAvatar(recoveredData.conversationAvatar)
+						if (recoveredData.conversationAvatarUrl) {
+							setConversationAvatarUrl(recoveredData.conversationAvatarUrl)
 						}
 					}
 
