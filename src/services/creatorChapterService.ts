@@ -4,12 +4,11 @@
  * Chapters are now simple containers that group blocks
  */
 
-import {pb } from '@/lib/pocketbase'
+import { pb } from '@/lib/pocketbase'
 import type { ChapterWithExpand, CreateChapterData, CreatorChapter, UpdateChapterData } from '../types/creator-stories'
 
 export class CreatorChapterService {
 	private collectionName = 'c_chapters'
-
 
 	/**
 	 * Create a new chapter (container)

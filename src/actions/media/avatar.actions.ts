@@ -7,9 +7,8 @@
 
 import { headers } from 'next/headers'
 import { auth } from 'sms-editor/lib/auth/auth.server'
-import { pb } from 'sms-editor/lib/pocketbase'
 import { sanitizeName } from 'sms-editor/lib/sanitization'
-import { createImageService } from 'sms-editor/services/imageService'
+import { ImageService } from 'sms-editor/services/imageService'
 import { validateAvatarFile, validateMediaFile } from './validation'
 
 // ============================================================================
@@ -70,7 +69,7 @@ export async function uploadCharacterAvatar(formData: FormData): Promise<UploadA
 		const alt = `${sanitizedFirstName} ${sanitizedLastName} avatar`.trim()
 
 		// Upload to PocketBase
-		const imageService = createImageService(pb)
+		const imageService = new ImageService()
 		const record = await imageService.uploadImage(file, alt)
 		const url = imageService.getImageUrl(record, '300x300')
 
@@ -118,7 +117,7 @@ export async function uploadMessageMedia(formData: FormData): Promise<UploadAvat
 		const alt = `Message ${sanitizedMediaType}`
 
 		// Upload to PocketBase
-		const imageService = createImageService(pb)
+		const imageService = new ImageService()
 		const record = await imageService.uploadImage(file, alt)
 		const url = imageService.getImageUrl(record)
 

@@ -3,7 +3,7 @@
  * Handles image and video uploads with validation
  */
 
-import { getPocketBase } from '../lib/pb-context'
+import { pb } from '@/lib/pocketbase'
 
 // ============================================================================
 // TYPES
@@ -62,10 +62,6 @@ const MAX_AVATAR_SIZE = 5 * 1024 * 1024 // 5MB
 // ============================================================================
 
 export class MediaService {
-	private get pb() {
-		return getPocketBase()
-	}
-
 	/**
 	 * Validate file type and size for general media
 	 */
@@ -141,7 +137,7 @@ export class MediaService {
 			}
 
 			// Upload to PocketBase
-			const record = await this.pb.collection('images').create<ImageRecord>(formData)
+			const record = await pb.collection('images').create<ImageRecord>(formData)
 
 			// Get URL
 			const url = this.getImageUrl(record)
@@ -190,7 +186,7 @@ export class MediaService {
 			}
 
 			// Upload to PocketBase
-			const record = await this.pb.collection('images').create<ImageRecord>(formData)
+			const record = await pb.collection('images').create<ImageRecord>(formData)
 
 			// Get URL with thumbnail (300x300 for avatars)
 			const url = this.getImageUrl(record, '300x300')
@@ -216,7 +212,7 @@ export class MediaService {
 	 * Get image URL with optional thumbnail size
 	 */
 	getImageUrl(record: ImageRecord, thumb?: string): string {
-		const url = this.pb.files.getURL(record, record.image, { thumb })
+		const url = pb.files.getURL(record, record.image, { thumb })
 		return url
 	}
 
@@ -225,7 +221,7 @@ export class MediaService {
 	 */
 	async deleteMedia(recordId: string): Promise<boolean> {
 		try {
-			await this.pb.collection('images').delete(recordId)
+			await pb.collection('images').delete(recordId)
 			return true
 		} catch (error) {
 			console.error('Failed to delete media:', error)
@@ -238,7 +234,7 @@ export class MediaService {
 	 */
 	async getMedia(recordId: string): Promise<ImageRecord | null> {
 		try {
-			const record = await this.pb.collection('images').getOne<ImageRecord>(recordId)
+			const record = await pb.collection('images').getOne<ImageRecord>(recordId)
 			return record
 		} catch (error) {
 			console.error('Failed to get media:', error)

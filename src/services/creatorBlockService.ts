@@ -3,7 +3,7 @@
  * Handles CRUD operations for the c_blocks collection
  */
 
-import { getPocketBase } from '../lib/pb-context'
+import { pb } from '@/lib/pocketbase'
 import type {
 	BlockWithExpand,
 	CreateBlockData,
@@ -20,15 +20,12 @@ import { getParticipantGroupKey } from '../types/creator-stories'
 
 export class CreatorBlockService {
 	private collectionName = 'c_blocks'
-	private get pb() {
-		return getPocketBase()
-	}
 
 	/**
 	 * Create a new block
 	 */
 	async createBlock(data: CreateBlockData): Promise<CreatorBlock> {
-		const record = await this.pb.collection(this.collectionName).create<CreatorBlock>({
+		const record = await pb.collection(this.collectionName).create<CreatorBlock>({
 			chapter: data.chapter,
 			type: data.type,
 			order: data.order,
@@ -62,7 +59,7 @@ export class CreatorBlockService {
 		if (data.appTarget !== undefined) updateData.appTarget = data.appTarget || null
 		if (data.media !== undefined) updateData.media = data.media || null
 
-		const record = await this.pb.collection(this.collectionName).update<CreatorBlock>(id, updateData)
+		const record = await pb.collection(this.collectionName).update<CreatorBlock>(id, updateData)
 
 		return record
 	}
@@ -74,7 +71,7 @@ export class CreatorBlockService {
 		// Always expand conversationAvatar and media, optionally expand chapter
 		const expandParam = expand ? 'chapter,conversationAvatar,media' : 'conversationAvatar,media'
 
-		const record = await this.pb.collection(this.collectionName).getOne<BlockWithExpand>(id, {
+		const record = await pb.collection(this.collectionName).getOne<BlockWithExpand>(id, {
 			expand: expandParam,
 		})
 
@@ -85,7 +82,7 @@ export class CreatorBlockService {
 	 * Get all blocks for a chapter
 	 */
 	async getChapterBlocks(chapterId: string): Promise<CreatorBlock[]> {
-		const records = await this.pb.collection(this.collectionName).getFullList<CreatorBlock>({
+		const records = await pb.collection(this.collectionName).getFullList<CreatorBlock>({
 			filter: `chapter="${chapterId}"`,
 			sort: 'order',
 			expand: 'conversationAvatar,media', // Load conversation avatar and media images
@@ -98,7 +95,7 @@ export class CreatorBlockService {
 	 * Delete a block
 	 */
 	async deleteBlock(id: string): Promise<boolean> {
-		await this.pb.collection(this.collectionName).delete(id)
+		await pb.collection(this.collectionName).delete(id)
 		return true
 	}
 
@@ -288,7 +285,7 @@ export class CreatorBlockService {
 
 			// Get all SMS blocks from this story, excluding current block
 			// We need to fetch all blocks because PocketBase doesn't support JSON array matching in filters
-			const allBlocks = await this.pb.collection(this.collectionName).getFullList<BlockWithExpand>({
+			const allBlocks = await pb.collection(this.collectionName).getFullList<BlockWithExpand>({
 				filter: `type="sms_conversation" && chapter.story="${storyId}" && id!="${currentBlockId}"`,
 				sort: '-updated', // Most recent first
 				expand: 'conversationAvatar,chapter',
@@ -381,7 +378,7 @@ export class CreatorBlockService {
 	 * Get block count for a chapter
 	 */
 	async getBlockCount(chapterId: string): Promise<number> {
-		const result = await this.pb.collection(this.collectionName).getList(1, 1, {
+		const result = await pb.collection(this.collectionName).getList(1, 1, {
 			filter: `chapter="${chapterId}"`,
 		})
 

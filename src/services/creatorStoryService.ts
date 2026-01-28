@@ -416,6 +416,34 @@ export class CreatorStoryService {
 			filter: 'isPublished=true',
 		})
 	}
+
+	/**
+	 * Get categories with their story counts
+	 */
+	async getCategoriesWithCounts(): Promise<{ name: string; count: number }[]> {
+		try {
+			const records = await pb.collection(this.collectionName).getList(1, 1000, {
+				filter: 'isPublished=true',
+				fields: 'categories',
+			})
+
+			const categoryCount: Record<string, number> = {}
+			records.items.forEach(record => {
+				if (Array.isArray(record.categories)) {
+					record.categories.forEach((cat: string) => {
+						categoryCount[cat] = (categoryCount[cat] || 0) + 1
+					})
+				}
+			})
+
+			return Object.entries(categoryCount)
+				.map(([name, count]) => ({ name, count }))
+				.sort((a, b) => b.count - a.count)
+		} catch (error) {
+			console.error('Failed to load categories with counts:', error)
+			return []
+		}
+	}
 }
 
 // Export a singleton instance

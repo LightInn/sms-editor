@@ -7,9 +7,9 @@
 
 import { headers } from 'next/headers'
 import { auth } from 'sms-editor/lib/auth/auth.server'
-import { pb } from 'sms-editor/lib/pocketbase'
 import { checkRateLimit } from 'sms-editor/lib/rate-limit'
-import { createImageService } from 'sms-editor/services/imageService'
+import { ImageService } from 'sms-editor/services/imageService'
+import { pb } from '@/lib/pocketbase'
 import { validateMediaFile } from './validation'
 
 // ============================================================================
@@ -111,7 +111,7 @@ export async function uploadMediaAction(formData: FormData): Promise<UploadMedia
 		}
 
 		// Upload to PocketBase
-		const imageService = createImageService(pb)
+		const imageService = new ImageService()
 		const record = await imageService.uploadImage(file, alt || file.name)
 		const url = imageService.getImageUrl(record)
 
@@ -149,7 +149,8 @@ export async function deleteMediaAction(recordId: string): Promise<UploadMediaRe
 		}
 
 		// Delete from PocketBase
-		const imageService = createImageService(pb)
+		const imageService = new ImageService()
+
 		await imageService.deleteImage(recordId)
 
 		return { success: true }

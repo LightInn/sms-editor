@@ -3,13 +3,12 @@
  * Integrates PocketBase ImageService with Tiptap editor
  */
 
-import type PocketBase from 'pocketbase'
-import { createImageService } from '../services/imageService'
+import { ImageService } from '../services/imageService'
 
 /**
  * Upload an image file and return the URL for Tiptap
  */
-export async function uploadImageForTiptap(pb: PocketBase, file: File): Promise<{ url: string; alt: string }> {
+export async function uploadImageForTiptap(file: File): Promise<{ url: string; alt: string }> {
 	try {
 		// Validate file type
 		const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -24,8 +23,7 @@ export async function uploadImageForTiptap(pb: PocketBase, file: File): Promise<
 		}
 
 		// Create image service instance
-		// @ts-expect-error - PocketBase version mismatch between parent and submodule
-		const imageService = createImageService(pb)
+		const imageService = new ImageService()
 
 		// Upload the image
 		const record = await imageService.uploadImage(file, file.name)
@@ -46,11 +44,8 @@ export async function uploadImageForTiptap(pb: PocketBase, file: File): Promise<
 /**
  * Handle multiple files upload
  */
-export async function uploadImagesForTiptap(
-	pb: PocketBase,
-	files: File[]
-): Promise<Array<{ url: string; alt: string }>> {
-	const uploadPromises = files.map(file => uploadImageForTiptap(pb, file))
+export async function uploadImagesForTiptap(files: File[]): Promise<Array<{ url: string; alt: string }>> {
+	const uploadPromises = files.map(file => uploadImageForTiptap(file))
 	return await Promise.all(uploadPromises)
 }
 
