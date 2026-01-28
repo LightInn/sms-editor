@@ -11,7 +11,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useManualSave } from 'sms-editor/hooks/use-manual-save'
 import { cn } from 'sms-editor/lib/utils'
-import { creatorBlockService, creatorChapterService, creatorStoryService } from '../../services'
 import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -29,11 +28,12 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { uploadCharacterAvatar } from '../../actions/media'
+import { creatorBlockService, creatorChapterService, creatorStoryService } from '../../services'
 import type {
 	AppTarget,
 	BlockWithExpand,
-	Character,
 	ChapterWithExpand,
+	Character,
 	ConversationType,
 	CreatorBlock,
 	Message,
@@ -142,7 +142,8 @@ export function SmsChapterEditor({
 			try {
 				// Get the block with chapter expand
 				const block = await creatorBlockService.getBlock(chapter.id, true)
-				const chapterData: ChapterWithExpand | undefined = block.expand?.chapter ?? await creatorChapterService.getChapter(block.chapter, true)
+				const chapterData: ChapterWithExpand | undefined =
+					block.expand?.chapter ?? (await creatorChapterService.getChapter(block.chapter, true))
 
 				if (!chapterData) {
 					console.error('[SmsChapterEditor] Chapter not found')
@@ -150,7 +151,7 @@ export function SmsChapterEditor({
 				}
 
 				// Get the story
-				const story = chapterData.expand?.story ?? await creatorStoryService.getStory(chapterData.story)
+				const story = chapterData.expand?.story ?? (await creatorStoryService.getStory(chapterData.story))
 
 				if (!story) {
 					console.error('[SmsChapterEditor] Story not found')

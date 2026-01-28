@@ -13,7 +13,6 @@ import type {
 	BlockType,
 	ChapterWithExpand,
 	CreatorBlock,
-	CreatorChapter,
 	CreatorStory,
 	MediaContent,
 	RichTextContent,
