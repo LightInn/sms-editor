@@ -9,11 +9,11 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from '@smseditor/components/ui/alert-dialog'
-import { Button } from '@smseditor/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@smseditor/components/ui/card'
-import { Input } from '@smseditor/components/ui/input'
-import { Label } from '@smseditor/components/ui/label'
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { useAutosave } from '@smseditor/hooks/use-autosave'
 import { formatSaveTime, getSaveStatusColorClass } from '@smseditor/lib/format-save-time'
 import { cn } from '@smseditor/lib/utils'

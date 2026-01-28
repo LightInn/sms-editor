@@ -6,8 +6,8 @@
 'use client'
 
 import { uploadAvatarAction } from '@smseditor/actions/mediaActions'
-import { Button } from '@smseditor/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@smseditor/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
 	Dialog,
 	DialogContent,
@@ -15,9 +15,9 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '@smseditor/components/ui/dialog'
-import { Input } from '@smseditor/components/ui/input'
-import { Label } from '@smseditor/components/ui/label'
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { sanitizeName } from '@smseditor/lib/sanitization'
 import { cn } from '@smseditor/lib/utils'
 import { Edit2, Loader2, Plus, Trash2, Upload, User, X } from 'lucide-react'

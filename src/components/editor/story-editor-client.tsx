@@ -8,8 +8,8 @@
 import { closestCenter, DndContext } from '@dnd-kit/core'
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Badge } from '@smseditor/components/ui/badge'
-import { Button } from '@smseditor/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
 	Dialog,
 	DialogContent,
@@ -17,17 +17,17 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '@smseditor/components/ui/dialog'
+} from '@/components/ui/dialog'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from '@smseditor/components/ui/dropdown-menu'
-import { Input } from '@smseditor/components/ui/input'
-import { Label } from '@smseditor/components/ui/label'
-import { ScrollArea } from '@smseditor/components/ui/scroll-area'
-import { Sheet, SheetContent, SheetTrigger } from '@smseditor/components/ui/sheet'
+} from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { useEditorDragDrop } from '@smseditor/hooks/use-editor-drag-drop'
 import { useEditorNavigation } from '@smseditor/hooks/use-editor-navigation'
 import { useEditorSaveState } from '@smseditor/hooks/use-editor-save-state'

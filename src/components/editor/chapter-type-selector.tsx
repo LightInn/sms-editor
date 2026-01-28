@@ -5,7 +5,7 @@
 
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@smseditor/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FileText, Image, MessageSquare } from 'lucide-react'
 import type { ChapterType } from '../../types/creator-stories'
 

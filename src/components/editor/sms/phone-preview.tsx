@@ -5,9 +5,9 @@
 
 'use client'
 
-import { CharacterAvatar } from '@smseditor/components/ui/character-avatar'
-import { GroupAvatar } from '@smseditor/components/ui/group-avatar'
-import { ScrollArea } from '@smseditor/components/ui/scroll-area'
+import { CharacterAvatar } from '@/components/ui/character-avatar'
+import { GroupAvatar } from '@/components/ui/group-avatar'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { normalizePocketBaseDate } from '@smseditor/lib/date-utils'
 import { cn } from '@smseditor/lib/utils'
 import { BatteryIcon, SignalIcon, WifiIcon } from 'lucide-react'

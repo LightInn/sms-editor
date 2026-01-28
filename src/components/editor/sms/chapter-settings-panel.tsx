@@ -5,12 +5,12 @@
 
 'use client'
 
-import { Button } from '@smseditor/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@smseditor/components/ui/card'
-import { Input } from '@smseditor/components/ui/input'
-import { Label } from '@smseditor/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@smseditor/components/ui/select'
-import { Separator } from '@smseditor/components/ui/separator'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
 import {
 	Sheet,
 	SheetContent,
@@ -18,8 +18,8 @@ import {
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
-} from '@smseditor/components/ui/sheet'
-import { Switch } from '@smseditor/components/ui/switch'
+} from '@/components/ui/sheet'
+import { Switch } from '@/components/ui/switch'
 import { Settings2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'

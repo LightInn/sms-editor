@@ -6,9 +6,9 @@
 
 'use client'
 
-import { Button } from '@smseditor/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@smseditor/components/ui/card'
-import { DateTimePicker } from '@smseditor/components/ui/date-time-picker'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { DateTimePicker } from '@/components/ui/date-time-picker'
 import {
 	Dialog,
 	DialogContent,
@@ -16,10 +16,10 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '@smseditor/components/ui/dialog'
-import { Input } from '@smseditor/components/ui/input'
-import { Label } from '@smseditor/components/ui/label'
-import { Switch } from '@smseditor/components/ui/switch'
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import { formatRelativeOrAbsolute, isPast } from '@smseditor/lib/date-utils'
 import { pb } from '@smseditor/lib/pocketbase'
 import { cn } from '@smseditor/lib/utils'

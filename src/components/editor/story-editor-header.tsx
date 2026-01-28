@@ -6,8 +6,8 @@
 'use client'
 
 import { getExportPreviewAction } from '@smseditor/actions/exportActions'
-import { Badge } from '@smseditor/components/ui/badge'
-import { Button } from '@smseditor/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import type { GlobalSaveState } from '@smseditor/hooks/use-save-tracking'
 import { useStoryEditorState } from '@smseditor/hooks/use-story-editor-state'
 import { formatShortRelative, isFuture, isPast } from '@smseditor/lib/date-utils'

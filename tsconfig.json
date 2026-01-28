@@ -10,7 +10,7 @@
 		"paths": {
 			"@/*": ["../src/*"],
 			"@smseditor/*": ["./src/*"],
-			"@smseditor/components/ui/*": ["../src/components/ui/*"],
+			"@/components/ui/*": ["../src/components/ui/*"],
 		},
 
 		"target": "ES2017",

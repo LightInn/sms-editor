@@ -14,11 +14,11 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from '@smseditor/components/ui/alert-dialog'
-import { Button } from '@smseditor/components/ui/button'
-import { Card, CardContent } from '@smseditor/components/ui/card'
-import { Input } from '@smseditor/components/ui/input'
-import { Label } from '@smseditor/components/ui/label'
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { useManualSave } from '@smseditor/hooks/use-manual-save'
 import { cn } from '@smseditor/lib/utils'
 import { Info, Loader2, Settings, Trash2, Upload, X } from 'lucide-react'

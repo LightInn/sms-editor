@@ -6,8 +6,8 @@
 'use client'
 
 import { uploadMediaAction } from '@smseditor/actions/mediaActions'
-import { Button } from '@smseditor/components/ui/button'
-import { CharacterAvatar } from '@smseditor/components/ui/character-avatar'
+import { Button } from '@/components/ui/button'
+import { CharacterAvatar } from '@/components/ui/character-avatar'
 import { cn } from '@smseditor/lib/utils'
 import { Check, Loader2, Plus, X } from 'lucide-react'
 import Image from 'next/image'

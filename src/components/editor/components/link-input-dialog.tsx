@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@smseditor/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
 	Dialog,
 	DialogContent,
@@ -8,9 +8,9 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '@smseditor/components/ui/dialog'
-import { Input } from '@smseditor/components/ui/input'
-import { Label } from '@smseditor/components/ui/label'
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Link2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 

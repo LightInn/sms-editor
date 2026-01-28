@@ -5,15 +5,15 @@
 
 'use client'
 
-import { Button } from '@smseditor/components/ui/button'
-import { CharacterAvatar } from '@smseditor/components/ui/character-avatar'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@smseditor/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { CharacterAvatar } from '@/components/ui/character-avatar'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from '@smseditor/components/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu'
 import { cn } from '@smseditor/lib/utils'
 import { Image as ImageIcon, MoreVertical, Play, Trash2 } from 'lucide-react'
 import Image from 'next/image'
