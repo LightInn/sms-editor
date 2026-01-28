@@ -3,7 +3,7 @@
  * Centralized save status formatting extracted from editor components
  */
 
-import { formatSaveTime } from '@smseditor/lib/date-utils'
+import { formatSaveTimeDistance } from './date-utils'
 
 // ============================================================================
 // TYPES
@@ -29,7 +29,7 @@ export function getAutosaveStatus(status: SaveStatusInfo): string {
 
 	if (isSaving) return 'Saving...'
 	if (error) return 'Failed to save'
-	if (lastSaved) return `Saved ${formatSaveTime(lastSaved)}`
+	if (lastSaved) return `Saved ${formatSaveTimeDistance(lastSaved)}`
 	return 'Not saved yet'
 }
 

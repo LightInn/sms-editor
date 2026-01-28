@@ -5,8 +5,8 @@
 
 'use server'
 
-import { sanitizeCategories, sanitizeCharacters, sanitizeDescription } from '@smseditor/lib/sanitization'
 import { redirect } from 'next/navigation'
+import { sanitizeCategories, sanitizeCharacters, sanitizeDescription } from 'sms-editor/lib/sanitization'
 import * as v from 'valibot'
 import type { Character, CreatorStory } from '../../types/creator-stories'
 import { getAuthenticatedPB, handleActionError, unauthorizedResult } from '../utils/action-utils'

@@ -3,24 +3,26 @@
 	"version": "1.0.0",
 	"description": "Story editor package for sms-Stories platform",
 	"type": "module",
-	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"files": ["dist"],
+	"main": "./src/index.ts",
+	"types": "./src/index.ts",
+	"files": [
+		"src"
+	],
 	"exports": {
-		".": "./dist/index.js",
-		"./components": "./dist/components/index.js",
-		"./hooks": "./dist/hooks/index.js",
-		"./actions": "./dist/actions/index.js",
-		"./services": "./dist/services/index.js",
-		"./types": "./dist/types/index.js",
-		"./lib": "./dist/lib/index.js",
-		"./constants": "./dist/constants/index.js",
-		"./styles": "./dist/styles/index.js"
+		".": "./src/index.ts",
+		"./components": "./src/components/index.ts",
+		"./hooks": "./src/hooks/index.ts",
+		"./actions": "./src/actions/index.ts",
+		"./services": "./src/services/index.ts",
+		"./types": "./src/types/index.ts",
+		"./lib": "./src/lib/index.ts",
+		"./constants": "./src/constants/index.ts",
+		"./styles": "./src/styles/index.ts"
 	},
 	"scripts": {
 		"check": "tsc --noEmit",
 		"build": "tsc",
-        "dev": "tsc -w"
+		"dev": "tsc -w"
 	},
 	"dependencies": {
 		"@dnd-kit/core": "6.3.1",

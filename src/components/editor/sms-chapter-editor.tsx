@@ -5,6 +5,14 @@
 
 'use client'
 
+import { Info, Loader2, Settings, Trash2, Upload, X } from 'lucide-react'
+import Image from 'next/image'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { useManualSave } from 'sms-editor/hooks/use-manual-save'
+import { cn } from 'sms-editor/lib/utils'
+import { toast } from 'sonner'
+import { v4 as uuidv4 } from 'uuid'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -19,14 +27,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useManualSave } from '@smseditor/hooks/use-manual-save'
-import { cn } from '@smseditor/lib/utils'
-import { Info, Loader2, Settings, Trash2, Upload, X } from 'lucide-react'
-import Image from 'next/image'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { toast } from 'sonner'
-import { v4 as uuidv4 } from 'uuid'
 import { uploadCharacterAvatar } from '../../actions/media'
 import type {
 	AppTarget,

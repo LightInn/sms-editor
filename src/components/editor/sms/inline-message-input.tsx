@@ -5,14 +5,14 @@
 
 'use client'
 
-import { uploadMediaAction } from '@smseditor/actions/mediaActions'
-import { Button } from '@/components/ui/button'
-import { CharacterAvatar } from '@/components/ui/character-avatar'
-import { cn } from '@smseditor/lib/utils'
 import { Check, Loader2, Plus, X } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
+import { uploadMediaAction } from 'sms-editor/actions/mediaActions'
+import { cn } from 'sms-editor/lib/utils'
 import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
+import { CharacterAvatar } from '@/components/ui/character-avatar'
 import type { Character, MessageType, Participant } from '../../../types/creator-stories'
 
 export interface InlineMessageInputProps {

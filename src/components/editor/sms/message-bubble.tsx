@@ -5,19 +5,14 @@
 
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { CharacterAvatar } from '@/components/ui/character-avatar'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { cn } from '@smseditor/lib/utils'
 import { Image as ImageIcon, MoreVertical, Play, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
+import { cn } from 'sms-editor/lib/utils'
+import { Button } from '@/components/ui/button'
+import { CharacterAvatar } from '@/components/ui/character-avatar'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import type { Message } from '../../../types/creator-stories'
 
 export interface MessageBubbleProps {

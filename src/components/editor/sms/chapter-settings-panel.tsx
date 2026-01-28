@@ -5,24 +5,17 @@
 
 'use client'
 
+import { Settings2 } from 'lucide-react'
+import Image from 'next/image'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Switch } from '@/components/ui/switch'
-import { Settings2 } from 'lucide-react'
-import Image from 'next/image'
-import { useState } from 'react'
 import type { AppTarget, Character, ConversationType, Participant } from '../../../types/creator-stories'
 import { appTargets } from '../../../types/creator-stories'
 

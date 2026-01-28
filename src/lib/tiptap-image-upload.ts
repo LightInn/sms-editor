@@ -3,8 +3,8 @@
  * Integrates PocketBase ImageService with Tiptap editor
  */
 
-import { createImageService } from '@smseditor/services/imageService'
 import type PocketBase from 'pocketbase'
+import { createImageService } from '../services/imageService'
 
 /**
  * Upload an image file and return the URL for Tiptap
@@ -24,6 +24,7 @@ export async function uploadImageForTiptap(pb: PocketBase, file: File): Promise<
 		}
 
 		// Create image service instance
+		// @ts-expect-error - PocketBase version mismatch between parent and submodule
 		const imageService = createImageService(pb)
 
 		// Upload the image

@@ -5,6 +5,12 @@
 
 'use client'
 
+import { Calendar, Info } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { type ChapterStatus, getChapterStatus, getStatusFromState } from 'sms-editor/lib/chapter-utils'
+import { formatRelativeOrAbsolute, getUserTimezone, isPast } from 'sms-editor/lib/date-utils'
+import { cn } from 'sms-editor/lib/utils'
+import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -20,12 +26,6 @@ import {
 import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Switch } from '@/components/ui/switch'
-import { type ChapterStatus, getChapterStatus, getStatusFromState } from '@smseditor/lib/chapter-utils'
-import { formatRelativeOrAbsolute, getUserTimezone, isPast } from '@smseditor/lib/date-utils'
-import { cn } from '@smseditor/lib/utils'
-import { Calendar, Info } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
 import { batchUpdateChaptersProgrammedAction } from '../../actions/chapter'
 import type { CreatorChapter, CreatorStory } from '../../types/creator-stories'
 

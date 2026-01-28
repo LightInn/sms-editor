@@ -5,11 +5,11 @@
 
 'use server'
 
-import { auth } from '@smseditor/lib/auth/auth.server'
-import { pb } from '@smseditor/lib/pocketbase'
-import { checkRateLimit } from '@smseditor/lib/rate-limit'
-import { createImageService } from '@smseditor/services/imageService'
 import { headers } from 'next/headers'
+import { auth } from 'sms-editor/lib/auth/auth.server'
+import { pb } from 'sms-editor/lib/pocketbase'
+import { checkRateLimit } from 'sms-editor/lib/rate-limit'
+import { createImageService } from 'sms-editor/services/imageService'
 import { validateMediaFile } from './validation'
 
 // ============================================================================
@@ -66,7 +66,7 @@ async function checkUserTrustLevel(userId: string): Promise<boolean> {
  * Check upload rate limits
  */
 function checkUploadLimits(userId: string): { allowed: boolean; error?: string } {
-	return checkRateLimit(userId, 'mediaUpload')
+	return checkRateLimit(userId)
 }
 
 // ============================================================================

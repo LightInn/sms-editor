@@ -5,6 +5,8 @@
 
 'use client'
 
+import { Image, Send, Video } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
 	Dialog,
@@ -18,8 +20,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { Image, Send, Video } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import type { Character, Message, MessageType, Participant } from '../../../types/creator-stories'
 import { getCharacterById } from '../../../types/creator-stories'
 

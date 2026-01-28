@@ -1,10 +1,10 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import type { Editor } from '@tiptap/react'
 import { List, ListOrdered, Plus, Quote } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 
 interface EditorFloatingMenuProps {
 	editor: Editor

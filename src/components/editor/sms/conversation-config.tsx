@@ -5,12 +5,12 @@
 
 'use client'
 
+import { Calendar } from 'lucide-react'
+import Image from 'next/image'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Calendar } from 'lucide-react'
-import Image from 'next/image'
 import type { AppTarget, Character, ConversationType, Participant } from '../../../types/creator-stories'
 import { appTargets } from '../../../types/creator-stories'
 

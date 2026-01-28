@@ -5,6 +5,8 @@
 
 'use client'
 
+import { Info } from 'lucide-react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
 	Dialog,
@@ -14,8 +16,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog'
-import { Info } from 'lucide-react'
-import { useState } from 'react'
 
 export function EditorTutorialDialog() {
 	const [open, setOpen] = useState(false)

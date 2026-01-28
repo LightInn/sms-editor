@@ -270,7 +270,7 @@ export function timeAgo(dateString: string): string {
  * Format save time for autosave indicators
  * Uses date-fns formatDistanceToNow
  */
-export function formatSaveTime(lastSaved: Date | number | string): string {
+export function formatSaveTimeDistance(lastSaved: Date | number | string): string {
 	const date = typeof lastSaved === 'string' ? new Date(lastSaved) : lastSaved
 	return formatDistanceToNow(date, { addSuffix: true })
 }

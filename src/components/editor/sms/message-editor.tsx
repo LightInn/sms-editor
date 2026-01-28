@@ -5,13 +5,13 @@
 
 'use client'
 
+import { ArrowLeft, Image, Paperclip, Send, Video } from 'lucide-react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { ArrowLeft, Image, Paperclip, Send, Video } from 'lucide-react'
-import { useState } from 'react'
 import type { Character, Message, MessageType, Participant } from '../../../types/creator-stories'
 import { getParticipantName } from '../../../types/creator-stories'
 

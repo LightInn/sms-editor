@@ -5,11 +5,11 @@
 
 'use server'
 
-import { auth } from '@smseditor/lib/auth/auth.server'
-import { pb } from '@smseditor/lib/pocketbase'
-import { sanitizeName } from '@smseditor/lib/sanitization'
-import { createImageService } from '@smseditor/services/imageService'
 import { headers } from 'next/headers'
+import { auth } from 'sms-editor/lib/auth/auth.server'
+import { pb } from 'sms-editor/lib/pocketbase'
+import { sanitizeName } from 'sms-editor/lib/sanitization'
+import { createImageService } from 'sms-editor/services/imageService'
 import { validateAvatarFile, validateMediaFile } from './validation'
 
 // ============================================================================

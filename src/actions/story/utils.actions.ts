@@ -5,7 +5,7 @@
 
 'use server'
 
-import { sanitizeSlug } from '@smseditor/lib/sanitization'
+import { sanitizeSlug } from 'sms-editor/lib/sanitization'
 import { getAuthenticatedPB } from '../utils/action-utils'
 
 // ============================================================================

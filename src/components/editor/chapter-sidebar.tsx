@@ -22,18 +22,13 @@ import {
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { FolderOpen, GripVertical, MoreVertical, Plus, Settings, Trash2 } from 'lucide-react'
+import { cn } from 'sms-editor/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Sidebar, SidebarBody } from '@/components/ui/sidebar'
-import { cn } from '@smseditor/lib/utils'
-import { FolderOpen, GripVertical, MoreVertical, Plus, Settings, Trash2 } from 'lucide-react'
 import type { CreatorChapter } from '../../types/creator-stories'
 
 export interface ChapterSidebarProps {

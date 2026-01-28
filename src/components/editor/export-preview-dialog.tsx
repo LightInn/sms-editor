@@ -5,16 +5,16 @@
 
 'use client'
 
-import { getExportPreviewAction } from '@smseditor/actions/exportActions'
+import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
+import Image from 'next/image'
+import { useCallback, useEffect, useState } from 'react'
+import { getExportPreviewAction } from 'sms-editor/actions/exportActions'
+import { cn } from 'sms-editor/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { TypewriterLoader } from '@/components/ui/typewriter-loader'
-import { cn } from '@smseditor/lib/utils'
-import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
-import Image from 'next/image'
-import { useCallback, useEffect, useState } from 'react'
 import type { ExportPreviewData } from '../../services'
 
 type ExportPreviewResponse = ExportPreviewData

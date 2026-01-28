@@ -1,5 +1,11 @@
 'use client'
 
+import { Settings, Trash2 } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useAutosave } from 'sms-editor/hooks/use-autosave'
+import { formatSaveTime, getSaveStatusColorClass } from 'sms-editor/lib/format-save-time'
+import { cn } from 'sms-editor/lib/utils'
+import { toast } from 'sonner'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -14,12 +20,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useAutosave } from '@smseditor/hooks/use-autosave'
-import { formatSaveTime, getSaveStatusColorClass } from '@smseditor/lib/format-save-time'
-import { cn } from '@smseditor/lib/utils'
-import { Settings, Trash2 } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { toast } from 'sonner'
 import type { CreatorBlock, MediaContent } from '../../types/creator-stories'
 import { MediaUpload } from './media-upload'
 
