@@ -17,7 +17,8 @@
 		"./types": "./src/types/index.ts",
 		"./lib": "./src/lib/index.ts",
 		"./constants": "./src/constants/index.ts",
-		"./styles": "./src/styles/index.ts"
+		"./styles": "./src/styles/index.ts",
+		"./components/editor/tiptap-advanced.css": "./src/components/editor/tiptap-advanced.css"
 	},
 	"scripts": {
 		"check": "tsc --noEmit",

@@ -8,15 +8,7 @@
 import { creatorBlockService } from '../services/creatorBlockService'
 import { creatorChapterService } from '../services/creatorChapterService'
 import { creatorStoryService } from '../services/creatorStoryService'
-import type {
-	BlockWithExpand,
-	ChapterWithExpand,
-	CreateBlockData,
-	CreateChapterData,
-	Participant,
-	StoryWithExpand,
-	UpdateBlockData,
-} from '../types/creator-stories'
+import type { CreateBlockData, CreateChapterData, Participant, UpdateBlockData } from '../types/creator-stories'
 
 // ============================================================================
 // BLOCK ACTIONS
