@@ -1,0 +1,334 @@
+/**
+ * Character Editor Component
+ * Allows adding, editing, and removing characters from a story
+ */
+
+'use client'
+
+import { Edit2, Loader2, Plus, Trash2, Upload, User, X } from 'lucide-react'
+import Image from 'next/image'
+import { useCallback, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import type { Character } from 'sms-editor/types/creator-stories'
+import { toast } from 'sonner'
+import { v4 as uuidv4 } from 'uuid'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { sanitizeName } from '@/lib/sanitization'
+import { cn } from '@/lib/utils'
+
+export interface CharacterEditorProps {
+	characters: Character[]
+	onChange: (characters: Character[]) => void
+}
+
+export function CharacterEditor({ characters, onChange }: CharacterEditorProps) {
+	const [isDialogOpen, setIsDialogOpen] = useState(false)
+	const [editingCharacter, setEditingCharacter] = useState<Character | null>(null)
+	const [formData, setFormData] = useState({
+		firstName: '',
+		lastName: '',
+		avatar: null as string | null,
+	})
+	const [isUploading, setIsUploading] = useState(false)
+
+	const handleOpenDialog = (character?: Character) => {
+		if (character) {
+			setEditingCharacter(character)
+			setFormData({
+				firstName: character.firstName,
+				lastName: character.lastName,
+				avatar: character.avatar,
+			})
+		} else {
+			setEditingCharacter(null)
+			setFormData({ firstName: '', lastName: '', avatar: null })
+		}
+		setIsDialogOpen(true)
+	}
+
+	const handleCloseDialog = () => {
+		setIsDialogOpen(false)
+		setEditingCharacter(null)
+		setFormData({ firstName: '', lastName: '', avatar: null })
+		setIsUploading(false)
+	}
+
+	const onDrop = useCallback(
+		async (acceptedFiles: File[]) => {
+			const file = acceptedFiles[0]
+			if (!file) return
+
+			// Check file size (max 5MB)
+			if (file.size > 5 * 1024 * 1024) {
+				toast.error('Avatar must be less than 5MB')
+				return
+			}
+
+			setIsUploading(true)
+
+			try {
+				// Create FormData for API upload
+				const uploadFormData = new FormData()
+				uploadFormData.append('file', file)
+				uploadFormData.append('firstName', formData.firstName)
+				uploadFormData.append('lastName', formData.lastName)
+
+				// Upload via API route (no body size limit issue)
+				const response = await fetch('/api/media/avatar', {
+					method: 'POST',
+					body: uploadFormData,
+				})
+
+				const result = await response.json()
+
+				if (result.success && result.url) {
+					setFormData({ ...formData, avatar: result.url })
+					toast.success('Avatar uploaded successfully!')
+				} else {
+					toast.error(result.error || 'Failed to upload avatar')
+				}
+			} catch (error) {
+				console.error('Failed to upload avatar:', error)
+				toast.error('Failed to upload avatar. Please try again.')
+			} finally {
+				setIsUploading(false)
+			}
+		},
+		[formData]
+	)
+
+	const { getRootProps, getInputProps, isDragActive } = useDropzone({
+		onDrop,
+		accept: {
+			'image/*': ['.jpeg', '.jpg', '.png', '.webp', '.gif'],
+		},
+		maxFiles: 1,
+		maxSize: 5 * 1024 * 1024, // 5MB
+		disabled: isUploading,
+	})
+
+	const handleSave = () => {
+		// Sanitize names
+		const sanitizedFirstName = sanitizeName(formData.firstName)
+		const sanitizedLastName = sanitizeName(formData.lastName)
+
+		// Validate
+		if (!sanitizedFirstName || sanitizedFirstName.length < 2 || sanitizedFirstName.length > 100) {
+			toast.error('First name must be between 2 and 100 characters')
+			return
+		}
+
+		if (!sanitizedLastName || sanitizedLastName.length < 2 || sanitizedLastName.length > 100) {
+			toast.error('Last name must be between 2 and 100 characters')
+			return
+		}
+
+		// Limit number of characters
+		if (!editingCharacter && characters.length >= 50) {
+			toast.error('Maximum 50 characters per story')
+			return
+		}
+
+		if (editingCharacter) {
+			// Update existing character
+			const updated = characters.map(char =>
+				char.id === editingCharacter.id
+					? {
+							...char,
+							firstName: sanitizedFirstName,
+							lastName: sanitizedLastName,
+							avatar: formData.avatar,
+						}
+					: char
+			)
+			onChange(updated)
+		} else {
+			// Add new character
+			const newCharacter: Character = {
+				id: uuidv4(),
+				firstName: sanitizedFirstName,
+				lastName: sanitizedLastName,
+				avatar: formData.avatar,
+			}
+			onChange([...characters, newCharacter])
+		}
+
+		handleCloseDialog()
+	}
+
+	const handleDelete = (id: string) => {
+		onChange(characters.filter(char => char.id !== id))
+	}
+
+	const handleRemoveAvatar = () => {
+		setFormData({ ...formData, avatar: null })
+	}
+
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle className="text-lg">Characters</CardTitle>
+				<CardDescription>Add the characters in your story</CardDescription>
+			</CardHeader>
+			<CardContent className="space-y-4">
+				{/* Character List */}
+				{characters.length > 0 && (
+					<div className="space-y-2">
+						{characters.map(character => (
+							<div key={character.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+								<div className="flex items-center gap-3">
+									<div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden shrink-0 relative">
+										{character.avatar ? (
+											<Image src={character.avatar} alt={character.firstName} fill className="object-cover" />
+										) : (
+											<User className="h-5 w-5 text-primary" />
+										)}
+									</div>
+									<div>
+										<p className="font-medium text-sm">
+											{character.firstName} {character.lastName}
+										</p>
+									</div>
+								</div>
+								<div className="flex items-center gap-1">
+									<Button type="button" variant="ghost" size="icon" onClick={() => handleOpenDialog(character)}>
+										<Edit2 className="h-4 w-4" />
+									</Button>
+									<Button type="button" variant="ghost" size="icon" onClick={() => handleDelete(character.id)}>
+										<Trash2 className="h-4 w-4 text-destructive" />
+									</Button>
+								</div>
+							</div>
+						))}
+					</div>
+				)}
+
+				{/* Add Character Button */}
+				<Button type="button" variant="outline" className="w-full" onClick={() => handleOpenDialog()}>
+					<Plus className="mr-2 h-4 w-4" />
+					Add Character
+				</Button>
+
+				{/* Character Dialog */}
+				<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+					<DialogContent className="max-w-lg">
+						<DialogHeader>
+							<DialogTitle>{editingCharacter ? 'Edit Character' : 'Add Character'}</DialogTitle>
+							<DialogDescription>
+								{editingCharacter ? 'Update the character details' : 'Add a new character to your story'}
+							</DialogDescription>
+						</DialogHeader>
+
+						<div className="space-y-4 py-4">
+							{/* Names */}
+							<div className="grid grid-cols-2 gap-4">
+								<div className="space-y-2">
+									<Label htmlFor="firstName" className="text-sm text-muted-foreground">
+										First Name *
+									</Label>
+									<Input
+										id="firstName"
+										className="bg-transparent border px-3 py-2 text-sm"
+										placeholder="Albert"
+										value={formData.firstName}
+										onChange={e => setFormData({ ...formData, firstName: e.target.value })}
+										maxLength={100}
+									/>
+								</div>
+
+								<div className="space-y-2">
+									<Label htmlFor="lastName" className="text-sm text-muted-foreground">
+										Last Name *
+									</Label>
+									<Input
+										id="lastName"
+										className="bg-transparent border px-3 py-2 text-sm"
+										placeholder="Dupont"
+										value={formData.lastName}
+										onChange={e => setFormData({ ...formData, lastName: e.target.value })}
+										maxLength={100}
+									/>
+								</div>
+							</div>
+
+							{/* Avatar Preview */}
+							{formData.avatar && (
+								<div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+									<div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden shrink-0 relative">
+										<Image src={formData.avatar} alt="Avatar preview" fill className="object-cover" />
+									</div>
+									<div className="flex-1">
+										<p className="text-sm font-medium">Avatar Preview</p>
+										<p className="text-xs text-muted-foreground">Uploaded to PocketBase</p>
+									</div>
+									<Button type="button" variant="ghost" size="icon" onClick={handleRemoveAvatar} disabled={isUploading}>
+										<X className="h-4 w-4" />
+									</Button>
+								</div>
+							)}
+
+							{/* Avatar Upload */}
+							<div className="space-y-2">
+								<Label className="text-sm text-muted-foreground">Avatar (Optional)</Label>
+								<div
+									{...getRootProps()}
+									className={cn(
+										'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors',
+										isUploading && 'opacity-50 cursor-not-allowed',
+										isDragActive ? 'border-primary bg-primary/5' : 'border-muted-foreground/25 hover:border-primary'
+									)}
+								>
+									<input {...getInputProps()} />
+									{isUploading ? (
+										<>
+											<Loader2 className="h-8 w-8 mx-auto mb-2 text-primary animate-spin" />
+											<p className="text-sm text-muted-foreground">Uploading avatar...</p>
+										</>
+									) : (
+										<>
+											<Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+											{isDragActive ? (
+												<p className="text-sm text-muted-foreground">Drop the image here...</p>
+											) : (
+												<>
+													<p className="text-sm text-muted-foreground mb-1">
+														Drag & drop an avatar image, or click to select
+													</p>
+													<p className="text-xs text-muted-foreground">Max 5MB • JPG, PNG, WebP, GIF</p>
+												</>
+											)}
+										</>
+									)}
+								</div>
+							</div>
+						</div>
+
+						<DialogFooter>
+							<Button type="button" variant="outline" onClick={handleCloseDialog} disabled={isUploading}>
+								Cancel
+							</Button>
+							<Button
+								type="button"
+								onClick={handleSave}
+								disabled={!formData.firstName.trim() || !formData.lastName.trim() || isUploading}
+							>
+								{editingCharacter ? 'Update' : 'Add'}
+							</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+			</CardContent>
+		</Card>
+	)
+}

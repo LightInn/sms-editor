@@ -7,7 +7,6 @@
 
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { CategoryInput } from '@/components/creator-stories/category-input'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -26,6 +25,7 @@ import { pb } from '@/lib/pocketbase'
 import { updateStoryAction } from '../../actions/story'
 import type { Character, CreatorStory, StoryWithExpand } from '../../types/creator-stories'
 import { generateSlug } from '../../types/creator-stories'
+import { CategoryInput } from '../category-input'
 import { CharacterEditor } from './character-editor'
 import { MediaUpload } from './media-upload'
 
