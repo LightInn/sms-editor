@@ -18,7 +18,11 @@
 		"./lib": "./src/lib/index.ts",
 		"./constants": "./src/constants/index.ts",
 		"./styles": "./src/styles/index.ts",
-		"./components/editor/tiptap-advanced.css": "./src/components/editor/tiptap-advanced.css"
+		"./components/editor/tiptap-advanced.css": "./src/components/editor/tiptap-advanced.css",
+		"./services/*": "./src/services/*.ts",
+		"./types/*": "./src/types/*.ts",
+		"./components/*": "./src/components/*",
+		"./components/preview/*": "./src/components/preview/*"
 	},
 	"scripts": {
 		"check": "tsc --noEmit",
