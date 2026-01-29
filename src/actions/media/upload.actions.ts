@@ -5,10 +5,10 @@
 
 'use server'
 
+import { auth } from '@sms-editor/lib/auth/auth.server'
+import { checkRateLimit } from '@sms-editor/lib/rate-limit'
+import { ImageService } from '@sms-editor/services/imageService'
 import { headers } from 'next/headers'
-import { auth } from 'sms-editor/lib/auth/auth.server'
-import { checkRateLimit } from 'sms-editor/lib/rate-limit'
-import { ImageService } from 'sms-editor/services/imageService'
 import { pb } from '@/lib/pocketbase'
 import { validateMediaFile } from './validation'
 

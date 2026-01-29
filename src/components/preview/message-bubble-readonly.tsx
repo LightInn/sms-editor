@@ -5,10 +5,10 @@
 
 'use client'
 
+import type { Message } from '@sms-editor/types/creator-stories'
 import { Image as ImageIcon, Play } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
-import type { Message } from 'sms-editor/types/creator-stories'
 import { CharacterAvatar } from '@/components/ui/character-avatar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'

@@ -5,10 +5,10 @@
 
 'use server'
 
+import { auth } from '@sms-editor/lib/auth/auth.server'
+import { sanitizeName } from '@sms-editor/lib/sanitization'
+import { ImageService } from '@sms-editor/services/imageService'
 import { headers } from 'next/headers'
-import { auth } from 'sms-editor/lib/auth/auth.server'
-import { sanitizeName } from 'sms-editor/lib/sanitization'
-import { ImageService } from 'sms-editor/services/imageService'
 import { validateAvatarFile, validateMediaFile } from './validation'
 
 // ============================================================================

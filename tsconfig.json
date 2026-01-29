@@ -6,9 +6,8 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["../src/*"],
-			"@smseditor/*": ["./src/*"],
-			"sms-editor": ["./src/index.ts"],
-			"sms-editor/*": ["./src/*"]
+			"@sms-editor/*": ["./src/*"],
+			"@sms-editor": ["./src/index.ts"]
 		},
 		"target": "ES2017",
 		"lib": ["dom", "dom.iterable", "esnext"],

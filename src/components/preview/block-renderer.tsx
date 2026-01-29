@@ -5,7 +5,7 @@
 
 'use client'
 
-import type { BlockWithExpand, Character, RichTextContent } from 'sms-editor/types/creator-stories'
+import type { BlockWithExpand, Character, RichTextContent } from '@sms-editor/types/creator-stories'
 import { MediaBlock } from './media-block'
 import { RichTextBlock } from './rich-text-block'
 import { SmsBlock } from './sms-block'

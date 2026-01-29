@@ -5,12 +5,12 @@
 
 'use client'
 
+import { uploadMediaAction } from '@sms-editor/actions/mediaActions'
+import { cn } from '@sms-editor/lib/utils'
 import { Loader2, Upload, X } from 'lucide-react'
 import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { uploadMediaAction } from 'sms-editor/actions/mediaActions'
-import { cn } from 'sms-editor/lib/utils'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'

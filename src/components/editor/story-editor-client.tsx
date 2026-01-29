@@ -8,6 +8,12 @@
 import { closestCenter, DndContext } from '@dnd-kit/core'
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useEditorDragDrop } from '@sms-editor/hooks/use-editor-drag-drop'
+import { useEditorNavigation } from '@sms-editor/hooks/use-editor-navigation'
+import { useEditorSaveState } from '@sms-editor/hooks/use-editor-save-state'
+import { useMediaQuery } from '@sms-editor/hooks/use-media-query'
+import { useStoryEditorData } from '@sms-editor/hooks/use-story-editor-data'
+import { cn } from '@sms-editor/lib/utils'
 import {
 	ArrowLeft,
 	ChevronLeft,
@@ -23,12 +29,6 @@ import {
 	Trash2,
 } from 'lucide-react'
 import { useState } from 'react'
-import { useEditorDragDrop } from 'sms-editor/hooks/use-editor-drag-drop'
-import { useEditorNavigation } from 'sms-editor/hooks/use-editor-navigation'
-import { useEditorSaveState } from 'sms-editor/hooks/use-editor-save-state'
-import { useMediaQuery } from 'sms-editor/hooks/use-media-query'
-import { useStoryEditorData } from 'sms-editor/hooks/use-story-editor-data'
-import { cn } from 'sms-editor/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {

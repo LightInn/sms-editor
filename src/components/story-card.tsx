@@ -5,10 +5,10 @@
 
 'use client'
 
+import type { StoryWithExpand } from '@sms-editor/types/creator-stories'
 import { format } from 'date-fns'
 import { Calendar, FileText } from 'lucide-react'
 import Link from 'next/link'
-import type { StoryWithExpand } from 'sms-editor/types/creator-stories'
 import Image from '@/components/global/image-fallback.component'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'

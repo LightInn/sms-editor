@@ -5,10 +5,10 @@
 
 'use client'
 
+import { creatorBlockService } from '@sms-editor'
+import type { BlockWithExpand, CreatorChapter } from '@sms-editor/types/creator-stories'
 import { BookOpen, ChevronDown, ChevronRight, FileText, Image as ImageIcon, MessageSquare } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { creatorBlockService } from 'sms-editor'
-import type { BlockWithExpand, CreatorChapter } from 'sms-editor/types/creator-stories'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'

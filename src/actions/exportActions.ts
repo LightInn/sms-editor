@@ -5,9 +5,9 @@
 
 'use server'
 
-import { auth } from 'sms-editor/lib/auth/auth.server'
-import type { ExportPreviewResult } from 'sms-editor/services/exportService'
-import { exportService } from 'sms-editor/services/exportService'
+import { auth } from '@sms-editor/lib/auth/auth.server'
+import type { ExportPreviewResult } from '@sms-editor/services/exportService'
+import { exportService } from '@sms-editor/services/exportService'
 
 export async function getExportPreviewAction(storyId: string): Promise<ExportPreviewResult> {
 	try {

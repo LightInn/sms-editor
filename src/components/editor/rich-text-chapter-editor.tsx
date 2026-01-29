@@ -1,10 +1,10 @@
 'use client'
 
+import { useAutosave } from '@sms-editor/hooks/use-autosave'
+import { formatSaveTime, getSaveStatusColorClass } from '@sms-editor/lib/format-save-time'
+import { cn } from '@sms-editor/lib/utils'
 import { Settings, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useAutosave } from 'sms-editor/hooks/use-autosave'
-import { formatSaveTime, getSaveStatusColorClass } from 'sms-editor/lib/format-save-time'
-import { cn } from 'sms-editor/lib/utils'
 import { toast } from 'sonner'
 import {
 	AlertDialog,

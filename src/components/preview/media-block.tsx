@@ -5,11 +5,11 @@
 
 'use client'
 
+import type { ImageRecord } from '@sms-editor/services/imageService'
+import type { BlockWithExpand, MediaContent } from '@sms-editor/types/creator-stories'
 import { ImageIcon, Play } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
-import type { ImageRecord } from 'sms-editor/services/imageService'
-import type { BlockWithExpand, MediaContent } from 'sms-editor/types/creator-stories'
 import { pb } from '@/lib/pocketbase'
 
 export interface MediaBlockProps {

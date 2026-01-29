@@ -6,10 +6,10 @@
 
 'use client'
 
+import { formatRelativeOrAbsolute, isPast } from '@sms-editor/lib/date-utils'
+import { cn } from '@sms-editor/lib/utils'
 import { Calendar, Image as ImageIcon, Save, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { formatRelativeOrAbsolute, isPast } from 'sms-editor/lib/date-utils'
-import { cn } from 'sms-editor/lib/utils'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'

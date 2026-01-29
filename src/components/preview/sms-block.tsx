@@ -5,8 +5,8 @@
 
 'use client'
 
-import type { ImageRecord } from 'sms-editor/services/imageService'
-import type { BlockWithExpand, Character, SMSContent } from 'sms-editor/types/creator-stories'
+import type { ImageRecord } from '@sms-editor/services/imageService'
+import type { BlockWithExpand, Character, SMSContent } from '@sms-editor/types/creator-stories'
 import { pb } from '@/lib/pocketbase'
 import { PhonePreviewReadonly } from './phone-preview-readonly'
 

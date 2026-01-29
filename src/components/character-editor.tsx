@@ -5,11 +5,11 @@
 
 'use client'
 
+import type { Character } from '@sms-editor/types/creator-stories'
 import { Edit2, Loader2, Plus, Trash2, Upload, User, X } from 'lucide-react'
 import Image from 'next/image'
 import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import type { Character } from 'sms-editor/types/creator-stories'
 import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid'
 import { Button } from '@/components/ui/button'

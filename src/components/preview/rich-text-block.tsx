@@ -5,7 +5,7 @@
 
 'use client'
 
-import type { RichTextContent } from 'sms-editor/types/creator-stories'
+import type { RichTextContent } from '@sms-editor/types/creator-stories'
 import { cn } from '@/lib/utils'
 
 export interface RichTextBlockProps {

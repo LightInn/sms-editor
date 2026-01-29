@@ -5,12 +5,12 @@
 
 'use client'
 
+import type { AppTarget, Character, Message, Participant } from '@sms-editor/types/creator-stories'
+import { appTemplates, getConversationTitle, getParticipantName } from '@sms-editor/types/creator-stories'
 import { BatteryIcon, SignalIcon, WifiIcon } from 'lucide-react'
 import { DateTime } from 'luxon'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import type { AppTarget, Character, Message, Participant } from 'sms-editor/types/creator-stories'
-import { appTemplates, getConversationTitle, getParticipantName } from 'sms-editor/types/creator-stories'
 import { CharacterAvatar } from '@/components/ui/character-avatar'
 import { GroupAvatar } from '@/components/ui/group-avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'

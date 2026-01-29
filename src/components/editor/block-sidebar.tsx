@@ -22,8 +22,8 @@ import {
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { cn } from '@sms-editor/lib/utils'
 import { ChevronLeft, FileText, GripVertical, Image, MessageSquare, MoreVertical, Plus, Trash2 } from 'lucide-react'
-import { cn } from 'sms-editor/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'

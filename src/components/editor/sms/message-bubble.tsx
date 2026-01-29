@@ -5,10 +5,10 @@
 
 'use client'
 
+import { cn } from '@sms-editor/lib/utils'
 import { Image as ImageIcon, MoreVertical, Play, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
-import { cn } from 'sms-editor/lib/utils'
 import { Button } from '@/components/ui/button'
 import { CharacterAvatar } from '@/components/ui/character-avatar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'

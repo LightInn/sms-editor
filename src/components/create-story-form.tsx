@@ -6,9 +6,9 @@
 
 'use client'
 
+import type { Character } from '@sms-editor/types/creator-stories'
+import { generateSlug } from '@sms-editor/types/creator-stories'
 import { useActionState, useState } from 'react'
-import type { Character } from 'sms-editor/types/creator-stories'
-import { generateSlug } from 'sms-editor/types/creator-stories'
 import { toast } from 'sonner'
 import { createStoryAction } from '@/actions/story.actions'
 import { Button } from '@/components/ui/button'

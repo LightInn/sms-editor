@@ -5,13 +5,13 @@
 
 'use client'
 
+import { uploadAvatarAction } from '@sms-editor/actions/mediaActions'
+import { sanitizeName } from '@sms-editor/lib/sanitization'
+import { cn } from '@sms-editor/lib/utils'
 import { Edit2, Loader2, Plus, Trash2, Upload, User, X } from 'lucide-react'
 import Image from 'next/image'
 import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { uploadAvatarAction } from 'sms-editor/actions/mediaActions'
-import { sanitizeName } from 'sms-editor/lib/sanitization'
-import { cn } from 'sms-editor/lib/utils'
 import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid'
 import { Button } from '@/components/ui/button'

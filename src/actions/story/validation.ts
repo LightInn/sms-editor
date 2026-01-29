@@ -9,7 +9,7 @@ import {
 	sanitizeDescription,
 	sanitizeSlug,
 	sanitizeText,
-} from 'sms-editor/lib/sanitization'
+} from '@sms-editor/lib/sanitization'
 import * as v from 'valibot'
 import type { Character } from '../../types/creator-stories'
 
