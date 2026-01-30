@@ -6,6 +6,7 @@
 
 'use client'
 
+import { getChapterBlocksAction } from '@sms-editor/actions/serviceActions'
 import type { BlockWithExpand, ChapterWithExpand, StoryWithExpand } from '@sms-editor/types/creator-stories'
 import { AlertCircle, ArrowLeft, BookOpen, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import Link from 'next/link'
@@ -47,15 +48,7 @@ export function OriginalStoryReader({ story, chapters, initialChapterId }: Origi
 			setError(null)
 
 			try {
-				// Use public endpoint for reading published content
-				const response = await fetch(`/api/creator-stories/public/chapters/${currentChapterId}/blocks`)
-
-				if (!response.ok) {
-					const errorData = await response.json().catch(() => ({}))
-					throw new Error(errorData.error || 'Failed to fetch blocks')
-				}
-
-				const data = await response.json()
+				const data = await getChapterBlocksAction(currentChapterId)
 				const blocksArray = Array.isArray(data) ? data : []
 				setBlocks(blocksArray)
 			} catch (err) {

@@ -5,6 +5,7 @@
 
 'use client'
 
+import { getChapterBlocksAction } from '@sms-editor/actions/serviceActions'
 import type { BlockWithExpand, CreatorChapter } from '@sms-editor/types/creator-stories'
 import { BookOpen, ChevronDown, ChevronRight, FileText, Image as ImageIcon, MessageSquare } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -54,11 +55,8 @@ export function ChapterNavigation({
 		setLoadingBlocks(prev => new Set([...prev, chapterId]))
 
 		try {
-			const response = await fetch(`/api/creator-stories/chapters/${chapterId}/blocks`)
-			if (response.ok) {
-				const blocks = await response.json()
-				setChapterBlocks(prev => ({ ...prev, [chapterId]: blocks }))
-			}
+			const blocks = await getChapterBlocksAction(chapterId)
+			setChapterBlocks(prev => ({ ...prev, [chapterId]: blocks }))
 		} catch (error) {
 			console.error('Failed to fetch blocks for chapter:', chapterId, error)
 		} finally {

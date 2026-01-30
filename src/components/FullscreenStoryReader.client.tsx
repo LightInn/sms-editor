@@ -6,6 +6,7 @@
 
 'use client'
 
+import { getChapterBlocksAction } from '@sms-editor/actions/serviceActions'
 import type { BlockWithExpand, ChapterWithExpand, StoryWithExpand } from '@sms-editor/types/creator-stories'
 import { AlertCircle, ArrowLeft, BookOpen, Loader2 } from 'lucide-react'
 import Link from 'next/link'
@@ -45,14 +46,7 @@ export function FullscreenStoryReader({ story, chapters, initialChapterId }: Ful
 			setError(null)
 
 			try {
-				const response = await fetch(`/api/creator-stories/public/chapters/${currentChapterId}/blocks`)
-
-				if (!response.ok) {
-					const errorData = await response.json().catch(() => ({}))
-					throw new Error(errorData.error || 'Failed to fetch blocks')
-				}
-
-				const data = await response.json()
+				const data = await getChapterBlocksAction(currentChapterId)
 				const blocksArray = Array.isArray(data) ? data : []
 				setBlocks(blocksArray)
 			} catch (err) {

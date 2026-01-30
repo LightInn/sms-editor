@@ -5,6 +5,7 @@
 
 'use client'
 
+import { getChapterBlocksAction } from '@sms-editor/actions/serviceActions'
 import type { BlockWithExpand, Character, CreatorChapter, CreatorStory } from '@sms-editor/types/creator-stories'
 import { AlertCircle, BookOpen, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -44,14 +45,7 @@ export function StoryPreviewClient({ story, initialChapters, characters }: Story
 			setError(null)
 
 			try {
-				const response = await fetch(`/api/creator-stories/chapters/${currentChapterId}/blocks`)
-
-				if (!response.ok) {
-					const errorData = await response.json().catch(() => ({}))
-					throw new Error(errorData.error || 'Failed to fetch blocks')
-				}
-
-				const data = await response.json()
+				const data = await getChapterBlocksAction(currentChapterId)
 				const blocksArray = Array.isArray(data) ? data : []
 				setBlocks(blocksArray)
 			} catch (err) {
