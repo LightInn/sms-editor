@@ -26,3 +26,5 @@ export { StorySettingsDialog } from './editor/story-settings-dialog'
 export { StorySettingsPanel } from './editor/story-settings-panel'
 // Editor components
 export { TiptapEditor } from './editor/tiptap-editor'
+
+export { FullscreenStoryReader } from './FullscreenStoryReader.client'
