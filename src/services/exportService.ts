@@ -236,7 +236,7 @@ export class ExportService {
 
 		if (!session?.user) {
 			console.log('[Export] Unauthorized - no session')
-			return { success: false, error: 'Unauthorized', status: 401 }
+			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 		}
 
 		// Fetch and validate data
