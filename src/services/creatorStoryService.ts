@@ -235,16 +235,50 @@ export class CreatorStoryService {
 
 	/**
 	 * Get the most recent published stories (limited set for showcases)
+	 * Sorted by the most recent chapter date, not story creation date
 	 */
-	async getLatestOriginalStories(limit = 5): Promise<StoryWithExpand[]> {
-		const safeLimit = Math.max(1, Math.min(limit, 12))
-		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(1, safeLimit, {
-			filter: 'isPublished=true',
-			sort: '-created',
+	async getLatestOriginalStories(limit = 5, nsfw = false): Promise<StoryWithExpand[]> {
+		const safeLimit = Math.max(1, Math.min(limit, 50)) // Allow fetching more for proper sorting
+
+		let filter = 'isPublished=true'
+		if (nsfw === true) {
+			filter += ' && nsfw=True'
+		} else if (nsfw === false) {
+			filter += ' && nsfw=False'
+		}
+
+		// Fetch more stories than needed to ensure we can sort by latest chapter
+		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(1, safeLimit * 2, {
+			filter,
+			sort: '-created', // Temporary sort, will be overridden by chapter-based sorting
 			expand: 'author,coverImage',
 		})
 
-		return records.items
+		// Sort stories by their most recent chapter's updated date
+		const storiesWithLatestChapter = await Promise.all(
+			records.items.map(async story => {
+				try {
+					const chapterRecords = await pb.collection('c_chapters').getList(1, 1, {
+						filter: `story="${story.id}"`,
+						sort: '-updated',
+					})
+
+					// Use the latest chapter's updated date, or fall back to story creation date
+					const latestChapterDate = chapterRecords.items[0]?.updated || story.created
+					return { story, latestDate: latestChapterDate }
+				} catch (error) {
+					// If chapter query fails, fall back to story creation date
+					console.warn(`Failed to fetch chapters for story ${story.id}:`, error)
+					return { story, latestDate: story.created }
+				}
+			})
+		)
+
+		// Sort by latest chapter date (most recent first)
+		storiesWithLatestChapter.sort((a, b) => new Date(b.latestDate).getTime() - new Date(a.latestDate).getTime())
+
+		// Return only the requested number of stories
+		return storiesWithLatestChapter.slice(0, safeLimit).map(item => item.story)
 	}
 
 	/**
