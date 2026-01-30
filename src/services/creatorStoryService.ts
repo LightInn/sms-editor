@@ -160,7 +160,6 @@ export class CreatorStoryService {
 					...record.expand,
 					chapters,
 				}
-
 			}
 
 			return record

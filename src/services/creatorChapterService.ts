@@ -6,6 +6,7 @@
 
 import { pb } from '@/lib/pocketbase'
 import type { ChapterWithExpand, CreateChapterData, CreatorChapter, UpdateChapterData } from '../types/creator-stories'
+import { creatorBlockService } from './creatorBlockService'
 
 export class CreatorChapterService {
 	private collectionName = 'c_chapters'
@@ -56,11 +57,20 @@ export class CreatorChapterService {
 	 * Get a chapter by ID
 	 */
 	async getChapter(id: string, expand = false): Promise<ChapterWithExpand> {
-		const expandParam = expand ? 'story,blocks,coverImage' : ''
+		const expandParam = expand ? 'story,coverImage' : ''
 
 		const record = await pb.collection(this.collectionName).getOne<ChapterWithExpand>(id, {
 			expand: expandParam,
 		})
+
+		// if expand, get blocks separately (reverse relation) and attach to expand
+		if (expand) {
+			const blocks = await creatorBlockService.getChapterBlocks(id)
+			record.expand = {
+				...record.expand,
+				blocks,
+			}
+		}
 
 		return record
 	}

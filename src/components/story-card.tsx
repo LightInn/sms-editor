@@ -20,7 +20,7 @@ export interface StoryCardProps {
 
 export function StoryCard({ story, coverImageUrl }: StoryCardProps) {
 	// Use expand.chapters if available (contains full chapter objects), otherwise fallback to chapters array (IDs only)
-	const chapterCount = story.expand?.chapters?.length ?? story.chapters?.length ?? 0
+	const chapterCount = story.expand?.chapters?.length ?? 0
 
 	return (
 		<Link href={`/editor/${story.id}/edit`} className="block h-full">
