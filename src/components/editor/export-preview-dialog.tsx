@@ -7,17 +7,16 @@
 
 import { getExportPreviewAction } from '@sms-editor/actions/exportActions'
 import { cn } from '@sms-editor/lib/utils'
+import type { ExportPreviewResponse } from '@sms-editor/services/exportService'
 import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
 import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { TypewriterLoader } from '@/components/ui/typewriter-loader'
-import type { ExportPreviewData } from '../../services'
-
-type ExportPreviewResponse = ExportPreviewData
 
 interface ExportPreviewDialogProps {
 	storyId: string
@@ -45,7 +44,7 @@ export function ExportPreviewDialog({ storyId, open, onOpenChange, onDownload }:
 			const data = await getExportPreviewAction(storyId)
 
 			if (!data.success) {
-				throw new Error('error' in data ? data.error : 'Failed to fetch preview')
+				toast.error('Failed to fetch export preview data')
 			}
 
 			console.log('[ExportPreview] Preview data received:', data.totalImages, 'images from', data.totalBlocks, 'blocks')

@@ -3,6 +3,17 @@
  * Handles story export preview and data preparation
  */
 
+import {
+	fetchExportData,
+	renderContextBlock,
+	renderMediaBlock,
+	renderPlaceholderBlock,
+	renderSMSBlock,
+	validateBlockIndex,
+} from '@sms-editor/lib/export'
+import { paginateMessages, paginateText } from '@sms-editor/lib/export-pagination'
+import { type NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/lib/auth/auth.server'
 import type {
 	BlockWithExpand,
 	ChapterWithExpand,
@@ -18,9 +29,8 @@ import { creatorStoryService } from './creatorStoryService'
 // ============================================================================
 // TYPES
 // ============================================================================
-
-export interface ExportPreviewData {
-	success: true
+export interface ExportPreviewResponse {
+	success: boolean
 	story: {
 		id: string
 		title: string
@@ -63,208 +73,220 @@ export interface ExportPreviewData {
 	timestamp: string
 }
 
-export interface ExportError {
-	success: false
-	error: string
-	status: number
-}
-
-export type ExportPreviewResult = ExportPreviewData | ExportError
-
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
-
-/**
- * Simple message pagination for page count estimation
- * (You should import the actual pagination logic from your utils)
- */
-function estimateMessagePages(messages: unknown[]): number {
-	const MESSAGES_PER_PAGE = 10
-	return Math.max(1, Math.ceil(messages.length / MESSAGES_PER_PAGE))
-}
-
-/**
- * Simple text pagination for page count estimation
- */
-function estimateTextPages(text: string): number {
-	const CHARS_PER_PAGE = 2000
-	return Math.max(1, Math.ceil(text.length / CHARS_PER_PAGE))
-}
-
-/**
- * Calculate total pages for a block
- */
+// Helper to calculate total pages for a block using shared logic
 function calculateBlockPages(block: BlockWithExpand): number {
 	switch (block.type) {
 		case 'sms_conversation': {
 			const content = block.content as SMSContent
 			const messages = content?.messages || []
-			return estimateMessagePages(messages)
+			if (messages.length === 0) return 1
+
+			// Use shared balanced pagination logic
+			const pages = paginateMessages(messages)
+			return Math.max(1, pages.length)
 		}
 		case 'rich_text_content': {
 			const content = block.content as RichTextContent
-			const text = content?.plateJson || ''
-			const textContent = typeof text === 'string' ? text : JSON.stringify(text)
-			return estimateTextPages(textContent)
+			const text =
+				content?.plateJson
+					?.replace(/<[^>]*>/g, ' ')
+					.replace(/\s+/g, ' ')
+					.trim() || ''
+
+			// Use shared balanced pagination logic
+			const pages = paginateText(text)
+			return Math.max(1, pages.length)
 		}
-		case 'media_content':
-			return 1
 		default:
-			return 1
+			return 1 // Media and placeholder blocks are single page
 	}
 }
-
-/**
- * Extract image URLs from blocks
- */
-function extractImageUrls(blocks: BlockWithExpand[]): string[] {
-	const urls: string[] = []
-
-	for (const block of blocks) {
-		if (block.type === 'media_content' && block.media) {
-			if (Array.isArray(block.media)) {
-				for (const media of block.media) {
-					if (media.type === 'image' && media.url) {
-						urls.push(media.url)
-					}
-				}
-			}
-		}
-
-		// Check for images in SMS messages
-		if (block.type === 'sms_conversation') {
-			const content = block.content as SMSContent
-			const messages = content?.messages || []
-			for (const msg of messages) {
-				if (msg.type === 'image' && msg.content) {
-					urls.push(msg.content)
-				}
-			}
-		}
-	}
-
-	return urls
-}
-
-// ============================================================================
-// SERVICE
-// ============================================================================
 
 export class ExportService {
 	/**
 	 * Get export preview data for a story
 	 */
-	async getExportPreview(storyId: string, userId: string): Promise<ExportPreviewResult> {
+	async getExportPreview(storyId: string, userId: string): Promise<ExportPreviewResponse> {
+		const timestamp = new Date().toISOString()
+		console.log(`[ExportPreview] Starting preview for story: ${storyId}`)
+
+		// Get story
+		const storyService = creatorStoryService
+		let story: CreatorStory
+
 		try {
-			// Get story
-			let story: CreatorStory
-			try {
-				story = await creatorStoryService.getStory(storyId)
-			} catch (error) {
-				console.log('[ExportService] Story not found:', error)
-				return { success: false, error: 'Story not found', status: 404 }
-			}
+			story = await storyService.getStory(storyId)
+			console.log(`[ExportPreview] Story found: ${story.title}`)
+		} catch (error) {
+			console.log('[ExportPreview] Story not found:', error)
+			throw console.error(404, 'Story not found')
+		}
 
-			// Check ownership
-			if (story.author !== userId) {
-				console.log(`[ExportService] Forbidden - user ${userId} does not own story`)
-				return { success: false, error: 'You do not have access to this story', status: 403 }
-			}
+		// Check ownership
+		if (story.author !== userId) {
+			console.log(`[ExportPreview] Forbidden - user ${userId} does not own story`)
+			throw console.error(403, 'Forbidden: You do not have access to this story')
+		}
 
-			// Get chapters with blocks
-			let chapters: ChapterWithExpand[]
-			try {
-				chapters = await creatorChapterService.getStoryChapters(storyId, true)
-				console.log(`[ExportService] Fetched ${chapters.length} chapters`)
-			} catch (error) {
-				console.error('[ExportService] Failed to fetch chapters', error)
-				return { success: false, error: 'Failed to fetch chapters', status: 500 }
-			}
+		// Get chapters with blocks
+		const chapterService = creatorChapterService
+		let chapters: ChapterWithExpand[]
 
-			// Get all blocks from all chapters
-			const allBlocks: BlockWithExpand[] = []
+		try {
+			chapters = await chapterService.getStoryChapters(storyId, true)
+			console.log(`[ExportPreview] Fetched ${chapters.length} chapters`)
+		} catch (error) {
+			console.error('[ExportPreview] Failed to fetch chapters', error)
+			throw console.error(500, 'Failed to fetch chapters')
+		}
 
-			for (const chapter of chapters) {
-				if (chapter.expand?.blocks && chapter.expand.blocks.length > 0) {
-					allBlocks.push(...chapter.expand.blocks)
-				} else {
-					try {
-						const chapterBlocks = await creatorBlockService.getChapterBlocks(chapter.id)
-						allBlocks.push(...chapterBlocks)
-					} catch (error) {
-						console.log(`[ExportService] Chapter ${chapter.id}: failed to fetch blocks`, error)
-					}
+		// Get all blocks from all chapters
+		const allBlocks: BlockWithExpand[] = []
+		const blockService = creatorBlockService
+
+		for (const chapter of chapters) {
+			if (chapter.expand?.blocks && chapter.expand.blocks.length > 0) {
+				allBlocks.push(...chapter.expand.blocks)
+			} else {
+				try {
+					const chapterBlocks = await blockService.getChapterBlocks(chapter.id)
+					allBlocks.push(...chapterBlocks)
+				} catch (error) {
+					console.log(`[ExportPreview] Chapter ${chapter.id}: failed to fetch blocks`, error)
 				}
 			}
+		}
 
-			console.log(`[ExportService] Total blocks: ${allBlocks.length}`)
+		console.log(`[ExportPreview] Total blocks: ${allBlocks.length}`)
 
-			if (allBlocks.length === 0) {
-				return { success: false, error: 'No blocks found', status: 404 }
+		// Calculate pages for each block and generate all URLs
+		const exportImageUrls: string[] = []
+		const blocksWithPages = allBlocks.map((block, blockIndex) => {
+			const smsContent = block.type === 'sms_conversation' ? (block.content as SMSContent) : null
+			const totalPages = calculateBlockPages(block)
+
+			// Generate URLs for all pages of this block
+			for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+				exportImageUrls.push(`/api/export/${storyId}?blockIndex=${blockIndex}&pageIndex=${pageIndex}&t=${Date.now()}`)
 			}
 
-			// Extract image URLs
-			const exportImageUrls = extractImageUrls(allBlocks)
-
-			// Prepare response data
-			const responseData: ExportPreviewData = {
-				success: true,
-				story: {
-					id: story.id,
-					title: story.title,
-					description: story.description || '',
-					slug: story.slug,
-					isPublished: story.isPublished,
-					isCompleted: story.isCompleted,
-					nsfw: story.nsfw,
-					categories: story.categories || [],
-					coverImage: story.coverImage || null,
-					author: story.author,
-					created: story.created,
-					updated: story.updated,
-					characters: story.characters || [],
-				},
-				chapters: chapters.map(ch => ({
-					id: ch.id,
-					title: ch.title,
-					order: ch.order,
-					isPublished: ch.isPublished,
-					programed: ch.programed,
-					blocksCount: allBlocks.filter(b => b.chapter === ch.id).length,
-				})),
-				blocks: allBlocks.map(block => {
-					const content = block.content as SMSContent | RichTextContent
-					const participants = block.participants || []
-					const messages = (content as SMSContent)?.messages || []
-
-					return {
-						id: block.id,
-						type: block.type,
-						title: block.title,
-						order: block.order,
-						chapter: block.chapter,
-						appTarget: block.appTarget,
-						conversationTitle: block.conversationTitle,
-						participantsCount: participants.length,
-						participants: block.type === 'sms_conversation' ? participants : undefined,
-						messagesCount: block.type === 'sms_conversation' ? messages.length : undefined,
-						totalPages: calculateBlockPages(block),
-					}
-				}),
-				totalBlocks: allBlocks.length,
-				totalImages: exportImageUrls.length,
-				exportImageUrls,
-				timestamp: new Date().toISOString(),
+			return {
+				id: block.id,
+				type: block.type,
+				title: block.title,
+				order: block.order,
+				chapter: block.chapter,
+				appTarget: block.appTarget,
+				conversationTitle: block.conversationTitle || null,
+				participantsCount: block.participants?.length || 0,
+				messagesCount: smsContent?.messages?.length,
+				totalPages,
 			}
+		})
 
-			return responseData
+		// Build response
+		const response: ExportPreviewResponse = {
+			success: true,
+			story: {
+				id: story.id,
+				title: story.title,
+				description: story.description,
+				slug: story.slug,
+				isPublished: story.isPublished,
+				isCompleted: story.isCompleted,
+				nsfw: story.nsfw,
+				categories: story.categories,
+				coverImage: story.coverImage,
+				author: story.author,
+				created: story.created,
+				updated: story.updated,
+				characters: story.characters,
+			},
+			chapters: chapters.map(chapter => ({
+				id: chapter.id,
+				title: chapter.title,
+				order: chapter.order,
+				isPublished: chapter.isPublished,
+				programed: chapter.programed,
+				blocksCount: chapter.expand?.blocks?.length || 0,
+			})),
+			blocks: blocksWithPages,
+			totalBlocks: allBlocks.length,
+			totalImages: exportImageUrls.length,
+			exportImageUrls,
+			timestamp,
+		}
+
+		console.log(
+			`[ExportPreview] Response ready with ${chapters.length} chapters, ${allBlocks.length} blocks, ${exportImageUrls.length} images`
+		)
+		return response
+	}
+
+	async getExport(request: NextRequest, storyId: string) {
+		const { searchParams } = new URL(request.url)
+		const blockIndex = parseInt(searchParams.get('blockIndex') || '0', 10)
+		const pageIndex = parseInt(searchParams.get('pageIndex') || '0', 10)
+
+		console.log(`[Export] Request: story=${storyId}, block=${blockIndex}, page=${pageIndex}`)
+
+		const session = await auth.api.getSession({
+			headers: request.headers,
+		})
+
+		if (!session?.user) {
+			console.log('[Export] Unauthorized - no session')
+			return { success: false, error: 'Unauthorized', status: 401 }
+		}
+
+		// Fetch and validate data
+		const dataResult = await fetchExportData(session.user.id, storyId)
+
+		if ('error' in dataResult) {
+			return NextResponse.json({ error: dataResult.error }, { status: dataResult.status })
+		}
+
+		const { allBlocks, story } = dataResult
+
+		// Validate block index
+		const blockResult = validateBlockIndex(allBlocks, blockIndex)
+
+		if ('error' in blockResult) {
+			return NextResponse.json({ error: blockResult.error, totalBlocks: allBlocks.length }, { status: 400 })
+		}
+
+		const block = blockResult.block
+		console.log(`[Export] Rendering: ${block.type} - "${block.title}", page ${pageIndex}`)
+
+		// Render based on block type
+		try {
+			switch (block.type) {
+				case 'sms_conversation':
+					return await renderSMSBlock(block, pageIndex, story.characters || [])
+				case 'rich_text_content':
+					return renderContextBlock(block, pageIndex)
+				case 'media_content':
+					return await renderMediaBlock(block)
+				default:
+					return renderPlaceholderBlock(block)
+			}
 		} catch (error) {
-			console.error('[ExportService] Export preview error:', error)
-			return { success: false, error: 'Failed to generate export preview', status: 500 }
+			console.error('[Export] Render error:', error)
+			return NextResponse.json(
+				{ error: `Failed to generate: ${error instanceof Error ? error.message : 'Unknown error'}` },
+				{ status: 500 }
+			)
 		}
 	}
 }
+
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 
 // Export singleton instance
 export const exportService = new ExportService()
