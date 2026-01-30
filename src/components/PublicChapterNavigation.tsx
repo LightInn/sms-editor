@@ -1,19 +1,20 @@
 /**
- * Chapter Navigation Component
- * Sidebar for navigating between chapters and blocks in preview mode
+ * Public Chapter Navigation Component
+ * Sidebar for navigating between chapters and blocks in public reading mode
+ * Uses public API endpoint (no authentication required)
  */
 
 'use client'
 
-import type { BlockWithExpand, CreatorChapter } from '@sms-editor/types/creator-stories'
+import type { BlockWithExpand, ChapterWithExpand } from '@sms-editor/types/creator-stories'
 import { BookOpen, ChevronDown, ChevronRight, FileText, Image as ImageIcon, MessageSquare } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 
-export interface ChapterNavigationProps {
-	chapters: CreatorChapter[]
+export interface PublicChapterNavigationProps {
+	chapters: ChapterWithExpand[]
 	currentChapterId: string | null
 	onChapterSelect: (chapterId: string) => void
 	onBlockSelect?: (blockId: string) => void
@@ -22,14 +23,14 @@ export interface ChapterNavigationProps {
 	isInSheet?: boolean
 }
 
-export function ChapterNavigation({
+export function PublicChapterNavigation({
 	chapters,
 	currentChapterId,
 	onChapterSelect,
 	onBlockSelect,
 	selectedBlockId,
 	isInSheet = false,
-}: ChapterNavigationProps) {
+}: PublicChapterNavigationProps) {
 	const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set())
 	const [chapterBlocks, setChapterBlocks] = useState<Record<string, BlockWithExpand[]>>({})
 	const [loadingBlocks, setLoadingBlocks] = useState<Set<string>>(new Set())
@@ -41,7 +42,7 @@ export function ChapterNavigation({
 		}
 	}, [currentChapterId])
 
-	// Fetch blocks when a chapter is expanded
+	// Fetch blocks when a chapter is expanded using PUBLIC endpoint
 	useEffect(() => {
 		expandedChapters.forEach(chapterId => {
 			if (!chapterBlocks[chapterId] && !loadingBlocks.has(chapterId)) {
@@ -54,7 +55,8 @@ export function ChapterNavigation({
 		setLoadingBlocks(prev => new Set([...prev, chapterId]))
 
 		try {
-			const response = await fetch(`/api/creator-stories/chapters/${chapterId}/blocks`)
+			// Use PUBLIC endpoint for reading published content
+			const response = await fetch(`/api/creator-stories/public/chapters/${chapterId}/blocks`)
 			if (response.ok) {
 				const blocks = await response.json()
 				setChapterBlocks(prev => ({ ...prev, [chapterId]: blocks }))

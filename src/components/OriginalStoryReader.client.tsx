@@ -1,30 +1,33 @@
 /**
- * Story Preview Client Component
- * Main client component for story preview with unified phone display
+ * Original Story Reader Client Component
+ * Full-featured reader with phone preview and chapter navigation
+ * Reuses existing preview components from creator-stories
  */
 
 'use client'
 
-import type { BlockWithExpand, Character, CreatorChapter, CreatorStory } from '@sms-editor/types/creator-stories'
-import { AlertCircle, BookOpen, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
+import type { BlockWithExpand, ChapterWithExpand, StoryWithExpand } from '@sms-editor/types/creator-stories'
+import { AlertCircle, ArrowLeft, BookOpen, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { StoryEditorHeader } from '../editor/story-editor-header'
-import { ChapterNavigation } from './chapter-navigation'
-import { UnifiedPhonePreview } from './unified-phone-preview'
+import { PublicChapterNavigation } from './PublicChapterNavigation'
+import { UnifiedPhonePreview } from './preview/unified-phone-preview'
 
-export interface StoryPreviewClientProps {
-	story: CreatorStory
-	initialChapters: CreatorChapter[]
-	characters: Character[]
+export interface OriginalStoryReaderProps {
+	story: StoryWithExpand
+	chapters: ChapterWithExpand[]
+	initialChapterId?: string
 }
 
-export function StoryPreviewClient({ story, initialChapters, characters }: StoryPreviewClientProps) {
-	const [chapters] = useState<CreatorChapter[]>(initialChapters)
+export function OriginalStoryReader({ story, chapters, initialChapterId }: OriginalStoryReaderProps) {
+	const characters = story.characters || []
+
 	const [currentChapterId, setCurrentChapterId] = useState<string | null>(
-		initialChapters.length > 0 ? initialChapters[0].id : null
+		initialChapterId || (chapters.length > 0 ? chapters[0].id : null)
 	)
 	const [blocks, setBlocks] = useState<BlockWithExpand[]>([])
 	const [loading, setLoading] = useState(false)
@@ -32,7 +35,7 @@ export function StoryPreviewClient({ story, initialChapters, characters }: Story
 	const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null)
 	const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
-	// Fetch blocks for current chapter
+	// Fetch blocks for current chapter using public endpoint
 	useEffect(() => {
 		if (!currentChapterId) {
 			setBlocks([])
@@ -44,7 +47,8 @@ export function StoryPreviewClient({ story, initialChapters, characters }: Story
 			setError(null)
 
 			try {
-				const response = await fetch(`/api/creator-stories/chapters/${currentChapterId}/blocks`)
+				// Use public endpoint for reading published content
+				const response = await fetch(`/api/creator-stories/public/chapters/${currentChapterId}/blocks`)
 
 				if (!response.ok) {
 					const errorData = await response.json().catch(() => ({}))
@@ -70,7 +74,7 @@ export function StoryPreviewClient({ story, initialChapters, characters }: Story
 	// Handle block selection from table of contents
 	const handleBlockSelect = (blockId: string) => {
 		setSelectedBlockId(blockId)
-		setMobileNavOpen(false) // Close mobile nav when selecting a block
+		setMobileNavOpen(false)
 	}
 
 	// Handle block change from phone preview (sync back to navigation)
@@ -81,8 +85,8 @@ export function StoryPreviewClient({ story, initialChapters, characters }: Story
 	// Handle chapter selection - reset selected block
 	const handleChapterSelect = (chapterId: string) => {
 		setCurrentChapterId(chapterId)
-		setSelectedBlockId(null) // Reset block selection when changing chapter
-		setMobileNavOpen(false) // Close mobile nav when selecting a chapter
+		setSelectedBlockId(null)
+		setMobileNavOpen(false)
 	}
 
 	// Chapter navigation
@@ -106,13 +110,31 @@ export function StoryPreviewClient({ story, initialChapters, characters }: Story
 
 	return (
 		<div className="flex flex-col h-screen w-full bg-background">
-			{/* Header with navigation */}
-			<StoryEditorHeader story={story} chapters={chapters} onUpdate={() => {}} isPreviewMode={true} />
+			{/* Header */}
+			<header className="border-b border-border bg-card px-4 py-3 shrink-0">
+				<div className="flex items-center justify-between max-w-7xl mx-auto">
+					<div className="flex items-center gap-4">
+						<Link href={`/original/story/${story.slug}`}>
+							<Button variant="ghost" size="sm" className="gap-2">
+								<ArrowLeft className="h-4 w-4" />
+								<span className="hidden sm:inline">Back to Story</span>
+							</Button>
+						</Link>
+						<div className="hidden sm:block">
+							<h1 className="text-sm font-semibold truncate max-w-[300px]">{story.title}</h1>
+							<p className="text-xs text-muted-foreground">
+								by {story.expand?.author?.name || story.expand?.author?.email || 'Anonymous'}
+							</p>
+						</div>
+					</div>
+					<Badge variant="secondary">Reading Mode</Badge>
+				</div>
+			</header>
 
 			<div className="flex flex-1 overflow-hidden">
 				{/* Chapter Navigation Sidebar - Hidden on mobile */}
 				<div className="hidden md:flex">
-					<ChapterNavigation
+					<PublicChapterNavigation
 						chapters={chapters}
 						currentChapterId={currentChapterId}
 						onChapterSelect={handleChapterSelect}
@@ -127,7 +149,7 @@ export function StoryPreviewClient({ story, initialChapters, characters }: Story
 						<SheetHeader className="sr-only">
 							<SheetTitle>Table of Contents</SheetTitle>
 						</SheetHeader>
-						<ChapterNavigation
+						<PublicChapterNavigation
 							chapters={chapters}
 							currentChapterId={currentChapterId}
 							onChapterSelect={handleChapterSelect}
@@ -154,7 +176,7 @@ export function StoryPreviewClient({ story, initialChapters, characters }: Story
 									<BookOpen className="h-4 w-4" />
 								</Button>
 
-								{/* Previous Chapter Button - Hidden on mobile (use TOC instead) */}
+								{/* Previous Chapter Button - Hidden on mobile */}
 								<Button
 									variant="ghost"
 									size="sm"
@@ -176,7 +198,7 @@ export function StoryPreviewClient({ story, initialChapters, characters }: Story
 									</p>
 								</div>
 
-								{/* Next Chapter Button - Hidden on mobile (use TOC instead) */}
+								{/* Next Chapter Button - Hidden on mobile */}
 								<Button
 									variant="ghost"
 									size="sm"
@@ -249,6 +271,7 @@ export function StoryPreviewClient({ story, initialChapters, characters }: Story
 
 							{!currentChapterId && chapters.length === 0 && (
 								<div className="text-center py-12">
+									<BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
 									<p className="text-muted-foreground">This story has no chapters yet.</p>
 								</div>
 							)}
