@@ -27,7 +27,6 @@ export interface CreatorStory {
 	characters: Character[]
 	likes: number
 	author: string // User ID (relation)
-	chapters: string[] // Chapter IDs (relation)
 	coverImage: string | null // Image record ID (relation to images collection)
 	isPublished: boolean
 	isCompleted: boolean
@@ -218,6 +217,7 @@ export interface StoryWithExpand extends CreatorStory {
 		chapters?: CreatorChapter[]
 		coverImage?: {
 			id: string
+			collectionId: string
 			image: string
 			alt: string
 			created: string

@@ -130,11 +130,38 @@ export class CreatorStoryService {
 	 */
 	async getStoryBySlug(slug: string, expand = false): Promise<StoryWithExpand | null> {
 		try {
-			const expandParam = expand ? 'author,chapters,coverImage' : ''
+			const expandParam = expand ? 'author,coverImage' : ''
 
 			const record = await pb.collection(this.collectionName).getFirstListItem<StoryWithExpand>(`slug="${slug}"`, {
 				expand: expandParam,
 			})
+
+			if (expand) {
+				// fetch chapters separately since relation is inverse and add to expand
+				const chapterRecords = await pb.collection('c_chapters').getFullList({
+					filter: `story="${record.id}"`,
+					sort: 'order',
+				})
+
+				// Convert RecordModel[] to CreatorChapter[]
+				const chapters: CreatorChapter[] = chapterRecords.map(chapter => ({
+					id: chapter.id,
+					story: chapter.story,
+					title: chapter.title,
+					order: chapter.order,
+					programed: chapter.programed,
+					isPublished: chapter.isPublished ?? false,
+					coverImage: chapter.coverImage ?? null,
+					created: chapter.created,
+					updated: chapter.updated,
+				}))
+
+				record.expand = {
+					...record.expand,
+					chapters,
+				}
+
+			}
 
 			return record
 		} catch (_error) {
