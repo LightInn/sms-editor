@@ -26,7 +26,7 @@ export default function OriginalChapterDetail({ story, chapter }: OriginalChapte
 		<div className="container max-w-4xl mx-auto py-8 px-4">
 			{/* Navigation */}
 			<div className="flex items-center justify-between mb-6">
-				<Link href={`/original/story/${story.slug}`}>
+				<Link href={`/story/${story.slug}`}>
 					<Button variant="ghost" size="sm" className="gap-2">
 						<ArrowLeft className="h-4 w-4" />
 						Back to Story
@@ -35,7 +35,7 @@ export default function OriginalChapterDetail({ story, chapter }: OriginalChapte
 
 				<div className="flex items-center gap-2">
 					{prevChapter && (
-						<Link href={`/original/story/${story.slug}/${prevChapter.id}`}>
+						<Link href={`/story/${story.slug}/${prevChapter.id}`}>
 							<Button variant="outline" size="sm" className="gap-2">
 								<ChevronLeft className="h-4 w-4" />
 								Previous
@@ -43,7 +43,7 @@ export default function OriginalChapterDetail({ story, chapter }: OriginalChapte
 						</Link>
 					)}
 					{nextChapter && (
-						<Link href={`/original/story/${story.slug}/${nextChapter.id}`}>
+						<Link href={`/story/${story.slug}/${nextChapter.id}`}>
 							<Button variant="outline" size="sm" className="gap-2">
 								Next
 								<ChevronRight className="h-4 w-4" />
@@ -88,7 +88,7 @@ export default function OriginalChapterDetail({ story, chapter }: OriginalChapte
 					<Separator className="my-8" />
 					<div className="flex items-center justify-between">
 						{prevChapter ? (
-							<Link href={`/original/story/${story.slug}/${prevChapter.id}`}>
+							<Link href={`/story/${story.slug}/${prevChapter.id}`}>
 								<Button variant="outline" className="gap-2">
 									<ChevronLeft className="h-4 w-4" />
 									Previous: {prevChapter.title}
@@ -99,7 +99,7 @@ export default function OriginalChapterDetail({ story, chapter }: OriginalChapte
 						)}
 
 						{nextChapter ? (
-							<Link href={`/original/story/${story.slug}/${nextChapter.id}`}>
+							<Link href={`/story/${story.slug}/${nextChapter.id}`}>
 								<Button variant="outline" className="gap-2">
 									Next: {nextChapter.title}
 									<ChevronRight className="h-4 w-4" />

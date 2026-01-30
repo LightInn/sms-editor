@@ -16,7 +16,7 @@ export default function OriginalAuthorDetail({ stories }: { stories: StoryWithEx
 		<div className="container max-w-6xl mx-auto py-8 px-4">
 			{/* Back navigation */}
 			<div className="mb-6">
-				<Link href="/original">
+				<Link href="/explore">
 					<Button variant="ghost" size="sm" className="gap-2">
 						<ArrowLeft className="h-4 w-4" />
 						Back to Original Stories
@@ -82,7 +82,7 @@ export default function OriginalAuthorDetail({ stories }: { stories: StoryWithEx
 }
 
 function StoryCard({ story }: { story: StoryWithExpand }) {
-	const href = `/original/story/${story.slug}`
+	const href = `/story/${story.slug}`
 
 	return (
 		<Card className="hover:shadow-md transition-shadow">

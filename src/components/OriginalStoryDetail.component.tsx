@@ -52,7 +52,7 @@ export default function OriginalStoryDetail({ story, chapters }: OriginalStoryDe
 		<div className="container max-w-4xl mx-auto py-8 px-4">
 			{/* Back navigation */}
 			<div className="mb-6">
-				<Link href="/original">
+				<Link href="/explore">
 					<Button variant="ghost" size="sm" className="gap-2">
 						<ArrowLeft className="h-4 w-4" />
 						Back to Original Stories
@@ -88,7 +88,7 @@ export default function OriginalStoryDetail({ story, chapters }: OriginalStoryDe
 							<div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
 								<div className="flex items-center gap-1">
 									<User className="h-4 w-4" />
-									<Link href={`/original/author/${authorId}`} className="hover:underline">
+									<Link href={`/author/${authorId}`} className="hover:underline">
 										{authorName}
 									</Link>
 								</div>

@@ -107,7 +107,7 @@ export function OriginalStoryReader({ story, chapters, initialChapterId }: Origi
 			<header className="border-b border-border bg-card px-4 py-3 shrink-0">
 				<div className="flex items-center justify-between max-w-7xl mx-auto">
 					<div className="flex items-center gap-4">
-						<Link href={`/original/story/${story.slug}`}>
+						<Link href={`/story/${story.slug}`}>
 							<Button variant="ghost" size="sm" className="gap-2">
 								<ArrowLeft className="h-4 w-4" />
 								<span className="hidden sm:inline">Back to Story</span>
