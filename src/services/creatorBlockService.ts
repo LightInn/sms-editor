@@ -317,7 +317,7 @@ export class CreatorBlockService {
 			let avatarUrl: string | null = null
 			if (mostRecentBlock.conversationAvatar && mostRecentBlock.expand?.conversationAvatar) {
 				const imageRecord = mostRecentBlock.expand.conversationAvatar
-				avatarUrl = `https://pocketbase-received.lightin.io/api/files/images/${imageRecord.id}/${imageRecord.image}?thumb=300x300`
+				avatarUrl = `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${imageRecord.id}/${imageRecord.image}?thumb=300x300`
 			}
 
 			// Return the recovered data
