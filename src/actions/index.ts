@@ -6,6 +6,8 @@ export * from './exportActions'
 // Media actions
 export * from './media'
 export * from './mediaActions'
+export * from './readingProgress.actions'
+export * from './serviceActions'
 export * from './story'
 
 // Utilities

@@ -3,6 +3,7 @@
 		"declaration": true,
 		"declarationMap": true,
 		"outDir": "./dist",
+		"rootDir": "..",
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["../src/*"],

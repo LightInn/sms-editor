@@ -6,11 +6,11 @@
 
 'use client'
 
+import { createStoryAction } from '@sms-editor/actions/story/crud.actions'
 import type { Character } from '@sms-editor/types/creator-stories'
 import { generateSlug } from '@sms-editor/types/creator-stories'
 import { useActionState, useState } from 'react'
 import { toast } from 'sonner'
-import { createStoryAction } from '@/actions/story.actions'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'

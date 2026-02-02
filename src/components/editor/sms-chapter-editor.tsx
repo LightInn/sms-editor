@@ -5,6 +5,7 @@
 
 'use client'
 
+import { uploadCharacterAvatar } from '@sms-editor/actions/media'
 import { useManualSave } from '@sms-editor/hooks/use-manual-save'
 import { cn } from '@sms-editor/lib/utils'
 import { Info, Loader2, Settings, Trash2, Upload, X } from 'lucide-react'
@@ -27,7 +28,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { uploadCharacterAvatar } from '../../actions/media'
 import {
 	findPreviousConversationDataAction,
 	getBlockAction,

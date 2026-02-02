@@ -6,47 +6,24 @@
 import { auth } from '@sms-editor/lib/auth/auth.server'
 import { headers } from 'next/headers'
 import { pb } from '@/lib/pocketbase'
+import type {
+	ActionResult,
+	AuthenticatedPB,
+	ChapterOwnershipResult,
+	MultipleChaptersOwnershipResult,
+} from './return-types'
 
-// ============================================================================
-// TYPES
-// ============================================================================
-
-export interface AuthenticatedPB {
-	pb: typeof pb
-	userId: string
-}
-
-export interface ActionResult<T = undefined> {
-	success: boolean
-	error?: string
-	data?: T
-}
-
-// Ownership verification result types
-export type ChapterOwnershipSuccess = {
-	valid: true
-	chapter: { id: string; story: string }
-	story: { id: string; author: string }
-}
-
-export type ChapterOwnershipError = {
-	valid: false
-	error: string
-}
-
-export type ChapterOwnershipResult = ChapterOwnershipSuccess | ChapterOwnershipError
-
-export type MultipleChaptersOwnershipSuccess = {
-	valid: true
-	chapters: Array<{ id: string; story: string }>
-}
-
-export type MultipleChaptersOwnershipError = {
-	valid: false
-	error: string
-}
-
-export type MultipleChaptersOwnershipResult = MultipleChaptersOwnershipSuccess | MultipleChaptersOwnershipError
+// Re-export types for backward compatibility (within this file's consumers if any use types from here)
+export type {
+	ActionResult,
+	AuthenticatedPB,
+	ChapterOwnershipError,
+	ChapterOwnershipResult,
+	ChapterOwnershipSuccess,
+	MultipleChaptersOwnershipError,
+	MultipleChaptersOwnershipResult,
+	MultipleChaptersOwnershipSuccess,
+} from './return-types'
 
 // ============================================================================
 // AUTHENTICATION
