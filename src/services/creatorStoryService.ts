@@ -139,7 +139,7 @@ export class CreatorStoryService {
 			if (expand) {
 				// fetch chapters separately since relation is inverse and add to expand
 				const chapterRecords = await pb.collection('c_chapters').getFullList({
-					filter: `story="${record.id}"  && nsfw=${process.env.IS_NSFW}`,
+					filter: `story="${record.id}"`,
 					sort: 'order',
 				})
 
