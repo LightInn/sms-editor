@@ -132,14 +132,14 @@ export class CreatorStoryService {
 		try {
 			const expandParam = expand ? 'author,coverImage' : ''
 
-			const record = await pb.collection(this.collectionName).getFirstListItem<StoryWithExpand>(`slug="${slug}"`, {
+			const record = await pb.collection(this.collectionName).getFirstListItem<StoryWithExpand>(`slug="${slug}" && nsfw=${process.env.IS_NSFW}`, {
 				expand: expandParam,
 			})
 
 			if (expand) {
 				// fetch chapters separately since relation is inverse and add to expand
 				const chapterRecords = await pb.collection('c_chapters').getFullList({
-					filter: `story="${record.id}"`,
+					filter: `story="${record.id}"  && nsfw=${process.env.IS_NSFW}`,
 					sort: 'order',
 				})
 
@@ -181,7 +181,7 @@ export class CreatorStoryService {
 		}
 
 		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(page, perPage, {
-			filter: `author="${targetUserId}"`,
+			filter: `author="${targetUserId}" && nsfw=${process.env.IS_NSFW}`,
 			sort: '-created',
 			expand: 'author,coverImage',
 		})
@@ -225,7 +225,7 @@ export class CreatorStoryService {
 	 */
 	async getPublishedStories(page = 1, perPage = 20): Promise<StoryWithExpand[]> {
 		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(page, perPage, {
-			filter: 'isPublished=true',
+			filter: `isPublished=true  && nsfw=${process.env.IS_NSFW}`,
 			sort: '-created',
 			expand: 'author,coverImage',
 		})
@@ -240,16 +240,9 @@ export class CreatorStoryService {
 	async getLatestOriginalStories(limit = 5, nsfw = false): Promise<StoryWithExpand[]> {
 		const safeLimit = Math.max(1, Math.min(limit, 50)) // Allow fetching more for proper sorting
 
-		let filter = 'isPublished=true'
-		if (nsfw === true) {
-			filter += ' && nsfw=True'
-		} else if (nsfw === false) {
-			filter += ' && nsfw=False'
-		}
-
 		// Fetch more stories than needed to ensure we can sort by latest chapter
 		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(1, safeLimit * 2, {
-			filter,
+			filter: `isPublished=true  && nsfw=${process.env.IS_NSFW}`,
 			sort: '-created', // Temporary sort, will be overridden by chapter-based sorting
 			expand: 'author,coverImage',
 		})
@@ -335,7 +328,7 @@ export class CreatorStoryService {
 	 */
 	async isSlugAvailable(slug: string, excludeId?: string): Promise<boolean> {
 		try {
-			const filter = excludeId ? `slug="${slug}" && id!="${excludeId}"` : `slug="${slug}"`
+			const filter = excludeId ? `slug="${slug}" && id!="${excludeId}" && nsfw=${process.env.IS_NSFW}` : `slug="${slug}" && nsfw=${process.env.IS_NSFW}`
 
 			const result = await pb.collection(this.collectionName).getList(1, 1, {
 				filter,
@@ -384,7 +377,7 @@ export class CreatorStoryService {
 		}
 
 		const result = await pb.collection(this.collectionName).getList(1, 1, {
-			filter: `author="${targetUserId}"`,
+			filter: `author="${targetUserId}" && nsfw=${process.env.IS_NSFW}`,
 		})
 
 		return result.totalItems
@@ -395,7 +388,7 @@ export class CreatorStoryService {
 	 */
 	async searchStories(query: string, page = 1, perPage = 20): Promise<StoryWithExpand[]> {
 		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(page, perPage, {
-			filter: `title~"${query}" && isPublished=true`,
+			filter: `title~"${query}" && isPublished=true && nsfw=${process.env.IS_NSFW}`,
 			sort: '-created',
 			expand: 'author,coverImage',
 		})
@@ -408,7 +401,7 @@ export class CreatorStoryService {
 	 */
 	async getStoriesByCategory(category: string, page = 1, perPage = 20): Promise<StoryWithExpand[]> {
 		const records = await pb.collection(this.collectionName).getList<StoryWithExpand>(page, perPage, {
-			filter: `categories~"${category}" && isPublished=true`,
+			filter: `categories~"${category}" && isPublished=true && nsfw=${process.env.IS_NSFW}`,
 			sort: '-created',
 			expand: 'author,coverImage',
 		})
@@ -474,7 +467,7 @@ export class CreatorStoryService {
 	 */
 	async getAllPublishedStories(): Promise<StoryWithExpand[]> {
 		return await pb.collection(this.collectionName).getFullList<StoryWithExpand>({
-			filter: 'isPublished=true',
+			filter: `isPublished=true && nsfw=${process.env.IS_NSFW}`,
 		})
 	}
 
@@ -484,7 +477,7 @@ export class CreatorStoryService {
 	async getCategoriesWithCounts(): Promise<{ name: string; count: number }[]> {
 		try {
 			const records = await pb.collection(this.collectionName).getList(1, 1000, {
-				filter: 'isPublished=true',
+				filter: `isPublished=true && nsfw=${process.env.IS_NSFW}`,
 				fields: 'categories',
 			})
 
