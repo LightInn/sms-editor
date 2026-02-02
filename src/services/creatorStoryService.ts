@@ -132,9 +132,11 @@ export class CreatorStoryService {
 		try {
 			const expandParam = expand ? 'author,coverImage' : ''
 
-			const record = await pb.collection(this.collectionName).getFirstListItem<StoryWithExpand>(`slug="${slug}" && nsfw=${process.env.IS_NSFW}`, {
-				expand: expandParam,
-			})
+			const record = await pb
+				.collection(this.collectionName)
+				.getFirstListItem<StoryWithExpand>(`slug="${slug}" && nsfw=${process.env.IS_NSFW}`, {
+					expand: expandParam,
+				})
 
 			if (expand) {
 				// fetch chapters separately since relation is inverse and add to expand
@@ -237,7 +239,7 @@ export class CreatorStoryService {
 	 * Get the most recent published stories (limited set for showcases)
 	 * Sorted by the most recent chapter date, not story creation date
 	 */
-	async getLatestOriginalStories(limit = 5, nsfw = false): Promise<StoryWithExpand[]> {
+	async getLatestOriginalStories(limit = 5, _nsfw = false): Promise<StoryWithExpand[]> {
 		const safeLimit = Math.max(1, Math.min(limit, 50)) // Allow fetching more for proper sorting
 
 		// Fetch more stories than needed to ensure we can sort by latest chapter
@@ -328,7 +330,9 @@ export class CreatorStoryService {
 	 */
 	async isSlugAvailable(slug: string, excludeId?: string): Promise<boolean> {
 		try {
-			const filter = excludeId ? `slug="${slug}" && id!="${excludeId}" && nsfw=${process.env.IS_NSFW}` : `slug="${slug}" && nsfw=${process.env.IS_NSFW}`
+			const filter = excludeId
+				? `slug="${slug}" && id!="${excludeId}" && nsfw=${process.env.IS_NSFW}`
+				: `slug="${slug}" && nsfw=${process.env.IS_NSFW}`
 
 			const result = await pb.collection(this.collectionName).getList(1, 1, {
 				filter,

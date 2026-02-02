@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { timeAgo } from '@/lib/datetime'
 
-export default function OriginalAuthorDetail({ stories }: { stories: StoryWithExpand[] }) {
+export function OriginalAuthorDetail({ stories }: { stories: StoryWithExpand[] }) {
 	// Get author info from first story (assuming all stories have same author)
 	const authorInfo = stories[0]?.expand?.author
 	const authorName = authorInfo?.name || authorInfo?.email || 'Anonymous Author'
@@ -47,7 +47,8 @@ export default function OriginalAuthorDetail({ stories }: { stories: StoryWithEx
 					</div>
 				</div>
 
-				{authorInfo?.subscribestar && (
+				{/* social links + bio */}
+				{/* {authorInfo?.subscribestar && (
 					<div className="mb-4">
 						<Link href={`https://subscribestar.com/${authorInfo.subscribestar}`} target="_blank">
 							<Button variant="outline" size="sm" className="gap-2">
@@ -55,7 +56,7 @@ export default function OriginalAuthorDetail({ stories }: { stories: StoryWithEx
 							</Button>
 						</Link>
 					</div>
-				)}
+				)} */}
 			</div>
 
 			{/* Stories grid */}
@@ -91,7 +92,11 @@ function StoryCard({ story }: { story: StoryWithExpand }) {
 				{story.coverImage && (
 					<div className="aspect-4/3 relative overflow-hidden rounded-t-lg bg-muted">
 						<Image
-							src={story.coverImage}
+							src={
+								story.expand?.coverImage
+									? `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/${story.expand.coverImage.collectionId}/${story.expand.coverImage.id}/${story.expand.coverImage.image}`
+									: ''
+							}
 							alt={story.title}
 							fill
 							className="object-cover transition-transform duration-300 ease-out hover:scale-105"

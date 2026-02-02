@@ -28,4 +28,5 @@ export { StorySettingsPanel } from './editor/story-settings-panel'
 export { TiptapEditor } from './editor/tiptap-editor'
 
 export { FullscreenStoryReader } from './FullscreenStoryReader.client'
+export { OriginalAuthorDetail } from './OriginalAuthorDetail.component'
 export { ReaderWithProgress } from './progress/ReaderWithProgress'
