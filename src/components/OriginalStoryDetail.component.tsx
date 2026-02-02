@@ -88,7 +88,7 @@ export default function OriginalStoryDetail({ story, chapters }: OriginalStoryDe
 							<div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
 								<div className="flex items-center gap-1">
 									<User className="h-4 w-4" />
-									<Link href={`/author/${authorId}`} className="hover:underline">
+									<Link href={`${process.env.ORIGINAL_PREFIX}/author/${authorId}`} className="hover:underline">
 										{authorName}
 									</Link>
 								</div>
