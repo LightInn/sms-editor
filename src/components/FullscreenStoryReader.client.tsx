@@ -131,7 +131,7 @@ export function FullscreenStoryReader({ story, chapters, initialChapterId }: Ful
 						hasNextChapter={hasNextChapter}
 						onPreviousChapter={goToPreviousChapter}
 						onNextChapter={goToNextChapter}
-						authorName={story.expand?.author?.name}
+						authorId={story.expand?.author?.id}
 						storyTitle={story.title}
 					/>
 				)}
@@ -221,7 +221,7 @@ export function FullscreenStoryReader({ story, chapters, initialChapterId }: Ful
 										hasNextChapter={hasNextChapter}
 										onPreviousChapter={goToPreviousChapter}
 										onNextChapter={goToNextChapter}
-										authorName={story.expand?.author?.name}
+										authorId={story.expand?.author?.id}
 										storyTitle={story.title}
 									/>
 								)}

@@ -44,7 +44,7 @@ export interface FullscreenBlockPreviewProps {
 	// Mobile nav
 	onOpenMobileNav?: () => void
 	// End of story modal
-	authorName?: string
+	authorId?: string
 	storyTitle?: string
 }
 
@@ -106,7 +106,7 @@ export function FullscreenBlockPreview({
 	onPreviousChapter,
 	onNextChapter,
 	onOpenMobileNav,
-	authorName,
+	authorId,
 	storyTitle,
 }: FullscreenBlockPreviewProps) {
 	const [currentIndex, setCurrentIndex] = useState(0)
@@ -406,7 +406,7 @@ export function FullscreenBlockPreview({
 			<EndOfStoryModal
 				open={endOfStoryModalOpen}
 				onOpenChange={setEndOfStoryModalOpen}
-				authorName={authorName}
+				authorId={authorId}
 				storyTitle={storyTitle}
 			/>
 		</div>

@@ -13,11 +13,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 export interface EndOfStoryModalProps {
 	open: boolean
 	onOpenChange: (open: boolean) => void
-	authorName?: string
+	authorId?: string
 	storyTitle?: string
 }
 
-export function EndOfStoryModal({ open, onOpenChange, authorName, storyTitle }: EndOfStoryModalProps) {
+export function EndOfStoryModal({ open, onOpenChange, authorId, storyTitle }: EndOfStoryModalProps) {
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="max-w-md">
@@ -48,8 +48,8 @@ export function EndOfStoryModal({ open, onOpenChange, authorName, storyTitle }: 
 						</Button>
 					</Link>
 
-					{authorName && (
-						<Link href={`${process.env.NEXT_PUBLIC_ORIGINAL_PREFIX}/author/${authorName}`} className="block">
+					{authorId && (
+						<Link href={`${process.env.NEXT_PUBLIC_ORIGINAL_PREFIX}/author/${authorId}`} className="block">
 							<Button variant="outline" size="lg" className="w-full gap-2">
 								<User className="h-5 w-5" />
 								View author's profile
