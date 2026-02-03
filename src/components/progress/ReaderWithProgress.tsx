@@ -5,7 +5,7 @@ import { FullscreenStoryReader } from '@sms-editor/components/FullscreenStoryRea
 import type { ChapterWithExpand, StoryWithExpand } from '@sms-editor/types/creator-stories'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
-
+import { useStoryView } from '@/hooks/use-story-view'
 import { useIsSubscribed } from '@/hooks/use-subscription'
 
 interface ReaderWithProgressProps {
@@ -17,13 +17,16 @@ interface ReaderWithProgressProps {
 export function ReaderWithProgress({ story, chapters, initialChapterId }: ReaderWithProgressProps) {
 	const isSubscribed = useIsSubscribed()
 
+	// Track story view (throttled by localStorage)
+	useStoryView(story.id)
+
 	useEffect(() => {
 		if (isSubscribed) {
 			markChapterAsRead(initialChapterId, story.id).catch(() => {
 				toast.error('Failed to update reading progress')
 			})
 		}
-	}, [isSubscribed, initialChapterId])
+	}, [isSubscribed, initialChapterId, story.id])
 
 	return <FullscreenStoryReader story={story} chapters={chapters} initialChapterId={initialChapterId} />
 }

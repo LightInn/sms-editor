@@ -26,6 +26,7 @@ export interface CreatorStory {
 	categories: string[] // Tags/categories
 	characters: Character[]
 	likes: number
+	views: number // View counter
 	author: string // User ID (relation)
 	coverImage: string | null // Image record ID (relation to images collection)
 	isPublished: boolean

@@ -7,7 +7,7 @@
 
 import type { StoryWithExpand } from '@sms-editor/types/creator-stories'
 import { format } from 'date-fns'
-import { Calendar, FileText } from 'lucide-react'
+import { Calendar, Eye, FileText } from 'lucide-react'
 import Link from 'next/link'
 import Image from '@/components/global/image-fallback.component'
 import { Badge } from '@/components/ui/badge'
@@ -83,6 +83,10 @@ export function StoryCard({ story, coverImageUrl }: StoryCardProps) {
 							<span>
 								{chapterCount} {chapterCount === 1 ? 'chapter' : 'chapters'}
 							</span>
+						</div>
+						<div className="flex items-center gap-1">
+							<Eye className="h-3 w-3" />
+							<span>{story.views || 0} views</span>
 						</div>
 						<div className="flex items-center gap-1">
 							<Calendar className="h-3 w-3" />
