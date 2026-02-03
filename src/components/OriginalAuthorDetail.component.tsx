@@ -1,5 +1,5 @@
 import type { StoryWithExpand } from '@sms-editor/types/creator-stories'
-import { ArrowLeft, BookOpen, Calendar, CheckCircle, User } from 'lucide-react'
+import { ArrowLeft, BookOpen, Calendar, CheckCircle, ExternalLink, User } from 'lucide-react'
 import Link from 'next/link'
 import Image from '@/components/global/image-fallback.component'
 import { Badge } from '@/components/ui/badge'
@@ -11,6 +11,8 @@ export function OriginalAuthorDetail({ stories }: { stories: StoryWithExpand[] }
 	// Get author info from first story (assuming all stories have same author)
 	const authorInfo = stories[0]?.expand?.author
 	const authorName = authorInfo?.name || authorInfo?.email || 'Anonymous Author'
+	const authorBio = authorInfo?.bio
+	const authorLink = authorInfo?.link
 
 	return (
 		<div className="container max-w-6xl mx-auto py-8 px-4">
@@ -47,16 +49,26 @@ export function OriginalAuthorDetail({ stories }: { stories: StoryWithExpand[] }
 					</div>
 				</div>
 
-				{/* social links + bio */}
-				{/* {authorInfo?.subscribestar && (
+				{/* Bio section */}
+				{authorBio && (
+					<Card className="mb-4">
+						<CardContent className="pt-6">
+							<p className="text-muted-foreground whitespace-pre-wrap">{authorBio}</p>
+						</CardContent>
+					</Card>
+				)}
+
+				{/* Author link */}
+				{authorLink && (
 					<div className="mb-4">
-						<Link href={`https://subscribestar.com/${authorInfo.subscribestar}`} target="_blank">
+						<a href={authorLink} target="_blank" rel="noopener noreferrer">
 							<Button variant="outline" size="sm" className="gap-2">
-								Subscribe on SubscribeStar
+								<ExternalLink className="h-4 w-4" />
+								Visit Portfolio
 							</Button>
-						</Link>
+						</a>
 					</div>
-				)} */}
+				)}
 			</div>
 
 			{/* Stories grid */}

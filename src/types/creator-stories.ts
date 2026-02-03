@@ -211,6 +211,8 @@ export interface StoryWithExpand extends CreatorStory {
 			name: string
 			email: string
 			emailVerified: boolean
+			bio?: string
+			link?: string
 			subscribestar?: string
 			[key: string]: unknown
 		}
