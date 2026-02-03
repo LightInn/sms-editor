@@ -49,7 +49,7 @@ export function EndOfStoryModal({ open, onOpenChange, authorName, storyTitle }: 
 					</Link>
 
 					{authorName && (
-						<Link href={`${process.env.ORIGINAL_PREFIX}/author/${authorName}`} className="block">
+						<Link href={`${process.env.NEXT_PUBLIC_ORIGINAL_PREFIX}/author/${authorName}`} className="block">
 							<Button variant="outline" size="lg" className="w-full gap-2">
 								<User className="h-5 w-5" />
 								View author's profile
