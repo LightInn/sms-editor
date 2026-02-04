@@ -35,6 +35,7 @@ export class CreatorStoryService {
 		formData.append('isCompleted', 'false')
 		formData.append('nsfw', (data.nsfw ?? true).toString()) // Default to true for this project
 		formData.append('likes', '0')
+		formData.append('views', '0')
 
 		if (data.description) {
 			formData.append('description', data.description)
