@@ -125,8 +125,8 @@ export function CharacterEditor({ characters, onChange }: CharacterEditorProps) 
 			return
 		}
 
-		if (!sanitizedLastName || sanitizedLastName.length < 2 || sanitizedLastName.length > 100) {
-			toast.error('Last name must be between 2 and 100 characters')
+		if (sanitizedLastName && (sanitizedLastName.length < 2 || sanitizedLastName.length > 100)) {
+			toast.error('Last name must be between 2 and 100 characters if provided')
 			return
 		}
 
@@ -143,7 +143,7 @@ export function CharacterEditor({ characters, onChange }: CharacterEditorProps) 
 					? {
 							...char,
 							firstName: sanitizedFirstName,
-							lastName: sanitizedLastName,
+							lastName: sanitizedLastName || undefined,
 							avatar: formData.avatar,
 						}
 					: char
@@ -154,7 +154,7 @@ export function CharacterEditor({ characters, onChange }: CharacterEditorProps) 
 			const newCharacter: Character = {
 				id: uuidv4(),
 				firstName: sanitizedFirstName,
-				lastName: sanitizedLastName,
+				lastName: sanitizedLastName || undefined,
 				avatar: formData.avatar,
 			}
 			onChange([...characters, newCharacter])
@@ -193,7 +193,8 @@ export function CharacterEditor({ characters, onChange }: CharacterEditorProps) 
 									</div>
 									<div>
 										<p className="font-medium text-sm">
-											{character.firstName} {character.lastName}
+											{character.firstName}
+											{character.lastName ? ` ${character.lastName}` : ''}
 										</p>
 									</div>
 								</div>
@@ -245,7 +246,7 @@ export function CharacterEditor({ characters, onChange }: CharacterEditorProps) 
 
 								<div className="space-y-2">
 									<Label htmlFor="lastName" className="text-sm text-muted-foreground">
-										Last Name *
+										Last Name (optional)
 									</Label>
 									<Input
 										id="lastName"
@@ -314,11 +315,7 @@ export function CharacterEditor({ characters, onChange }: CharacterEditorProps) 
 							<Button type="button" variant="outline" onClick={handleCloseDialog} disabled={isUploading}>
 								Cancel
 							</Button>
-							<Button
-								type="button"
-								onClick={handleSave}
-								disabled={!formData.firstName.trim() || !formData.lastName.trim() || isUploading}
-							>
+							<Button type="button" onClick={handleSave} disabled={!formData.firstName.trim() || isUploading}>
 								{editingCharacter ? 'Update' : 'Add'}
 							</Button>
 						</DialogFooter>

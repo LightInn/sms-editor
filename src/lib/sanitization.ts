@@ -242,9 +242,12 @@ export function sanitizeCharacter(input: unknown): SanitizedCharacter | null {
 	const obj = input as Record<string, unknown>
 
 	const firstName = sanitizeName(typeof obj.firstName === 'string' ? obj.firstName : '')
-	const lastName = sanitizeName(typeof obj.lastName === 'string' ? obj.lastName : '')
+	const lastName =
+		typeof obj.lastName === 'string' && obj.lastName && obj.lastName !== '$undefined'
+			? sanitizeName(obj.lastName)
+			: ''
 
-	if (!firstName || !lastName) return null
+	if (!firstName) return null
 
 	return {
 		id: typeof obj.id === 'string' ? obj.id : '',

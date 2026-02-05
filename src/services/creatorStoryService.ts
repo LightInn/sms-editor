@@ -117,7 +117,7 @@ export class CreatorStoryService {
 	 * Get a story by ID
 	 */
 	async getStory(id: string, expand = false): Promise<StoryWithExpand> {
-		const expandParam = expand ? 'author,chapters,coverImage' : ''
+		const expandParam = expand ? 'author,coverImage' : ''
 
 		const record = await pb.collection(this.collectionName).getOne<StoryWithExpand>(id, {
 			expand: expandParam,

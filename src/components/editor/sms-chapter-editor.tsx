@@ -90,31 +90,12 @@ export function SmsChapterEditor({
 	const [_isLoadingRecovery, setIsLoadingRecovery] = useState(false)
 	const [showRecoveryIndicator, setShowRecoveryIndicator] = useState(false)
 
-	// Update conversationAvatar and URL when chapter changes
+	// Update conversation settings when chapter changes
 	useEffect(() => {
-		const chapterWithExpand = chapter as BlockWithExpand
-
-		// Reset and update state from chapter
-		setConversationTitle(chapter.conversationTitle)
-		setConversationAvatar(chapter.conversationAvatar)
-
-		// If we have expand data for avatar, extract the URL
-		const expandData = chapterWithExpand.expand
-		if (expandData?.conversationAvatar) {
-			// Construct URL from expanded image record
-			const imageRecord = expandData.conversationAvatar
-			const url = `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${imageRecord.id}/${imageRecord.image}?thumb=300x300`
-			setConversationAvatarUrl(url)
-		} else if (chapter.conversationAvatar) {
-			// We have an ID but no expand data - this shouldn't happen normally
-			// Try to construct URL with the ID we have
-			console.warn('[SmsChapterEditor] conversationAvatar ID present but no expand data')
-			setConversationAvatarUrl(null)
-		} else {
-			// No avatar - reset URL
-			setConversationAvatarUrl(null)
-		}
-	}, [chapter])
+		setConversationType(chapter.conversationType || 'duo')
+		setAppTarget(chapter.appTarget || 'imessage')
+		setParticipants(chapter.participants || [])
+	}, [chapter.conversationType, chapter.appTarget, chapter.participants])
 
 	// Conversation settings
 	const [conversationDate, setConversationDate] = useState(() => {

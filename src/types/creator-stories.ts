@@ -11,7 +11,7 @@
 export interface Character {
 	id: string // UUID
 	firstName: string
-	lastName: string
+	lastName?: string
 	avatar: string | null // URL or file path
 }
 
@@ -269,7 +269,7 @@ export interface BlockWithExpand extends CreatorBlock {
 
 export interface CharacterFormData {
 	firstName: string
-	lastName: string
+	lastName?: string
 	avatar: File | null
 }
 
@@ -405,7 +405,7 @@ export const getCharacterById = (characterId: string, characters: Character[]): 
 export const getParticipantName = (participant: Participant, characters: Character[]): string => {
 	if (participant.customName) return participant.customName
 	const char = getCharacterById(participant.characterId, characters)
-	return char ? `${char.firstName} ${char.lastName}` : 'Unknown'
+	return char ? [char.firstName, char.lastName].filter(Boolean).join(' ') : 'Unknown'
 }
 
 /**
