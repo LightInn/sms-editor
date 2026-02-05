@@ -12,7 +12,7 @@ export const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg', 'vid
 
 export const MAX_IMAGE_SIZE = 10 * 1024 * 1024 // 10MB
 export const MAX_VIDEO_SIZE = 50 * 1024 * 1024 // 50MB
-export const MAX_AVATAR_SIZE = 5 * 1024 * 1024 // 5MB
+export const MAX_AVATAR_SIZE = 10 * 1024 * 1024 // 10MB
 
 // ============================================================================
 // VALIDATION TYPES
