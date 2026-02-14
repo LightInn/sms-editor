@@ -36,7 +36,6 @@ import {
 } from '../../actions/serviceActions'
 import type {
 	AppTarget,
-	BlockWithExpand,
 	ChapterWithExpand,
 	Character,
 	ConversationType,

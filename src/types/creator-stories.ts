@@ -110,7 +110,7 @@ export interface Participant {
 	position?: 'left' | 'right' // For duo conversations only
 }
 
-export type MessageType = 'text' | 'image' | 'video' | 'audio' | 'location' | 'sticker' | 'gif'
+export type MessageType = 'text' | 'image' | 'video' | 'audio' | 'location' | 'sticker' | 'gif' | 'time_ellipse'
 
 export interface Message {
 	id: string // UUID

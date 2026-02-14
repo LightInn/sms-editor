@@ -9,7 +9,16 @@ import type { AppTarget, BlockType, ConversationType, MessageType } from '../typ
 // MESSAGE & BLOCK TYPES
 // ============================================================================
 
-export const MESSAGE_TYPES: MessageType[] = ['text', 'image', 'video', 'audio', 'location', 'sticker', 'gif']
+export const MESSAGE_TYPES: MessageType[] = [
+	'text',
+	'image',
+	'video',
+	'audio',
+	'location',
+	'sticker',
+	'gif',
+	'time_ellipse',
+]
 
 export const BLOCK_TYPES: BlockType[] = ['sms_conversation', 'rich_text_content', 'media_content']
 

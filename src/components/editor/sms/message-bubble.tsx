@@ -14,6 +14,7 @@ import { CharacterAvatar } from '@/components/ui/character-avatar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import type { Message } from '../../../types/creator-stories'
+import { TimeEllipse } from './time-ellipse'
 
 export interface MessageBubbleProps {
 	message: Message
@@ -40,6 +41,11 @@ export function MessageBubble({
 	const [imageError, setImageError] = useState(false)
 	const [imageDimensions, setImageDimensions] = useState({ width: 300, height: 300 })
 	const [isMediaViewerOpen, setIsMediaViewerOpen] = useState(false)
+
+	// Render time ellipse if this is a time_ellipse type message
+	if (message.type === 'time_ellipse') {
+		return <TimeEllipse content={message.content} onDelete={onDelete} onEdit={onEdit} />
+	}
 
 	return (
 		<>

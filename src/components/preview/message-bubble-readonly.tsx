@@ -12,6 +12,7 @@ import { useState } from 'react'
 import { CharacterAvatar } from '@/components/ui/character-avatar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
+import { TimeEllipse } from '../editor/sms/time-ellipse'
 
 export interface MessageBubbleReadonlyProps {
 	message: Message
@@ -34,6 +35,11 @@ export function MessageBubbleReadonly({
 	const [imageError, setImageError] = useState(false)
 	const [imageDimensions, setImageDimensions] = useState({ width: 300, height: 300 })
 	const [isMediaViewerOpen, setIsMediaViewerOpen] = useState(false)
+
+	// Render time ellipse if this is a time_ellipse type message
+	if (message.type === 'time_ellipse') {
+		return <TimeEllipse content={message.content} readonly />
+	}
 
 	return (
 		<>

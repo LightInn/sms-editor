@@ -5,7 +5,7 @@
 
 'use client'
 
-import { MessageSquarePlus, Plus } from 'lucide-react'
+import { Clock, MessageSquarePlus, Plus } from 'lucide-react'
 import { useState } from 'react'
 import type { Character, Participant } from '../../../types/creator-stories'
 import { getParticipantName } from '../../../types/creator-stories'
@@ -14,9 +14,10 @@ export interface InsertZoneProps {
 	participants: Participant[]
 	characters: Character[]
 	onSelect: (senderId: string, position: 'left' | 'right') => void
+	onTimeEllipseSelect?: () => void
 }
 
-export function InsertZone({ participants, characters, onSelect }: InsertZoneProps) {
+export function InsertZone({ participants, characters, onSelect, onTimeEllipseSelect }: InsertZoneProps) {
 	const [isHovered, setIsHovered] = useState(false)
 
 	// Logic to determine if we should show the "Add a message" generic button or individual buttons
@@ -42,9 +43,9 @@ export function InsertZone({ participants, characters, onSelect }: InsertZonePro
 				}}
 			>
 				{/* Participant buttons - inline in the flow */}
-				<div className="flex justify-between items-center px-2 h-full">
+				<div className="flex justify-between items-center px-2 h-full gap-2">
 					{/* Left side participants (received messages) */}
-					<div className="flex gap-1 items-center">
+					<div className="flex gap-1 items-center flex-1">
 						{isGroupChat ? (
 							// Group Chat: Show generic "Add message" button that triggers the first participant (default)
 							// The inline editor will then allow changing the sender
@@ -75,8 +76,22 @@ export function InsertZone({ participants, characters, onSelect }: InsertZonePro
 						)}
 					</div>
 
+					{/* Center - Time Ellipse button */}
+					{onTimeEllipseSelect && (
+						<div className="flex items-center">
+							<button
+								type="button"
+								className="flex items-center justify-center rounded-full w-7 h-7 border shadow-sm backdrop-blur-sm border-amber-200 bg-amber-100/90 text-amber-700 hover:bg-amber-300/90 transition-colors cursor-pointer appearance-none"
+								onClick={onTimeEllipseSelect}
+								title="Add time ellipse"
+							>
+								<Clock className="h-3.5 w-3.5" />
+							</button>
+						</div>
+					)}
+
 					{/* Right side participant (sent messages - owner) */}
-					<div className="flex gap-1 items-center">
+					<div className="flex gap-1 items-center flex-1 justify-end">
 						{participants[0] && (
 							<button
 								type="button"

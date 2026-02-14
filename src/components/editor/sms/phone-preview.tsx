@@ -146,6 +146,20 @@ export function PhonePreview({
 		setEditingMessageId(null)
 	}
 
+	const handleTimeEllipseClick = (index: number) => {
+		// Create a time ellipse message
+		const newMessage: Omit<Message, 'id'> = {
+			senderId: '', // Time ellipses don't have a sender
+			content: '2 hours later', // Default placeholder
+			type: 'time_ellipse',
+			position: 'left',
+			timestamp: new Date().toISOString(),
+			dayBreak: false,
+		}
+
+		onMessageAdd(newMessage, index)
+	}
+
 	const handleEditClick = (messageId: string) => {
 		setEditingMessageId(messageId)
 		setEditingPosition(null)
@@ -354,6 +368,7 @@ export function PhonePreview({
 											participants={participants}
 											characters={characters}
 											onSelect={(senderId, position) => handleInsertClick(0, senderId, position)}
+											onTimeEllipseSelect={() => handleTimeEllipseClick(0)}
 										/>
 									)
 								)}
@@ -421,6 +436,7 @@ export function PhonePreview({
 														participants={participants}
 														characters={characters}
 														onSelect={(senderId, position) => handleInsertClick(index + 1, senderId, position)}
+														onTimeEllipseSelect={() => handleTimeEllipseClick(index + 1)}
 													/>
 												)
 											)}

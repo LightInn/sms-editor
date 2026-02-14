@@ -33,7 +33,7 @@ export class CreatorStoryService {
 		formData.append('author', authModel.id)
 		formData.append('isPublished', 'false')
 		formData.append('isCompleted', 'false')
-		formData.append('nsfw', (data.nsfw ?? (process.env.NEXT_PUBLIC_IS_NSFW === 'true')).toString()) // Default to NEXT_PUBLIC_IS_NSFW env
+		formData.append('nsfw', (data.nsfw ?? process.env.NEXT_PUBLIC_IS_NSFW === 'true').toString()) // Default to NEXT_PUBLIC_IS_NSFW env
 		formData.append('likes', '0')
 		formData.append('views', '0')
 
