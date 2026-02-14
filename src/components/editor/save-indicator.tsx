@@ -49,7 +49,7 @@ export function SaveIndicator({ isSaving, isDirty, lastSaved, error, className, 
 
 	if (isDirty) {
 		return (
-			<div className={cn('flex items-center gap-2 text-sm text-orange-600', className)}>
+			<div className={cn('flex items-center gap-2 text-sm px-8 text-white bg-red-500', className)}>
 				<Circle className="h-3 w-3 fill-current animate-pulse" />
 				<span>Unsaved changes</span>
 			</div>
