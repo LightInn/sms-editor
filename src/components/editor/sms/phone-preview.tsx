@@ -463,6 +463,9 @@ export function PhonePreview({
 										)}
 									</div>
 								)}
+
+								{/* Bottom spacer to ensure last insert zone is always visible */}
+								<div className="h-32" />
 							</div>
 						</ScrollArea>
 					</div>
