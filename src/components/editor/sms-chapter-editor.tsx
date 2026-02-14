@@ -74,7 +74,6 @@ export function SmsChapterEditor({
 	onBackToChapterSettings,
 }: SmsChapterEditorProps) {
 	// Chapter metadata
-	const [title, setTitle] = useState(chapter.title || '')
 	const [conversationTitle, setConversationTitle] = useState(chapter.conversationTitle)
 	const [conversationAvatar, setConversationAvatar] = useState(chapter.conversationAvatar) // Image record ID
 	const [conversationAvatarUrl, setConversationAvatarUrl] = useState<string | null>(null) // URL for display
@@ -255,7 +254,7 @@ export function SmsChapterEditor({
 			chapter: chapter.chapter,
 			type: chapter.type,
 			order: chapter.order,
-			title: title.trim(),
+			title: null, // Block titles are no longer used
 			content: { messages } as SMSContent,
 			conversationType,
 			appTarget,
@@ -270,7 +269,6 @@ export function SmsChapterEditor({
 		chapter.chapter,
 		chapter.type,
 		chapter.order,
-		title,
 		conversationType,
 		appTarget,
 		participants,
@@ -283,10 +281,6 @@ export function SmsChapterEditor({
 	const { isSaving, isDirty, lastSavedAt, error, save } = useManualSave({
 		data: blockData,
 		onSave: async data => {
-			// Validation
-			if (!data.title) {
-				throw new Error('Block title is required')
-			}
 			// Call the parent's onSave and expect the updated block back
 			const savedBlock = await onSave(data as CreatorBlock)
 			// Return the saved block with server timestamp, ensuring it matches the data type
@@ -452,31 +446,9 @@ export function SmsChapterEditor({
 						onParticipantsChange={setParticipants}
 					/>
 
-					{/* Chapter Title Card */}
+					{/* Conversation Settings Card */}
 					<Card>
 						<CardContent className="pt-6 space-y-4">
-							<div className="space-y-2">
-								<div className="flex items-center justify-between">
-									<Label htmlFor="title" className="text-sm text-muted-foreground">
-										Chapter title *
-									</Label>
-									<span className="text-xs text-muted-foreground">{title.length}/100</span>
-								</div>
-								<Input
-									id="title"
-									className="bg-transparent border"
-									placeholder="Enter chapter title"
-									value={title}
-									onChange={e => {
-										const value = e.target.value
-										if (value.length <= 100) {
-											setTitle(value)
-										}
-									}}
-									maxLength={100}
-								/>
-							</div>
-
 							<div className="space-y-2">
 								<div className="flex items-center justify-between">
 									<Label htmlFor="conversationTitle" className="text-sm text-muted-foreground">
@@ -607,8 +579,7 @@ export function SmsChapterEditor({
 						<AlertDialogHeader>
 							<AlertDialogTitle>Delete this block?</AlertDialogTitle>
 							<AlertDialogDescription>
-								This action cannot be undone. This will permanently delete the block "{title || 'Untitled'}" and all its
-								content.
+								This action cannot be undone. This will permanently delete this block and all its content.
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 						<AlertDialogFooter>

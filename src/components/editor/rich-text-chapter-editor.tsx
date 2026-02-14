@@ -18,8 +18,6 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import type { CreatorBlock, RichTextContent } from '../../types/creator-stories'
 import { TiptapEditor } from './tiptap-editor'
 
@@ -42,7 +40,6 @@ export function RichTextChapterEditor({
 	const [editorValue, setEditorValue] = useState(() => {
 		return typeof content.plateJson === 'string' ? content.plateJson : ''
 	})
-	const [title, setTitle] = useState(block.title || '')
 
 	// UI states
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -52,18 +49,17 @@ export function RichTextChapterEditor({
 	useEffect(() => {
 		const newContent = typeof content.plateJson === 'string' ? content.plateJson : ''
 		setEditorValue(newContent)
-		setTitle(block.title || '')
-	}, [block.id, content.plateJson, block.title])
+	}, [block.id, content.plateJson])
 
 	// Prepare data for autosave
 	const chapterData = useMemo(
 		() => ({
-			title: title.trim() || null,
+			title: null,
 			content: {
 				plateJson: editorValue,
 			} as RichTextContent,
 		}),
-		[title, editorValue]
+		[editorValue]
 	)
 
 	// Autosave callback
@@ -149,27 +145,6 @@ export function RichTextChapterEditor({
 				</div>
 			</div>
 
-			{/* Chapter Title */}
-			<Card>
-				<CardHeader>
-					<CardTitle className="text-lg">Chapter Title</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className="space-y-2">
-						<Label htmlFor="chapter-title">Title</Label>
-						<Input
-							id="chapter-title"
-							type="text"
-							value={title}
-							onChange={e => setTitle(e.target.value)}
-							placeholder="Enter chapter title..."
-							className="text-lg font-semibold"
-						/>
-						<p className="text-xs text-muted-foreground">Give your chapter a descriptive title</p>
-					</div>
-				</CardContent>
-			</Card>
-
 			{/* Text Content */}
 			<Card>
 				<CardHeader>
@@ -198,8 +173,7 @@ export function RichTextChapterEditor({
 					<AlertDialogHeader>
 						<AlertDialogTitle>Delete this block?</AlertDialogTitle>
 						<AlertDialogDescription>
-							This action cannot be undone. This will permanently delete the block "{title || 'Untitled'}" and all its
-							content.
+							This action cannot be undone. This will permanently delete this block and all its content.
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>

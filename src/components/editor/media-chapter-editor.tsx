@@ -18,8 +18,6 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import type { CreatorBlock, MediaContent } from '../../types/creator-stories'
 import { MediaUpload } from './media-upload'
 
@@ -39,7 +37,6 @@ export function MediaChapterEditor({
 	const content = block.content as MediaContent
 
 	// Content states
-	const [title, setTitle] = useState(block.title || '')
 	const [mediaRecordId, setMediaRecordId] = useState(block.media || '')
 	const [mediaUrl, setMediaUrl] = useState('')
 	const [mediaAlt, setMediaAlt] = useState(content.mediaAlt || '')
@@ -51,7 +48,6 @@ export function MediaChapterEditor({
 
 	// Sync values when block changes
 	useEffect(() => {
-		setTitle(block.title || '')
 		setMediaAlt(content.mediaAlt || '')
 		setMediaType(content.mediaType || 'image')
 
@@ -90,14 +86,14 @@ export function MediaChapterEditor({
 	// Prepare data for autosave
 	const chapterData = useMemo(
 		() => ({
-			title: title.trim() || null,
+			title: null,
 			content: {
 				mediaAlt,
 				mediaType,
 			} as MediaContent,
 			media: mediaRecordId || null,
 		}),
-		[title, mediaAlt, mediaType, mediaRecordId]
+		[mediaAlt, mediaType, mediaRecordId]
 	)
 
 	// Autosave callback
@@ -183,27 +179,6 @@ export function MediaChapterEditor({
 				</div>
 			</div>
 
-			{/* Chapter Title */}
-			<Card>
-				<CardHeader>
-					<CardTitle className="text-lg">Chapter Title</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className="space-y-2">
-						<Label htmlFor="chapter-title">Title</Label>
-						<Input
-							id="chapter-title"
-							type="text"
-							value={title}
-							onChange={e => setTitle(e.target.value)}
-							placeholder="Enter chapter title..."
-							className="text-lg font-semibold"
-						/>
-						<p className="text-xs text-muted-foreground">Give your chapter a descriptive title</p>
-					</div>
-				</CardContent>
-			</Card>
-
 			{/* Media Content */}
 			<Card>
 				<CardHeader>
@@ -230,8 +205,7 @@ export function MediaChapterEditor({
 					<AlertDialogHeader>
 						<AlertDialogTitle>Delete this chapter?</AlertDialogTitle>
 						<AlertDialogDescription>
-							This action cannot be undone. This will permanently delete the block "{title || 'Untitled'}" and all its
-							content.
+							This action cannot be undone. This will permanently delete this block and all its content.
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>

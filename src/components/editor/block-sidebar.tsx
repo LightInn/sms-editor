@@ -149,7 +149,6 @@ function SortableBlockItem({
 							{getTypeLabel()}
 						</Badge>
 					</div>
-					<p className="text-sm font-medium truncate mt-1">{block.title || 'Untitled Block'}</p>
 				</div>
 			</button>
 		</div>
