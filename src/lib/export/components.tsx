@@ -294,6 +294,8 @@ export function MessageBubble({
 						fontSize: 15,
 						maxWidth: '75%',
 						lineHeight: 1.4,
+						whiteSpace: 'pre-wrap',
+						wordBreak: 'break-word',
 					}}
 				>
 					{message.content}

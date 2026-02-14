@@ -85,7 +85,9 @@ export function MessageBubbleReadonly({
 						>
 							{/* Content based on type */}
 							{message.type === 'text' ? (
-								<div className="text-[15px] leading-tight wrap-break-word block">{message.content}</div>
+								<div className="text-[15px] leading-tight wrap-break-word block whitespace-pre-wrap">
+									{message.content}
+								</div>
 							) : message.type === 'image' ? (
 								<button
 									type="button"
