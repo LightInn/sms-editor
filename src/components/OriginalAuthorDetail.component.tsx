@@ -64,7 +64,7 @@ export function OriginalAuthorDetail({ stories }: { stories: StoryWithExpand[] }
 						<a href={authorLink} target="_blank" rel="noopener noreferrer">
 							<Button variant="outline" size="sm" className="gap-2">
 								<ExternalLink className="h-4 w-4" />
-								Visit Portfolio
+								Visit {new URL(authorLink).hostname}
 							</Button>
 						</a>
 					</div>
