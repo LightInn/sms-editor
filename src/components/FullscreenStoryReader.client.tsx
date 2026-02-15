@@ -6,19 +6,19 @@
 
 'use client'
 
+import { markChapterAsRead } from '@sms-editor/actions/readingProgress.actions'
 import { getChapterBlocksAction } from '@sms-editor/actions/serviceActions'
 import type { BlockWithExpand, ChapterWithExpand, StoryWithExpand } from '@sms-editor/types/creator-stories'
 import { AlertCircle, ArrowLeft, BookOpen, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useIsSubscribed } from '@/hooks/use-subscription'
 import { FullscreenBlockPreview } from './FullscreenBlockPreview.client'
 import { PublicChapterNavigation } from './PublicChapterNavigation'
 import { UnifiedPhonePreview } from './preview/unified-phone-preview'
-import { useIsSubscribed } from '@/hooks/use-subscription'
-import { markChapterAsRead } from '@sms-editor/actions/readingProgress.actions'
-import { toast } from 'sonner'
 
 export interface FullscreenStoryReaderProps {
 	story: StoryWithExpand
@@ -37,17 +37,15 @@ export function FullscreenStoryReader({ story, chapters, initialChapterId }: Ful
 	const [error, setError] = useState<string | null>(null)
 	const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null)
 
-
 	const isSubscribed = useIsSubscribed()
 
-	
-		useEffect(() => {
-			if (isSubscribed) {
-				markChapterAsRead(currentChapterId, story.id).catch(() => {
-					toast.error('Failed to update reading progress')
-				})
-			}
-		}, [isSubscribed, currentChapterId, story.id])
+	useEffect(() => {
+		if (isSubscribed) {
+			markChapterAsRead(currentChapterId, story.id).catch(() => {
+				toast.error('Failed to update reading progress')
+			})
+		}
+	}, [isSubscribed, currentChapterId, story.id])
 
 	// Fetch blocks for current chapter using public endpoint
 	useEffect(() => {
