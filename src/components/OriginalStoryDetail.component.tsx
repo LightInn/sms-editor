@@ -29,10 +29,17 @@ function getChapterStatusLocal(chapter: ChapterWithExpand): 'draft' | 'published
 /**
  * Get cover image URL for a chapter
  */
-function getChapterCoverImageUrl(chapter: ChapterWithExpand): string | null {
-	if (!chapter.expand?.coverImage) return null
-	const { id, image } = chapter.expand.coverImage
-	return `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${id}/${image}`
+function getChapterCoverImageUrl(chapter: ChapterWithExpand, story: StoryWithExpand): string | null {
+	if (chapter.expand?.coverImage) {
+		const { id, image } = chapter.expand.coverImage
+		return `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${id}/${image}`
+	}
+	// Fallback to story cover if chapter has no cover
+	if (story.expand?.coverImage) {
+		const { id, image } = story.expand.coverImage
+		return `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${id}/${image}`
+	}
+	return null
 }
 
 export default function OriginalStoryDetail({ story, chapters }: OriginalStoryDetailProps) {
@@ -162,7 +169,7 @@ export default function OriginalStoryDetail({ story, chapters }: OriginalStoryDe
 					<div className="space-y-3 w-full">
 						{sortedChapters.map(chapter => {
 							const status = getChapterStatusLocal(chapter)
-							const chapterCoverUrl = getChapterCoverImageUrl(chapter)
+							const chapterCoverUrl = getChapterCoverImageUrl(chapter, story)
 							const isLocked = status === 'scheduled'
 
 							return (
