@@ -16,6 +16,9 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { FullscreenBlockPreview } from './FullscreenBlockPreview.client'
 import { PublicChapterNavigation } from './PublicChapterNavigation'
 import { UnifiedPhonePreview } from './preview/unified-phone-preview'
+import { useIsSubscribed } from '@/hooks/use-subscription'
+import { markChapterAsRead } from '@sms-editor/actions/readingProgress.actions'
+import { toast } from 'sonner'
 
 export interface FullscreenStoryReaderProps {
 	story: StoryWithExpand
@@ -33,6 +36,18 @@ export function FullscreenStoryReader({ story, chapters, initialChapterId }: Ful
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 	const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null)
+
+
+	const isSubscribed = useIsSubscribed()
+
+	
+		useEffect(() => {
+			if (isSubscribed) {
+				markChapterAsRead(currentChapterId, story.id).catch(() => {
+					toast.error('Failed to update reading progress')
+				})
+			}
+		}, [isSubscribed, currentChapterId, story.id])
 
 	// Fetch blocks for current chapter using public endpoint
 	useEffect(() => {

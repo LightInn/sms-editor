@@ -1,45 +1,17 @@
-import { formatMediumDate, formatScheduledDate, timeAgo } from '@sms-editor/lib/date-utils'
-// import { formatMediumDate, formatScheduledDate, timeAgo } from '@sms-editor/lib/date-formatters'
-import type { ChapterWithExpand, StoryWithExpand } from '@sms-editor/types/creator-stories'
-import { ArrowLeft, BookOpen, Calendar, CheckCircle, Clock, Lock, User } from 'lucide-react'
+import { timeAgo } from '@sms-editor/lib/date-utils'
+import type { ChapterWithExpand, CreatorStory, StoryWithExpand } from '@sms-editor/types/creator-stories'
+import { ArrowLeft, BookOpen, Calendar, CheckCircle, Eye, User } from 'lucide-react'
 import Link from 'next/link'
 import Image from '@/components/global/image-fallback.component'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { ChapterListWithProgress } from './ChapterListWithProgress.client'
 
 interface OriginalStoryDetailProps {
 	story: StoryWithExpand
 	chapters: ChapterWithExpand[]
-}
-
-/**
- * Get chapter publication status
- */
-function getChapterStatusLocal(chapter: ChapterWithExpand): 'draft' | 'published' | 'scheduled' {
-	if (!chapter.isPublished) return 'draft'
-	if (chapter.programed) {
-		const programedDate = new Date(chapter.programed)
-		if (programedDate > new Date()) return 'scheduled'
-	}
-	return 'published'
-}
-
-/**
- * Get cover image URL for a chapter
- */
-function getChapterCoverImageUrl(chapter: ChapterWithExpand, story: StoryWithExpand): string | null {
-	if (chapter.expand?.coverImage) {
-		const { id, image } = chapter.expand.coverImage
-		return `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${id}/${image}`
-	}
-	// Fallback to story cover if chapter has no cover
-	if (story.expand?.coverImage) {
-		const { id, image } = story.expand.coverImage
-		return `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${id}/${image}`
-	}
-	return null
 }
 
 export default function OriginalStoryDetail({ story, chapters }: OriginalStoryDetailProps) {
@@ -95,16 +67,17 @@ export default function OriginalStoryDetail({ story, chapters }: OriginalStoryDe
 							<div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
 								<div className="flex items-center gap-1">
 									<User className="h-4 w-4" />
-									<Link
-										href={`${process.env.NEXT_PUBLIC_ORIGINAL_PREFIX}/author/${authorId}`}
-										className="hover:underline"
-									>
+									<Link href={`/author/${authorId}`} className="hover:underline">
 										{authorName}
 									</Link>
 								</div>
 								<div className="flex items-center gap-1">
 									<Calendar className="h-4 w-4" />
 									{timeAgo(story.created)}
+								</div>
+								<div className="flex items-center gap-1">
+									<Eye className="h-4 w-4" />
+									{story.views || 0} views
 								</div>
 								{story.isCompleted && (
 									<div className="flex items-center gap-1">
@@ -166,66 +139,7 @@ export default function OriginalStoryDetail({ story, chapters }: OriginalStoryDe
 						</CardContent>
 					</Card>
 				) : (
-					<div className="space-y-3 w-full">
-						{sortedChapters.map(chapter => {
-							const status = getChapterStatusLocal(chapter)
-							const chapterCoverUrl = getChapterCoverImageUrl(chapter, story)
-							const isLocked = status === 'scheduled'
-
-							return (
-								<div key={chapter.id} className="rounded-md bg-background/40 p-4 w-full">
-									<div className="flex items-start gap-4 w-full">
-										{isLocked ? (
-											// Locked chapter (scheduled)
-											<div className="flex flex-1 items-start gap-4 w-full">
-												<div className="h-20 w-16 min-w-16 relative shrink-0 rounded-md overflow-hidden bg-muted grayscale">
-													{chapterCoverUrl ? (
-														<Image src={chapterCoverUrl} alt={chapter.title} fill className="object-cover" />
-													) : null}
-													<div className="absolute inset-0 flex items-center justify-center bg-black/50">
-														<Lock className="h-6 w-6 text-white" />
-													</div>
-												</div>
-												<div className="flex-1">
-													<div className="flex items-center gap-2">
-														<h4 className="font-medium opacity-70">
-															{chapter.title || `Chapter ${chapter.order + 1}`}
-														</h4>
-														<Badge variant="secondary" className="text-xs">
-															<Clock className="h-3 w-3 mr-1" />
-															Scheduled
-														</Badge>
-													</div>
-													<p className="text-sm text-muted-foreground mt-1">
-														Available {chapter.programed ? formatScheduledDate(chapter.programed) : 'soon'}
-													</p>
-												</div>
-											</div>
-										) : (
-											// Published chapter (accessible) - Link to fullscreen reader
-											<Link
-												prefetch={false}
-												href={`/read/${story.slug}/${chapter.id}`}
-												className="group flex flex-1 items-start gap-4 focus:outline-none"
-											>
-												<div className="h-20 w-16 min-w-16 relative shrink-0 rounded-md overflow-hidden bg-muted">
-													{chapterCoverUrl ? (
-														<Image src={chapterCoverUrl} alt={chapter.title} fill className="object-cover" />
-													) : null}
-												</div>
-												<div className="flex-1">
-													<h4 className="font-medium transition-colors duration-150 group-hover:text-primary">
-														{chapter.title || `Chapter ${chapter.order + 1}`}
-													</h4>
-													<p className="text-sm text-muted-foreground">{formatMediumDate(chapter.created)}</p>
-												</div>
-											</Link>
-										)}
-									</div>
-								</div>
-							)
-						})}
-					</div>
+					<ChapterListWithProgress story={story as CreatorStory} chapters={sortedChapters} />
 				)}
 			</div>
 		</div>
