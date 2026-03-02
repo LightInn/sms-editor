@@ -250,7 +250,8 @@ export class CreatorStoryService {
 			expand: 'author,coverImage',
 		})
 
-		// Sort stories by their most recent chapter's updated date
+		// For each story, fetch the most recent chapter (if any) and only include
+		// stories that have at least one chapter. This filters out empty stories.
 		const storiesWithLatestChapter = await Promise.all(
 			records.items.map(async story => {
 				try {
@@ -259,22 +260,30 @@ export class CreatorStoryService {
 						sort: '-updated',
 					})
 
-					// Use the latest chapter's updated date, or fall back to story creation date
-					const latestChapterDate = chapterRecords.items[0]?.updated || story.created
+					// If there are no chapters, skip this story by returning null
+					if (!chapterRecords || chapterRecords.totalItems === 0) {
+						return null
+					}
+
+					const latestChapterDate = chapterRecords.items[0].updated || story.created
 					return { story, latestDate: latestChapterDate }
 				} catch (error) {
-					// If chapter query fails, fall back to story creation date
 					console.warn(`Failed to fetch chapters for story ${story.id}:`, error)
-					return { story, latestDate: story.created }
+					return null
 				}
 			})
 		)
 
+		// Filter out null entries (stories without chapters or failed fetches)
+		const validStories = storiesWithLatestChapter.filter(
+			(s): s is { story: StoryWithExpand; latestDate: string } => s !== null
+		)
+
 		// Sort by latest chapter date (most recent first)
-		storiesWithLatestChapter.sort((a, b) => new Date(b.latestDate).getTime() - new Date(a.latestDate).getTime())
+		validStories.sort((a, b) => new Date(b.latestDate).getTime() - new Date(a.latestDate).getTime())
 
 		// Return only the requested number of stories
-		return storiesWithLatestChapter.slice(0, safeLimit).map(item => item.story)
+		return validStories.slice(0, safeLimit).map(item => item.story)
 	}
 
 	/**
