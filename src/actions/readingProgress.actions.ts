@@ -1,7 +1,7 @@
 'use server'
 
 import { headers } from 'next/headers'
-import { auth } from '@/lib/auth/auth.server'
+import { auth, type ExtendedUser } from '@/lib/auth/auth.server'
 import { pb } from '@/lib/pocketbase'
 
 /**
@@ -10,7 +10,8 @@ import { pb } from '@/lib/pocketbase'
 export async function markChapterAsRead(chapterId: string, storyId: string): Promise<{ success: boolean }> {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() })
-		if (!session?.user || session.user.subscription !== 'READER') {
+		const user = session?.user as ExtendedUser
+		if (!user || user.subscription !== 'READER') {
 			return { success: false }
 		}
 
@@ -48,12 +49,13 @@ export async function markChapterAsRead(chapterId: string, storyId: string): Pro
 export async function getReadChapters(storyId: string): Promise<Set<string>> {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() })
-		if (!session?.user || session.user.subscription !== 'READER') {
+		const user = session?.user as ExtendedUser
+		if (!user || user.subscription !== 'READER') {
 			return new Set()
 		}
 
 		const records = await pb.collection('c_reading_progress').getFullList({
-			filter: `user="${session.user.id}" && chapter.story="${storyId}"`,
+			filter: `user="${user.id}" && chapter.story="${storyId}"`,
 		})
 
 		return new Set(records.map(r => r.chapter))
@@ -69,12 +71,13 @@ export async function getReadChapters(storyId: string): Promise<Set<string>> {
 export async function getAllStoriesWithProgress() {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() })
-		if (!session?.user || session.user.subscription !== 'READER') {
+		const user = session?.user as ExtendedUser
+		if (!user || user.subscription !== 'READER') {
 			return []
 		}
 
 		const records = await pb.collection('c_reading_progress').getFullList({
-			filter: `user="${session.user.id}"`,
+			filter: `user="${user.id}"`,
 			sort: '-lastRead',
 			expand: 'chapter,chapter.story',
 		})
