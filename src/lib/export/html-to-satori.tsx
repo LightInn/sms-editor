@@ -423,7 +423,7 @@ export function paginateHtml(
  * Splits at paragraph boundaries to create natural page breaks
  */
 function extractBlocks(html: string): string[] {
-	if (!html || !html.trim()) {
+	if (!html?.trim()) {
 		return []
 	}
 
