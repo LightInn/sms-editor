@@ -11,7 +11,7 @@ export async function markChapterAsRead(chapterId: string, storyId: string): Pro
 	try {
 		const session = await auth.api.getSession({ headers: await headers() })
 		const user = session?.user as ExtendedUser
-		if (!user || user.subscription !== 'READER') {
+		if (user?.subscription !== 'READER') {
 			return { success: false }
 		}
 
@@ -50,7 +50,7 @@ export async function getReadChapters(storyId: string): Promise<Set<string>> {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() })
 		const user = session?.user as ExtendedUser
-		if (!user || user.subscription !== 'READER') {
+		if (user?.subscription !== 'READER') {
 			return new Set()
 		}
 
@@ -72,7 +72,7 @@ export async function getAllStoriesWithProgress() {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() })
 		const user = session?.user as ExtendedUser
-		if (!user || user.subscription !== 'READER') {
+		if (user?.subscription !== 'READER') {
 			return []
 		}
 
