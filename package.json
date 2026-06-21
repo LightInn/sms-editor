@@ -76,7 +76,7 @@
 		"isomorphic-dompurify": "2.36.0",
 		"lucide-react": "0.577.0",
 		"luxon": "3.7.2",
-		"pocketbase": "0.26.9",
+		"pocketbase": "0.27.0",
 		"react-dropzone": "14.4.1",
 		"sonner": "2.0.7",
 		"tailwind-merge": "3.6.0",
