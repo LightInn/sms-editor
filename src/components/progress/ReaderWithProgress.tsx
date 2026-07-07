@@ -18,7 +18,7 @@ export function ReaderWithProgress({ story, chapters, initialChapterId }: Reader
 	const isSubscribed = useIsSubscribed()
 
 	// Track story view (throttled by localStorage)
-	useStoryView(story.id)
+	useStoryView('c_stories', story.id)
 
 	useEffect(() => {
 		if (isSubscribed) {
