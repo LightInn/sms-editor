@@ -2,6 +2,7 @@ import { timeAgo } from '@sms-editor/lib/date-utils'
 import type { ChapterWithExpand, CreatorStory, StoryWithExpand } from '@sms-editor/types/creator-stories'
 import { ArrowLeft, BookOpen, Calendar, CheckCircle, Eye, User } from 'lucide-react'
 import Link from 'next/link'
+import CommentSection from '@/components/comments/comment-section.server'
 import Image from '@/components/global/image-fallback.component'
 import StorySocialBar from '@/components/social/story-social-bar.client'
 import { Badge } from '@/components/ui/badge'
@@ -172,6 +173,8 @@ export default async function OriginalStoryDetail({ story, chapters }: OriginalS
 					/>
 				)}
 			</div>
+
+			<CommentSection storyRef={storyRef} />
 		</div>
 	)
 }
