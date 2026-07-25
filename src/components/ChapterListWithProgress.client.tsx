@@ -7,7 +7,6 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import Image from '@/components/global/image-fallback.component'
 import { Button } from '@/components/ui/button'
-import { useIsSubscribed } from '@/hooks/use-subscription'
 import { client } from '@/lib/auth/auth.client'
 
 interface ChapterListWithProgressProps {
@@ -24,45 +23,52 @@ interface ChapterListWithProgressProps {
 export function ChapterListWithProgress({ story, chapters, lockedChapterIds = [] }: ChapterListWithProgressProps) {
 	const locked = new Set(lockedChapterIds)
 	const { data: session } = client.useSession()
-	const isSubscribed = useIsSubscribed()
+	const isAuthenticated = Boolean(session?.user)
 	const [readChapters, setReadChapters] = useState<Set<string>>(new Set())
 
+	// Progress is free for any account (M2-T1); the action returns nothing for
+	// anonymous visitors, so this only avoids the round-trip.
 	useEffect(() => {
-		if (isSubscribed) {
+		if (isAuthenticated) {
 			getReadChapters(story.id).then(setReadChapters)
 		}
-	}, [isSubscribed, story.id])
+	}, [isAuthenticated, story.id])
 
 	const sortedChapters = [...chapters].sort((a, b) => a.order - b.order)
 
 	return (
 		<div className="space-y-6">
-			{/* Upgrade banner */}
-			{!session && (
+			{/* A free account is the offer here — progress costs nothing. */}
+			{!isAuthenticated && (
 				<div className="bg-muted/50 border rounded-lg p-4">
 					<div className="flex items-start gap-3">
 						<BookOpen className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
 						<div className="flex-1">
-							<p className="text-sm font-medium">Track your reading progress</p>
-							<p className="text-xs text-muted-foreground mt-1">Sign in and subscribe to save your progress</p>
+							<p className="text-sm font-medium">Keep your place</p>
+							<p className="text-xs text-muted-foreground mt-1">
+								A free account remembers every chapter you have read, on every device.
+							</p>
 						</div>
 						<Button asChild size="sm" variant="outline">
-							<Link href="/auth">Sign In</Link>
+							<Link href="/auth">Sign up free</Link>
 						</Button>
 					</div>
 				</div>
 			)}
 
-			{session && !isSubscribed && (
+			{/* Premium is only worth pitching where this story actually has locked chapters. */}
+			{isAuthenticated && locked.size > 0 && (
 				<div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
 					<div className="flex items-start gap-3">
 						<Crown className="w-5 h-5 text-primary shrink-0 mt-0.5" />
 						<div className="flex-1">
-							<p className="text-sm font-medium">Save your reading progress</p>
-							<p className="text-xs text-muted-foreground mt-1">Upgrade to Reader to save your progress</p>
+							<p className="text-sm font-medium">
+								{locked.size} more {locked.size === 1 ? 'chapter' : 'chapters'} in this story
+							</p>
+							<p className="text-xs text-muted-foreground mt-1">Premium opens the rest, and every other original.</p>
 						</div>
 						<Button asChild size="sm">
-							<Link href="/premium">Upgrade</Link>
+							<Link href={`/premium?next=/original/story/${story.slug}`}>Unlock</Link>
 						</Button>
 					</div>
 				</div>
@@ -71,7 +77,7 @@ export function ChapterListWithProgress({ story, chapters, lockedChapterIds = []
 			{/* Chapter list */}
 			<div className="space-y-3">
 				{sortedChapters.map((chapter, index) => {
-					const isRead = isSubscribed && readChapters.has(chapter.id)
+					const isRead = readChapters.has(chapter.id)
 					const isLocked = locked.has(chapter.id)
 					const coverImageUrl = chapter.expand?.coverImage
 						? `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${chapter.expand.coverImage.id}/${chapter.expand.coverImage.image}`

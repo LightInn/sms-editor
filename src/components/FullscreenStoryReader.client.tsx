@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useIsSubscribed } from '@/hooks/use-subscription'
+import { useIsAuthenticated } from '@/hooks/use-authenticated'
 import { FullscreenBlockPreview } from './FullscreenBlockPreview.client'
 import { PublicChapterNavigation } from './PublicChapterNavigation'
 import { UnifiedPhonePreview } from './preview/unified-phone-preview'
@@ -37,15 +37,16 @@ export function FullscreenStoryReader({ story, chapters, initialChapterId }: Ful
 	const [error, setError] = useState<string | null>(null)
 	const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null)
 
-	const isSubscribed = useIsSubscribed()
+	// Free for any account since M2-T1 — see readingProgress.actions.ts.
+	const isAuthenticated = useIsAuthenticated()
 
 	useEffect(() => {
-		if (isSubscribed) {
+		if (isAuthenticated) {
 			markChapterAsRead(currentChapterId, story.id).catch(() => {
 				toast.error('Failed to update reading progress')
 			})
 		}
-	}, [isSubscribed, currentChapterId, story.id])
+	}, [isAuthenticated, currentChapterId, story.id])
 
 	// Fetch blocks for current chapter using public endpoint
 	useEffect(() => {

@@ -1,7 +1,19 @@
 'use server'
 
-import { currentUserHasReaderAccess, getCurrentSession } from '@/lib/auth/session'
+import { getCurrentSession } from '@/lib/auth/session'
 import { pb } from '@/lib/pocketbase'
+
+/**
+ * Reading progress for original stories.
+ *
+ * Free for any account since M2-T1. It used to require READER, which meant free
+ * accounts had amnesia — and amnesia kills return visits. Remembering where
+ * someone stopped is retention machinery, not a feature to sell; premium sells
+ * the chapters themselves (see `lib/access/chapter-gate.ts`).
+ *
+ * The session is the only authority here: a caller can read and write their own
+ * progress and nobody else's.
+ */
 
 /**
  * Mark a chapter as read - one entry per chapter
@@ -9,7 +21,7 @@ import { pb } from '@/lib/pocketbase'
 export async function markChapterAsRead(chapterId: string, storyId: string): Promise<{ success: boolean }> {
 	try {
 		const session = await getCurrentSession()
-		if (!session?.user || !(await currentUserHasReaderAccess())) {
+		if (!session?.user) {
 			return { success: false }
 		}
 
@@ -47,7 +59,7 @@ export async function markChapterAsRead(chapterId: string, storyId: string): Pro
 export async function getReadChapters(storyId: string): Promise<Set<string>> {
 	try {
 		const session = await getCurrentSession()
-		if (!session?.user || !(await currentUserHasReaderAccess())) {
+		if (!session?.user) {
 			return new Set()
 		}
 
@@ -68,7 +80,7 @@ export async function getReadChapters(storyId: string): Promise<Set<string>> {
 export async function getAllStoriesWithProgress() {
 	try {
 		const session = await getCurrentSession()
-		if (!session?.user || !(await currentUserHasReaderAccess())) {
+		if (!session?.user) {
 			return []
 		}
 

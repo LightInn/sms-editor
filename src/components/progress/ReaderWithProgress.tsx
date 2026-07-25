@@ -5,8 +5,8 @@ import { FullscreenStoryReader } from '@sms-editor/components/FullscreenStoryRea
 import type { ChapterWithExpand, StoryWithExpand } from '@sms-editor/types/creator-stories'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
+import { useIsAuthenticated } from '@/hooks/use-authenticated'
 import { useStoryView } from '@/hooks/use-story-view'
-import { useIsSubscribed } from '@/hooks/use-subscription'
 
 interface ReaderWithProgressProps {
 	story: StoryWithExpand
@@ -15,18 +15,20 @@ interface ReaderWithProgressProps {
 }
 
 export function ReaderWithProgress({ story, chapters, initialChapterId }: ReaderWithProgressProps) {
-	const isSubscribed = useIsSubscribed()
+	// Progress is free for any account (M2-T1). This guard only spares anonymous
+	// readers a pointless round-trip; the action authorises from the session.
+	const isAuthenticated = useIsAuthenticated()
 
 	// Track story view (throttled by localStorage)
 	useStoryView('c_stories', story.id)
 
 	useEffect(() => {
-		if (isSubscribed) {
+		if (isAuthenticated) {
 			markChapterAsRead(initialChapterId, story.id).catch(() => {
 				toast.error('Failed to update reading progress')
 			})
 		}
-	}, [isSubscribed, initialChapterId, story.id])
+	}, [isAuthenticated, initialChapterId, story.id])
 
 	return <FullscreenStoryReader story={story} chapters={chapters} initialChapterId={initialChapterId} />
 }
