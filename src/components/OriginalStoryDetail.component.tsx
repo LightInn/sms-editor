@@ -3,12 +3,15 @@ import type { ChapterWithExpand, CreatorStory, StoryWithExpand } from '@sms-edit
 import { ArrowLeft, BookOpen, Calendar, CheckCircle, Eye, User } from 'lucide-react'
 import Link from 'next/link'
 import Image from '@/components/global/image-fallback.component'
+import StorySocialBar from '@/components/social/story-social-bar.client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { gateStoryChapters, lockedChapterIds } from '@/lib/access/chapter-gate'
-import { currentUserHasReaderAccess } from '@/lib/auth/session'
+import { currentUserHasReaderAccess, getCurrentSession } from '@/lib/auth/session'
+import type { StoryRef } from '@/lib/social/story-ref'
+import { getStorySocialState } from '@/services/social.service'
 import { ChapterListWithProgress } from './ChapterListWithProgress.client'
 
 interface OriginalStoryDetailProps {
@@ -24,9 +27,13 @@ export default async function OriginalStoryDetail({ story, chapters }: OriginalS
 	// The free/premium line, resolved once on the server and handed to the list.
 	// The reader route applies the same rule, so a lock icon here always matches
 	// what actually happens on the other side of the click.
+	const session = await getCurrentSession()
 	const hasReaderAccess = await currentUserHasReaderAccess()
 	const gated = gateStoryChapters(sortedChapters, { hasReaderAccess })
 	const lockedIds = lockedChapterIds(gated)
+
+	const storyRef: StoryRef = { collection: 'c_stories', id: story.id }
+	const social = await getStorySocialState(storyRef, session?.user.id ?? null)
 
 	// Construct proper cover image URL from expanded image record
 	const coverImageUrl = story.expand?.coverImage
@@ -99,6 +106,13 @@ export default async function OriginalStoryDetail({ story, chapters }: OriginalS
 								)}
 							</div>
 						</div>
+
+						<StorySocialBar
+							bookmarked={social.bookmarked}
+							likeCount={social.likeCount}
+							liked={social.liked}
+							storyRef={storyRef}
+						/>
 
 						{story.description && (
 							<div className="prose prose-sm max-w-none">
