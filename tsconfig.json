@@ -4,7 +4,8 @@
 		"declarationMap": true,
 		"outDir": "./dist",
 		"rootDir": "..",
-		"baseUrl": ".",
+		// No "baseUrl": removed in TypeScript 7 (TS5102). The mappings below are
+		// already tsconfig-relative, so alias resolution is unchanged.
 		"paths": {
 			"@/*": ["../src/*"],
 			"@sms-editor/*": ["./src/*"],
