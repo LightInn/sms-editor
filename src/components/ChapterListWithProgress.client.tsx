@@ -2,7 +2,7 @@
 
 import { getReadChapters } from '@sms-editor/actions/readingProgress.actions'
 import type { ChapterWithExpand, CreatorStory } from '@sms-editor/types/creator-stories'
-import { BookOpen, Crown } from 'lucide-react'
+import { BookOpen, Crown, Lock } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import Image from '@/components/global/image-fallback.component'
@@ -13,9 +13,16 @@ import { client } from '@/lib/auth/auth.client'
 interface ChapterListWithProgressProps {
 	story: CreatorStory
 	chapters: ChapterWithExpand[]
+	/**
+	 * Chapters this visitor cannot open, decided on the server by
+	 * `gateStoryChapters`. Passed in rather than recomputed here so the list can
+	 * never disagree with the reader route that enforces the same rule.
+	 */
+	lockedChapterIds?: readonly string[]
 }
 
-export function ChapterListWithProgress({ story, chapters }: ChapterListWithProgressProps) {
+export function ChapterListWithProgress({ story, chapters, lockedChapterIds = [] }: ChapterListWithProgressProps) {
+	const locked = new Set(lockedChapterIds)
 	const { data: session } = client.useSession()
 	const isSubscribed = useIsSubscribed()
 	const [readChapters, setReadChapters] = useState<Set<string>>(new Set())
@@ -65,16 +72,19 @@ export function ChapterListWithProgress({ story, chapters }: ChapterListWithProg
 			<div className="space-y-3">
 				{sortedChapters.map((chapter, index) => {
 					const isRead = isSubscribed && readChapters.has(chapter.id)
-					const isScheduled = chapter.programed && new Date(chapter.programed) > new Date()
+					const isLocked = locked.has(chapter.id)
 					const coverImageUrl = chapter.expand?.coverImage
 						? `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${chapter.expand.coverImage.id}/${chapter.expand.coverImage.image}`
 						: null
 
+					// A locked chapter still links to the reader: that route shows the
+					// cliffhanger paywall with this chapter's context. Making it
+					// unclickable would hide the offer at the exact moment it lands.
 					return (
 						<Link
 							key={chapter.id}
-							href={isScheduled ? '#' : `/read/${story.slug}/${chapter.id}`}
-							className={`block group rounded-lg border transition-all p-4 ${isScheduled ? 'pointer-events-none opacity-50' : 'hover:border-primary hover:shadow-md'} ${isRead ? 'bg-muted/50 opacity-75' : 'bg-card'}`}
+							href={`/read/${story.slug}/${chapter.id}`}
+							className={`block group rounded-lg border transition-all p-4 hover:border-primary hover:shadow-md ${isRead ? 'bg-muted/50 opacity-75' : 'bg-card'}`}
 						>
 							<div className="flex items-center gap-4">
 								<div
@@ -101,6 +111,12 @@ export function ChapterListWithProgress({ story, chapters }: ChapterListWithProg
 									>
 										{chapter.title}
 									</h3>
+									{isLocked && (
+										<div className="flex items-center gap-1 mt-1 text-xs text-primary">
+											<Lock className="w-3 h-3" />
+											<span>Premium</span>
+										</div>
+									)}
 									{isRead && (
 										<div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
 											<span className="text-primary">✓ Read</span>

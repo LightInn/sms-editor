@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { gateStoryChapters, lockedChapterIds } from '@/lib/access/chapter-gate'
+import { currentUserHasReaderAccess } from '@/lib/auth/session'
 import { ChapterListWithProgress } from './ChapterListWithProgress.client'
 
 interface OriginalStoryDetailProps {
@@ -14,10 +16,17 @@ interface OriginalStoryDetailProps {
 	chapters: ChapterWithExpand[]
 }
 
-export default function OriginalStoryDetail({ story, chapters }: OriginalStoryDetailProps) {
+export default async function OriginalStoryDetail({ story, chapters }: OriginalStoryDetailProps) {
 	const authorName = story.expand?.author?.name || story.expand?.author?.email || 'Anonymous'
 	const authorId = story.author
 	const sortedChapters = [...chapters].sort((a, b) => a.order - b.order)
+
+	// The free/premium line, resolved once on the server and handed to the list.
+	// The reader route applies the same rule, so a lock icon here always matches
+	// what actually happens on the other side of the click.
+	const hasReaderAccess = await currentUserHasReaderAccess()
+	const gated = gateStoryChapters(sortedChapters, { hasReaderAccess })
+	const lockedIds = lockedChapterIds(gated)
 
 	// Construct proper cover image URL from expanded image record
 	const coverImageUrl = story.expand?.coverImage
@@ -31,7 +40,7 @@ export default function OriginalStoryDetail({ story, chapters }: OriginalStoryDe
 		<div className="container max-w-4xl mx-auto py-8 px-4">
 			{/* Back navigation */}
 			<div className="mb-6">
-				<Link href="/explore">
+				<Link href="/original">
 					<Button variant="ghost" size="sm" className="gap-2">
 						<ArrowLeft className="h-4 w-4" />
 						Back to Original Stories
@@ -142,7 +151,11 @@ export default function OriginalStoryDetail({ story, chapters }: OriginalStoryDe
 						</CardContent>
 					</Card>
 				) : (
-					<ChapterListWithProgress story={story as CreatorStory} chapters={sortedChapters} />
+					<ChapterListWithProgress
+						story={story as CreatorStory}
+						chapters={sortedChapters}
+						lockedChapterIds={lockedIds}
+					/>
 				)}
 			</div>
 		</div>
