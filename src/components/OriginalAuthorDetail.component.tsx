@@ -2,23 +2,32 @@ import type { StoryWithExpand } from '@sms-editor/types/creator-stories'
 import { ArrowLeft, BookOpen, Calendar, CheckCircle, ExternalLink, User } from 'lucide-react'
 import Link from 'next/link'
 import Image from '@/components/global/image-fallback.component'
+import FollowButton from '@/components/social/follow-button.client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { getCurrentSession } from '@/lib/auth/session'
 import { timeAgo } from '@/lib/datetime'
+import type { FollowTarget } from '@/lib/social/follow-target'
+import { isFollowing } from '@/services/follow.service'
 
-export function OriginalAuthorDetail({ stories }: { stories: StoryWithExpand[] }) {
+export async function OriginalAuthorDetail({ stories }: { stories: StoryWithExpand[] }) {
 	// Get author info from first story (assuming all stories have same author)
 	const authorInfo = stories[0]?.expand?.author
 	const authorName = authorInfo?.name || authorInfo?.email || 'Anonymous Author'
 	const authorBio = authorInfo?.bio
 	const authorLink = authorInfo?.link
 
+	const authorId = stories[0]?.author
+	const followTarget: FollowTarget | null = authorId ? { kind: 'creator', userId: authorId } : null
+	const session = await getCurrentSession()
+	const following = followTarget ? await isFollowing(followTarget, session?.user.id ?? null) : false
+
 	return (
 		<div className="container max-w-6xl mx-auto py-8 px-4">
 			{/* Back navigation */}
 			<div className="mb-6">
-				<Link href="/explore">
+				<Link href="/original">
 					<Button variant="ghost" size="sm" className="gap-2">
 						<ArrowLeft className="h-4 w-4" />
 						Back to Original Stories
@@ -48,6 +57,12 @@ export function OriginalAuthorDetail({ stories }: { stories: StoryWithExpand[] }
 						</div>
 					</div>
 				</div>
+
+				{followTarget && (
+					<div className="mb-4">
+						<FollowButton following={following} target={followTarget} />
+					</div>
+				)}
 
 				{/* Bio section */}
 				{authorBio && (
@@ -95,7 +110,9 @@ export function OriginalAuthorDetail({ stories }: { stories: StoryWithExpand[] }
 }
 
 function StoryCard({ story }: { story: StoryWithExpand }) {
-	const href = `/story/${story.slug}`
+	// These are original stories; `/story/{slug}` is the Reddit catalogue and 404s
+	// here — the same wrong-route bug M0-T5 fixed on the category pages.
+	const href = `/original/story/${story.slug}`
 
 	return (
 		<Card className="hover:shadow-md transition-shadow">

@@ -4,6 +4,7 @@ import { ArrowLeft, BookOpen, Calendar, CheckCircle, Eye, User } from 'lucide-re
 import Link from 'next/link'
 import CommentSection from '@/components/comments/comment-section.server'
 import Image from '@/components/global/image-fallback.component'
+import FollowButton from '@/components/social/follow-button.client'
 import StorySocialBar from '@/components/social/story-social-bar.client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -11,7 +12,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { gateStoryChapters, lockedChapterIds } from '@/lib/access/chapter-gate'
 import { currentUserHasReaderAccess, getCurrentSession } from '@/lib/auth/session'
+import type { FollowTarget } from '@/lib/social/follow-target'
 import type { StoryRef } from '@/lib/social/story-ref'
+import { isFollowing } from '@/services/follow.service'
 import { getStorySocialState } from '@/services/social.service'
 import { ChapterListWithProgress } from './ChapterListWithProgress.client'
 
@@ -34,7 +37,11 @@ export default async function OriginalStoryDetail({ story, chapters }: OriginalS
 	const lockedIds = lockedChapterIds(gated)
 
 	const storyRef: StoryRef = { collection: 'c_stories', id: story.id }
-	const social = await getStorySocialState(storyRef, session?.user.id ?? null)
+	const followTarget: FollowTarget = { kind: 'story', ref: storyRef }
+	const [social, following] = await Promise.all([
+		getStorySocialState(storyRef, session?.user.id ?? null),
+		isFollowing(followTarget, session?.user.id ?? null),
+	])
 
 	// Construct proper cover image URL from expanded image record
 	const coverImageUrl = story.expand?.coverImage
@@ -108,12 +115,15 @@ export default async function OriginalStoryDetail({ story, chapters }: OriginalS
 							</div>
 						</div>
 
-						<StorySocialBar
-							bookmarked={social.bookmarked}
-							likeCount={social.likeCount}
-							liked={social.liked}
-							storyRef={storyRef}
-						/>
+						<div className="flex flex-wrap items-center gap-2">
+							<StorySocialBar
+								bookmarked={social.bookmarked}
+								likeCount={social.likeCount}
+								liked={social.liked}
+								storyRef={storyRef}
+							/>
+							<FollowButton following={following} target={followTarget} />
+						</div>
 
 						{story.description && (
 							<div className="prose prose-sm max-w-none">
