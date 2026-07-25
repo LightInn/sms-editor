@@ -1,7 +1,6 @@
 'use server'
 
-import { headers } from 'next/headers'
-import { auth, type ExtendedUser } from '@/lib/auth/auth.server'
+import { currentUserHasReaderAccess, getCurrentSession } from '@/lib/auth/session'
 import { pb } from '@/lib/pocketbase'
 
 /**
@@ -9,9 +8,8 @@ import { pb } from '@/lib/pocketbase'
  */
 export async function markChapterAsRead(chapterId: string, storyId: string): Promise<{ success: boolean }> {
 	try {
-		const session = await auth.api.getSession({ headers: await headers() })
-		const user = session?.user as ExtendedUser
-		if (user?.subscription !== 'READER') {
+		const session = await getCurrentSession()
+		if (!session?.user || !(await currentUserHasReaderAccess())) {
 			return { success: false }
 		}
 
@@ -48,14 +46,13 @@ export async function markChapterAsRead(chapterId: string, storyId: string): Pro
  */
 export async function getReadChapters(storyId: string): Promise<Set<string>> {
 	try {
-		const session = await auth.api.getSession({ headers: await headers() })
-		const user = session?.user as ExtendedUser
-		if (user?.subscription !== 'READER') {
+		const session = await getCurrentSession()
+		if (!session?.user || !(await currentUserHasReaderAccess())) {
 			return new Set()
 		}
 
 		const records = await pb.collection('c_reading_progress').getFullList({
-			filter: `user="${user.id}" && chapter.story="${storyId}"`,
+			filter: `user="${session.user.id}" && chapter.story="${storyId}"`,
 		})
 
 		return new Set(records.map(r => r.chapter))
@@ -70,14 +67,13 @@ export async function getReadChapters(storyId: string): Promise<Set<string>> {
  */
 export async function getAllStoriesWithProgress() {
 	try {
-		const session = await auth.api.getSession({ headers: await headers() })
-		const user = session?.user as ExtendedUser
-		if (user?.subscription !== 'READER') {
+		const session = await getCurrentSession()
+		if (!session?.user || !(await currentUserHasReaderAccess())) {
 			return []
 		}
 
 		const records = await pb.collection('c_reading_progress').getFullList({
-			filter: `user="${user.id}"`,
+			filter: `user="${session.user.id}"`,
 			sort: '-lastRead',
 			expand: 'chapter,chapter.story',
 		})
