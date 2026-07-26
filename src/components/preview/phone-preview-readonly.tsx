@@ -7,13 +7,21 @@
 
 import type { AppTarget, Character, Message, Participant } from '@sms-editor/types/creator-stories'
 import { appTemplates, getConversationTitle, getParticipantName } from '@sms-editor/types/creator-stories'
-import { BatteryIcon, SignalIcon, WifiIcon } from 'lucide-react'
+import { BatteryIcon, ChevronDown, SignalIcon, WifiIcon } from 'lucide-react'
 import { DateTime } from 'luxon'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { CharacterAvatar } from '@/components/ui/character-avatar'
 import { GroupAvatar } from '@/components/ui/group-avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+	advance,
+	initialTapThroughState,
+	isComplete,
+	remaining,
+	revealAll,
+	visibleMessages,
+} from '@/lib/reader/tap-through'
 import { cn } from '@/lib/utils'
 import { DayBreakSeparator } from '../editor/sms/day-break-separator'
 import { MessageBubbleReadonly } from './message-bubble-readonly'
@@ -26,6 +34,13 @@ export interface PhonePreviewReadonlyProps {
 	conversationTitle?: string
 	conversationAvatar?: string
 	conversationDate?: string
+	/**
+	 * Reveal the conversation one message per tap (M5-T3).
+	 *
+	 * The caller decides *whether* — flag, entitlement and conversation length —
+	 * so this component only has to decide *how*.
+	 */
+	tapThrough?: boolean
 }
 
 export function PhonePreviewReadonly({
@@ -36,6 +51,7 @@ export function PhonePreviewReadonly({
 	conversationTitle,
 	conversationAvatar,
 	conversationDate,
+	tapThrough = false,
 }: PhonePreviewReadonlyProps) {
 	const styles = appTemplates[appTarget]
 	const title = conversationTitle || getConversationTitle(participants, characters)
@@ -61,6 +77,36 @@ export function PhonePreviewReadonly({
 
 		return () => clearInterval(interval)
 	}, [])
+
+	/*
+	 * Tap-through state (M5-T3). Keyed on the message count so a reader who moves
+	 * between chapters starts the next conversation at the beginning rather than
+	 * inheriting the previous one's progress.
+	 */
+	const [reveal, setReveal] = useState(() => initialTapThroughState(messages.length))
+
+	useEffect(() => {
+		setReveal(initialTapThroughState(messages.length))
+	}, [messages.length])
+
+	const shown = tapThrough ? visibleMessages(messages, reveal) : messages
+	const finished = !tapThrough || isComplete(reveal)
+	const endRef = useRef<HTMLDivElement>(null)
+
+	const tap = useCallback(() => setReveal(current => advance(current)), [])
+	const showEverything = useCallback(() => setReveal(current => revealAll(current)), [])
+
+	/*
+	 * Keep the newest message in view. The phone is a fixed-height frame, so a
+	 * revealed message would otherwise arrive below the fold and the tap would
+	 * look like it did nothing. `smooth` is safe under the app's global
+	 * reduced-motion rule, which forces `scroll-behavior: auto`.
+	 */
+	useEffect(() => {
+		if (tapThrough && reveal.revealed > 0) {
+			endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+		}
+	}, [reveal.revealed, tapThrough])
 
 	return (
 		<div className="flex flex-col items-center justify-start w-full gap-4 pt-0 pb-8 px-8">
@@ -150,9 +196,8 @@ export function PhonePreviewReadonly({
 								)}
 
 								{/* Messages */}
-								{messages.map((message, index) => {
-									const isConsecutive =
-										index > 0 && messages[index - 1].senderId === message.senderId && !message.dayBreak
+								{shown.map((message, index) => {
+									const isConsecutive = index > 0 && shown[index - 1].senderId === message.senderId && !message.dayBreak
 
 									return (
 										<div key={message.id}>
@@ -190,9 +235,54 @@ export function PhonePreviewReadonly({
 										<p className="text-sm">No messages in this conversation</p>
 									</div>
 								)}
+
+								{/* Scroll anchor: keeps the newest revealed message in view. */}
+								<div ref={endRef} />
 							</div>
 						</ScrollArea>
 					</div>
+
+					{/*
+					 * The tap surface (M5-T3).
+					 *
+					 * A real <button>, not a click handler on a div: it has to be
+					 * reachable by keyboard and announced to a screen reader, and the
+					 * label has to say what will happen — "Tap for the next message"
+					 * rather than an unlabelled region a reader discovers by accident.
+					 *
+					 * It sits below the conversation rather than over it so that
+					 * selecting text, following a link inside a bubble, and scrolling
+					 * back all keep working.
+					 */}
+					{!finished && (
+						<div className={cn('flex items-center justify-between gap-2 border-t px-3 py-2', styles.headerBg)}>
+							<button
+								type="button"
+								onClick={tap}
+								className={cn(
+									'flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-opacity hover:opacity-80',
+									styles.headerText
+								)}
+								aria-label={`Show the next message. ${remaining(reveal)} remaining.`}
+							>
+								<ChevronDown className="h-4 w-4" aria-hidden="true" />
+								Next
+							</button>
+
+							{/*
+							 * The escape. A reader returning to a chapter they have already
+							 * read should not have to tap through forty messages to reach
+							 * the one they wanted.
+							 */}
+							<button
+								type="button"
+								onClick={showEverything}
+								className={cn('shrink-0 px-3 py-2 text-xs underline underline-offset-2 opacity-80', styles.headerText)}
+							>
+								Show all
+							</button>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

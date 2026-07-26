@@ -7,7 +7,10 @@
 
 import type { ImageRecord } from '@sms-editor/services/imageService'
 import type { BlockWithExpand, Character, SMSContent } from '@sms-editor/types/creator-stories'
+import { useFeatureFlag } from '@/hooks/use-feature-flag'
+import { useIsSubscribed } from '@/hooks/use-subscription'
 import { pb } from '@/lib/pocketbase'
+import { shouldTapThrough } from '@/lib/reader/tap-through'
 import { PhonePreviewReadonly } from './phone-preview-readonly'
 
 export interface SmsBlockProps {
@@ -17,6 +20,25 @@ export interface SmsBlockProps {
 
 export function SmsBlock({ block, characters }: SmsBlockProps) {
 	const content = block.content as SMSContent
+
+	/*
+	 * Tap-through is gated on both halves and read here rather than drilled down
+	 * from the page, in the same style as the app's other client islands.
+	 *
+	 * The flag comes first because it is the kill switch: M5-T4's evaluation puts
+	 * `enabled = false` above every allow-list, so turning it off takes the
+	 * feature from everyone including staff. Entitlement is the second half — the
+	 * task scopes tap-through to premium originals, and it is a differentiator
+	 * only if it is one.
+	 *
+	 * Both hooks return false while loading, so the conversation renders whole
+	 * until proven otherwise. That is the right default: showing everything to
+	 * someone who should have tapped is a missed flourish, where hiding messages
+	 * from someone entitled to them looks like a broken chapter.
+	 */
+	const flagEnabled = useFeatureFlag('tap_through_reader')
+	const subscribed = useIsSubscribed()
+	const tapThrough = shouldTapThrough(content.messages?.length ?? 0, flagEnabled && subscribed)
 
 	if (!content.messages || content.messages.length === 0) {
 		return (
@@ -58,6 +80,7 @@ export function SmsBlock({ block, characters }: SmsBlockProps) {
 				conversationTitle={block.conversationTitle || undefined}
 				conversationAvatar={conversationAvatarUrl}
 				conversationDate={content.messages[0]?.timestamp}
+				tapThrough={tapThrough}
 			/>
 		</div>
 	)
