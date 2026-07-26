@@ -3,6 +3,7 @@
  * Handles image and video uploads with validation
  */
 
+import { applyScreening } from '@sms-editor/lib/media-screening'
 import { pb } from '@/lib/pocketbase'
 
 // ============================================================================
@@ -136,6 +137,9 @@ export class MediaService {
 				formData.append('uploader', options.uploader)
 			}
 
+			// Screened before the record exists, not after (M5-T2).
+			await applyScreening(formData, options.file)
+
 			// Upload to PocketBase
 			const record = await pb.collection('images').create<ImageRecord>(formData)
 
@@ -184,6 +188,9 @@ export class MediaService {
 			if (options.uploader) {
 				formData.append('uploader', options.uploader)
 			}
+
+			// Screened before the record exists, not after (M5-T2).
+			await applyScreening(formData, options.file)
 
 			// Upload to PocketBase
 			const record = await pb.collection('images').create<ImageRecord>(formData)

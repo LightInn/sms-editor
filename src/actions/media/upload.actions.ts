@@ -63,9 +63,12 @@ async function checkUserTrustLevel(userId: string): Promise<boolean> {
 }
 
 /**
- * Check upload rate limits
+ * Check upload rate limits.
+ *
+ * Async since M0-T9 made the limiter durable — the count now lives in
+ * PocketBase, so it survives a deploy and is shared between instances.
  */
-function checkUploadLimits(userId: string): { allowed: boolean; error?: string } {
+async function checkUploadLimits(userId: string): Promise<{ allowed: boolean; error?: string }> {
 	return checkRateLimit(userId)
 }
 

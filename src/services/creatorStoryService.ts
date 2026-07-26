@@ -189,38 +189,58 @@ export class CreatorStoryService {
 			expand: 'author,coverImage',
 		})
 
-		// Manually fetch chapters for each story since the relation is inverse (chapter -> story)
-		const storiesWithChapters = await Promise.all(
-			records.items.map(async story => {
-				const chapterRecords = await pb.collection('c_chapters').getFullList({
-					filter: `story="${story.id}"`,
-					sort: 'order',
-				})
+		// One query for every story's chapters, not one per story (M5-T5). The
+		// relation is inverse (chapter -> story), so this cannot be an `expand`;
+		// what it can be is a single `id = "a" || id = "b"` filter, which is the
+		// difference between 1 round trip and `perPage` of them on a page a
+		// creator opens constantly.
+		const chaptersByStory = await this.getChaptersByStory(records.items.map(story => story.id))
 
-				// Convert RecordModel[] to CreatorChapter[]
-				const chapters: CreatorChapter[] = chapterRecords.map(chapter => ({
-					id: chapter.id,
-					story: chapter.story,
-					title: chapter.title,
-					order: chapter.order,
-					programed: chapter.programed,
-					isPublished: chapter.isPublished ?? false,
-					coverImage: chapter.coverImage ?? null,
-					created: chapter.created,
-					updated: chapter.updated,
-				}))
+		return records.items.map(story => ({
+			...story,
+			expand: {
+				...story.expand,
+				chapters: chaptersByStory.get(story.id) ?? [],
+			},
+		}))
+	}
 
-				return {
-					...story,
-					expand: {
-						...story.expand,
-						chapters,
-					},
-				}
+	/**
+	 * Chapters for several stories at once, grouped by story id.
+	 *
+	 * Returns an empty map for an empty input rather than issuing a query with an
+	 * empty filter — PocketBase would read the whole collection, which is the
+	 * opposite of the point.
+	 */
+	private async getChaptersByStory(storyIds: string[]): Promise<Map<string, CreatorChapter[]>> {
+		const grouped = new Map<string, CreatorChapter[]>()
+
+		if (storyIds.length === 0) {
+			return grouped
+		}
+
+		const filter = storyIds.map(id => pb.filter('story = {:story}', { story: id })).join(' || ')
+		const chapterRecords = await pb.collection('c_chapters').getFullList({ filter, sort: 'order' })
+
+		for (const chapter of chapterRecords) {
+			const chapters = grouped.get(chapter.story) ?? []
+
+			chapters.push({
+				id: chapter.id,
+				story: chapter.story,
+				title: chapter.title,
+				order: chapter.order,
+				programed: chapter.programed,
+				isPublished: chapter.isPublished ?? false,
+				coverImage: chapter.coverImage ?? null,
+				created: chapter.created,
+				updated: chapter.updated,
 			})
-		)
 
-		return storiesWithChapters
+			grouped.set(chapter.story, chapters)
+		}
+
+		return grouped
 	}
 
 	/**
@@ -250,40 +270,63 @@ export class CreatorStoryService {
 			expand: 'author,coverImage',
 		})
 
-		// For each story, fetch the most recent chapter (if any) and only include
-		// stories that have at least one chapter. This filters out empty stories.
-		const storiesWithLatestChapter = await Promise.all(
-			records.items.map(async story => {
-				try {
-					const chapterRecords = await pb.collection('c_chapters').getList(1, 1, {
-						filter: `story="${story.id}"`,
-						sort: '-updated',
-					})
+		// One query for every story's chapters instead of one per story (M5-T5).
+		// This runs on the home page, so the old shape meant `limit * 2` sequential
+		// round trips on the site's busiest route.
+		let latestByStory = new Map<string, string>()
 
-					// If there are no chapters, skip this story by returning null
-					if (!chapterRecords || chapterRecords.totalItems === 0) {
-						return null
-					}
+		try {
+			latestByStory = await this.getLatestChapterDates(records.items.map(story => story.id))
+		} catch (error) {
+			// A failed chapter read used to drop the story silently, one at a time.
+			// Failing the whole batch the same way keeps the old behaviour — an
+			// empty showcase — rather than presenting an arbitrary subset as "latest".
+			console.warn('Failed to fetch latest chapter dates:', error)
+		}
 
-					const latestChapterDate = chapterRecords.items[0].updated || story.created
-					return { story, latestDate: latestChapterDate }
-				} catch (error) {
-					console.warn(`Failed to fetch chapters for story ${story.id}:`, error)
-					return null
-				}
-			})
-		)
+		// Stories with no chapter are dropped: an empty story in a showcase is a
+		// dead link.
+		const validStories = records.items.flatMap(story => {
+			const latestDate = latestByStory.get(story.id)
 
-		// Filter out null entries (stories without chapters or failed fetches)
-		const validStories = storiesWithLatestChapter.filter(
-			(s): s is { story: StoryWithExpand; latestDate: string } => s !== null
-		)
+			return latestDate ? [{ latestDate, story }] : []
+		})
 
 		// Sort by latest chapter date (most recent first)
 		validStories.sort((a, b) => new Date(b.latestDate).getTime() - new Date(a.latestDate).getTime())
 
 		// Return only the requested number of stories
 		return validStories.slice(0, safeLimit).map(item => item.story)
+	}
+
+	/**
+	 * The most recent chapter `updated` date per story, for stories that have one.
+	 *
+	 * A story missing from the returned map has no chapters at all — which is the
+	 * signal the caller uses to drop it, so absence has to mean exactly that.
+	 */
+	private async getLatestChapterDates(storyIds: string[]): Promise<Map<string, string>> {
+		const latest = new Map<string, string>()
+
+		if (storyIds.length === 0) {
+			return latest
+		}
+
+		const filter = storyIds.map(id => pb.filter('story = {:story}', { story: id })).join(' || ')
+		const chapterRecords = await pb.collection('c_chapters').getFullList({
+			fields: 'story,updated',
+			filter,
+			sort: '-updated',
+		})
+
+		// Sorted newest first, so the first sighting of a story is its latest chapter.
+		for (const chapter of chapterRecords) {
+			if (!latest.has(chapter.story)) {
+				latest.set(chapter.story, chapter.updated)
+			}
+		}
+
+		return latest
 	}
 
 	/**

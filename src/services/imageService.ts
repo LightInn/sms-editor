@@ -3,6 +3,7 @@
  * Handles image uploads to PocketBase
  */
 
+import { applyScreening } from '@sms-editor/lib/media-screening'
 import { pb } from '@/lib/pocketbase'
 
 export interface ImageRecord {
@@ -30,6 +31,10 @@ export class ImageService {
 		if (authModel?.id) {
 			formData.append('uploader', authModel.id)
 		}
+
+		// Screened before the record exists, not after (M5-T2). Nothing reaches the
+		// `images` collection without a review state.
+		await applyScreening(formData, file)
 
 		const record = await pb.collection(this.collectionName).create<ImageRecord>(formData)
 

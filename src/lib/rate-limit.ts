@@ -3,26 +3,26 @@
  *
  * This was a stub that unconditionally returned `{ allowed: true }` while being
  * wired into `uploadMediaAction` — so the upload path *looked* rate-limited at
- * the call site and was not, at all. Meanwhile the app already shipped a working
- * implementation, with a `mediaUpload` budget defined and no callers.
+ * the call site and was not, at all. It then delegated to the app's in-memory
+ * implementation, which was real but forgot every count on deploy.
  *
- * This now delegates to that implementation rather than duplicating it. Importing
- * from `@/lib` is the established direction here (this package already imports
- * `@/lib/pocketbase` and `@/lib/auth` in the same actions).
+ * It now delegates to the app's **durable** limiter (M0-T9): counts survive a
+ * restart and are shared between instances, because the bucket key is derived
+ * from the clock rather than stored per user. That made the check asynchronous,
+ * which is why this function is `async` and every caller awaits it.
  *
- * Caveat worth knowing: the underlying store is in-memory, so the budget is per
- * server instance and resets on restart. That is real protection against a single
- * client hammering an endpoint, not against a distributed abuser — moving the
- * store to Redis is the next step if uploads ever get abused for real.
+ * Kept as a thin wrapper rather than deleted so the default budget
+ * (`mediaUpload`) lives in one place for this package's callers.
  */
 
-import { checkRateLimit as checkAppRateLimit, type RateLimitType } from '@/lib/rate-limit'
+import type { RateLimitType } from '@/lib/rate-limit'
+import { checkRateLimit as checkAppRateLimit } from '@/services/rate-limit.service'
 
 export type { RateLimitType }
 
-export function checkRateLimit(
+export async function checkRateLimit(
 	identifier: string,
 	limitType: RateLimitType = 'mediaUpload'
-): { allowed: boolean; error?: string; remaining?: number } {
+): Promise<{ allowed: boolean; error?: string; remaining?: number }> {
 	return checkAppRateLimit(identifier, limitType)
 }
