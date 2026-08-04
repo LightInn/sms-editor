@@ -112,7 +112,11 @@ export function FullscreenStoryReader({ story, chapters, initialChapterId }: Ful
 	return (
 		<>
 			{/* ============ MOBILE: Fullscreen experience (no phone frame) ============ */}
-			<div className="md:hidden h-screen w-full bg-background overflow-hidden">
+			{/* Height, not `h-screen`: /read pins an ad banner to the top edge, and a
+			    full-viewport reader under it would push its own last row off-screen.
+			    The variable is unset everywhere else, so the fallback is a plain
+			    fullscreen reader. */}
+			<div className="md:hidden h-[calc(100dvh-var(--ad-banner-height,0px))] w-full bg-background overflow-hidden">
 				{loading && (
 					<div className="flex items-center justify-center h-full">
 						<Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -161,7 +165,7 @@ export function FullscreenStoryReader({ story, chapters, initialChapterId }: Ful
 			</div>
 
 			{/* ============ DESKTOP: Header + Sidebar + Phone Preview ============ */}
-			<div className="hidden md:flex flex-col h-screen w-full bg-background">
+			<div className="hidden md:flex flex-col h-[calc(100dvh-var(--ad-banner-height,0px))] w-full bg-background">
 				{/* Desktop Header */}
 				<header className="border-b border-border bg-card sticky top-0 z-20">
 					<div className="flex items-center justify-between px-4 py-3 gap-4 w-full">
