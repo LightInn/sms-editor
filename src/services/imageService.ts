@@ -21,15 +21,14 @@ export class ImageService {
 	/**
 	 * Upload an image to PocketBase
 	 */
-	async uploadImage(file: File, alt?: string): Promise<ImageRecord> {
-		const authModel = pb.authStore.model
-
+	/** `uploaderId` comes from the caller's session: server-side `pb` is authenticated as the superuser. */
+	async uploadImage(file: File, alt?: string, uploaderId?: string): Promise<ImageRecord> {
 		const formData = new FormData()
 		formData.append('image', file)
 		formData.append('alt', alt || file.name)
 
-		if (authModel?.id) {
-			formData.append('uploader', authModel.id)
+		if (uploaderId) {
+			formData.append('uploader', uploaderId)
 		}
 
 		// Screened before the record exists, not after (M5-T2). Nothing reaches the

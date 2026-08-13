@@ -6,6 +6,7 @@
 'use server'
 
 import { auth } from '@sms-editor/lib/auth/auth.server'
+import { type MediaActor, mayDeleteMedia, mayUploadMedia } from '@sms-editor/lib/media/permissions'
 import { checkRateLimit } from '@sms-editor/lib/rate-limit'
 import { ImageService } from '@sms-editor/services/imageService'
 import { headers } from 'next/headers'
@@ -37,28 +38,11 @@ async function getAuthenticatedUser() {
 	return session?.user ?? null
 }
 
-/**
- * Check user trust level
- * Users can upload media if:
- * - They are admin
- * - They have email verified (emailVerified is true)
- * - Default: allow all authenticated users for now
- */
-async function checkUserTrustLevel(userId: string): Promise<boolean> {
+async function loadActor(userId: string): Promise<MediaActor | null> {
 	try {
-		const user = await pb.collection('user').getOne<{ id: string; admin?: boolean; emailVerified?: boolean }>(userId, {
-			requestKey: null,
-		})
-
-		// Admins always have access
-		if (user.admin) return true
-
-		// For now, allow all authenticated users
-		// TODO: Add stricter trust requirements when needed (e.g., emailVerified, account age)
-		return true
+		return await pb.collection('user').getOne<MediaActor>(userId, { fields: 'id,admin,banned', requestKey: null })
 	} catch {
-		// If we can't fetch user, deny access
-		return false
+		return null
 	}
 }
 
@@ -101,9 +85,7 @@ export async function uploadMediaAction(formData: FormData): Promise<UploadMedia
 			return { success: false, error: validation.error }
 		}
 
-		// Check user trust level
-		const isTrusted = await checkUserTrustLevel(user.id)
-		if (!isTrusted) {
+		if (!mayUploadMedia(await loadActor(user.id))) {
 			return { success: false, error: 'Your account does not have permission to upload media.' }
 		}
 
@@ -115,7 +97,7 @@ export async function uploadMediaAction(formData: FormData): Promise<UploadMedia
 
 		// Upload to PocketBase
 		const imageService = new ImageService()
-		const record = await imageService.uploadImage(file, alt || file.name)
+		const record = await imageService.uploadImage(file, alt || file.name, user.id)
 		const url = imageService.getImageUrl(record)
 
 		return { success: true, url, recordId: record.id }
@@ -136,15 +118,12 @@ export async function deleteMediaAction(recordId: string): Promise<UploadMediaRe
 			return { success: false, error: 'Authentication required' }
 		}
 
-		// Verify user owns this media
 		try {
-			const record = await pb.collection('images').getOne<{ id: string; uploadedBy?: string }>(recordId, {
+			const record = await pb.collection('images').getOne<{ id: string; uploader?: string }>(recordId, {
 				requestKey: null,
 			})
 
-			// Check if the record has an uploadedBy field and if it matches the user
-			// If no uploadedBy field exists (legacy data), allow deletion for now
-			if (record.uploadedBy && record.uploadedBy !== user.id) {
+			if (!mayDeleteMedia(await loadActor(user.id), user.id, record)) {
 				return { success: false, error: 'You do not have permission to delete this media.' }
 			}
 		} catch {

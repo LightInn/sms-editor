@@ -70,7 +70,7 @@ export async function uploadCharacterAvatar(formData: FormData): Promise<UploadA
 
 		// Upload to PocketBase
 		const imageService = new ImageService()
-		const record = await imageService.uploadImage(file, alt)
+		const record = await imageService.uploadImage(file, alt, user.id)
 		const url = imageService.getImageUrl(record, '300x300')
 
 		return { success: true, url, recordId: record.id }
@@ -118,7 +118,7 @@ export async function uploadMessageMedia(formData: FormData): Promise<UploadAvat
 
 		// Upload to PocketBase
 		const imageService = new ImageService()
-		const record = await imageService.uploadImage(file, alt)
+		const record = await imageService.uploadImage(file, alt, user.id)
 		const url = imageService.getImageUrl(record)
 
 		return { success: true, url, recordId: record.id }

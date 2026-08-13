@@ -148,7 +148,7 @@ export async function uploadCharacterAvatar(formData: FormData): Promise<UploadA
 
 		// 5. Upload to PocketBase (server-side with proper permissions)
 		const imageService = new ImageService()
-		const record = await imageService.uploadImage(file, alt)
+		const record = await imageService.uploadImage(file, alt, user.id)
 
 		// 6. Get the URL with thumbnail (300x300 for character avatars)
 		const url = imageService.getImageUrl(record, '300x300')
@@ -220,7 +220,7 @@ export async function uploadMessageMedia(formData: FormData): Promise<UploadAvat
 
 		// 5. Upload to PocketBase (server-side with proper permissions)
 		const imageService = new ImageService()
-		const record = await imageService.uploadImage(file, alt)
+		const record = await imageService.uploadImage(file, alt, user.id)
 
 		// 6. Get the URL (no thumbnail for message media to preserve quality)
 		const url = imageService.getImageUrl(record)
