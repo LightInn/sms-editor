@@ -11,6 +11,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { CharacterAvatar } from '@/components/ui/character-avatar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { proxiedCover, rewriteLegacyPocketbaseUrl } from '@/lib/cover-url'
 import { cn } from '@/lib/utils'
 import { TimeEllipse } from '../editor/sms/time-ellipse'
 
@@ -32,6 +33,10 @@ export function MessageBubbleReadonly({
 	isConsecutive = false,
 }: MessageBubbleReadonlyProps) {
 	const isLeft = message.position === 'left'
+	// Media authored before the PocketBase server move is stored as an absolute URL on
+	// the old host, which no longer answers. Same rewrite the scraped covers get.
+	const mediaSrc =
+		message.type === 'image' ? proxiedCover(message.content) : rewriteLegacyPocketbaseUrl(message.content)
 	const [imageError, setImageError] = useState(false)
 	const [imageDimensions, setImageDimensions] = useState({ width: 300, height: 300 })
 	const [isMediaViewerOpen, setIsMediaViewerOpen] = useState(false)
@@ -97,7 +102,7 @@ export function MessageBubbleReadonly({
 									{!imageError ? (
 										<div className="relative" style={{ maxWidth: '300px', maxHeight: '400px' }}>
 											<Image
-												src={message.content}
+												src={mediaSrc}
 												alt="Message image"
 												width={imageDimensions.width}
 												height={imageDimensions.height}
@@ -145,7 +150,7 @@ export function MessageBubbleReadonly({
 								>
 									<div className="relative w-48 h-48 bg-black rounded-lg overflow-hidden">
 										<video className="w-full h-full object-cover">
-											<source src={message.content} />
+											<source src={mediaSrc} />
 											<track kind="captions" />
 										</video>
 										<div className="absolute inset-0 flex items-center justify-center bg-black/30">
@@ -203,7 +208,7 @@ export function MessageBubbleReadonly({
 					<div className="relative w-full flex items-center justify-center bg-black/5 rounded-lg p-4">
 						{message.type === 'image' && !imageError ? (
 							<Image
-								src={message.content}
+								src={mediaSrc}
 								alt="Full size image"
 								width={800}
 								height={800}
@@ -213,7 +218,7 @@ export function MessageBubbleReadonly({
 						) : message.type === 'video' ? (
 							<div className="w-full">
 								<video controls className="w-full h-auto max-h-[70vh] rounded-lg">
-									<source src={message.content} />
+									<source src={mediaSrc} />
 									<track kind="captions" />
 									Your browser does not support the video tag.
 								</video>
