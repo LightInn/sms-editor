@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import Image from '@/components/global/image-fallback.component'
 import { Button } from '@/components/ui/button'
 import { client } from '@/lib/auth/auth.client'
+import { pbFileUrl } from '@/lib/cover-url'
 
 interface ChapterListWithProgressProps {
 	story: CreatorStory
@@ -80,7 +81,7 @@ export function ChapterListWithProgress({ story, chapters, lockedChapterIds = []
 					const isRead = readChapters.has(chapter.id)
 					const isLocked = locked.has(chapter.id)
 					const coverImageUrl = chapter.expand?.coverImage
-						? `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${chapter.expand.coverImage.id}/${chapter.expand.coverImage.image}`
+						? pbFileUrl({ id: chapter.expand.coverImage.id, collectionName: 'images' }, chapter.expand.coverImage.image)
 						: null
 
 					// A locked chapter still links to the reader: that route shows the

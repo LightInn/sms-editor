@@ -25,7 +25,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
-import { pb } from '@/lib/pocketbase'
+import { pbFileUrl } from '@/lib/cover-url'
 import { deleteStoryAction, updateStoryAction } from '../../actions/story'
 import type { Character, CreatorStory, StoryWithExpand } from '../../types/creator-stories'
 import { generateSlug } from '../../types/creator-stories'
@@ -86,7 +86,7 @@ export function StorySettingsPanel({ story, onUpdate }: StorySettingsPanelProps)
 		const storyWithExpand = story as StoryWithExpand
 		if (storyWithExpand.expand?.coverImage) {
 			const imageRecord = storyWithExpand.expand.coverImage
-			const url = `${pb.baseUrl}/api/files/images/${imageRecord.id}/${imageRecord.image}`
+			const url = pbFileUrl({ id: imageRecord.id, collectionName: 'images' }, imageRecord.image)
 			setCoverImageUrl(url)
 		} else if (!story.coverImage) {
 			// Only reset URL if coverImage was actually removed

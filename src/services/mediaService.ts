@@ -4,6 +4,7 @@
  */
 
 import { applyScreening } from '@sms-editor/lib/media-screening'
+import { pbFileUrl } from '@/lib/cover-url'
 import { pb } from '@/lib/pocketbase'
 
 // ============================================================================
@@ -219,8 +220,7 @@ export class MediaService {
 	 * Get image URL with optional thumbnail size
 	 */
 	getImageUrl(record: ImageRecord, thumb?: string): string {
-		const url = pb.files.getURL(record, record.image, { thumb })
-		return url
+		return pbFileUrl(record, record.image, thumb ? { thumb } : undefined)
 	}
 
 	/**

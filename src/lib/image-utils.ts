@@ -8,6 +8,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import ffmpeg from 'fluent-ffmpeg'
 import sharp from 'sharp'
+import { toPublicPbUrl } from '@/lib/cover-url'
 
 // ============================================================================
 // IMAGE FETCHING & CONVERSION
@@ -19,6 +20,11 @@ import sharp from 'sharp'
  */
 export async function fetchImageAsBase64(url: string, logPrefix = '[ImageUtils]'): Promise<string | null> {
 	try {
+		// Callers pass values straight out of the database, which are stored against
+		// whichever host was configured when an author saved — and, since the `006-*`
+		// step, as bare `/api/files/…` paths that `fetch` cannot parse at all. Resolve
+		// before the request, not at each call site.
+		url = toPublicPbUrl(url)
 		console.log(`${logPrefix} Fetching image:`, url)
 		const response = await fetch(url)
 		if (!response.ok) {
@@ -67,6 +73,7 @@ export async function fetchVideoThumbnailAsBase64(url: string, logPrefix = '[Ima
 	const tempFramePath = join(tmpdir(), `frame_${tempId}.png`)
 
 	try {
+		url = toPublicPbUrl(url)
 		console.log(`${logPrefix} Fetching video for thumbnail:`, url)
 
 		// Download video to temp file

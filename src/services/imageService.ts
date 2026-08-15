@@ -4,6 +4,7 @@
  */
 
 import { applyScreening } from '@sms-editor/lib/media-screening'
+import { pbFileUrl } from '@/lib/cover-url'
 import { pb } from '@/lib/pocketbase'
 
 export interface ImageRecord {
@@ -64,10 +65,7 @@ export class ImageService {
 			collectionId: this.collectionName,
 			collectionName: this.collectionName,
 		}
-		if (thumb) {
-			return pb.files.getURL(pbRecord, record.image, { thumb })
-		}
-		return pb.files.getURL(pbRecord, record.image)
+		return pbFileUrl(pbRecord, record.image, thumb ? { thumb } : undefined)
 	}
 
 	/**
@@ -75,10 +73,7 @@ export class ImageService {
 	 */
 	getImageUrlById(recordId: string, filename: string, thumb?: '100x100' | '300x300' | '600x600'): string {
 		const record = { id: recordId, collectionId: this.collectionName, collectionName: this.collectionName }
-		if (thumb) {
-			return pb.files.getURL(record, filename, { thumb })
-		}
-		return pb.files.getURL(record, filename)
+		return pbFileUrl(record, filename, thumb ? { thumb } : undefined)
 	}
 
 	/**

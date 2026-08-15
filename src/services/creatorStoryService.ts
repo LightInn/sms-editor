@@ -4,6 +4,7 @@
  * NOTE: This service should only be used on the server side
  */
 
+import { pbFileUrl } from '@/lib/cover-url'
 import { pb } from '@/lib/pocketbase'
 import type {
 	Character,
@@ -475,7 +476,7 @@ export class CreatorStoryService {
 			collectionId: this.collectionName,
 			collectionName: this.collectionName,
 		}
-		return pb.files.getURL(pbRecord, filename)
+		return pbFileUrl(pbRecord, filename)
 	}
 
 	/**
@@ -495,7 +496,7 @@ export class CreatorStoryService {
 				alt: string
 			}
 			// Construct URL from image record
-			return `${pb.baseUrl}/api/files/images/${imageRecord.id}/${imageRecord.image}`
+			return pbFileUrl({ id: imageRecord.id, collectionName: 'images' }, imageRecord.image)
 		}
 
 		// Fallback: If we only have the record ID without expand

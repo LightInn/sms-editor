@@ -25,7 +25,7 @@ import { CharacterAvatar } from '@/components/ui/character-avatar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { GroupAvatar } from '@/components/ui/group-avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { pb } from '@/lib/pocketbase'
+import { pbFileUrl, toPublicPbUrl } from '@/lib/cover-url'
 import { cn } from '@/lib/utils'
 import { EndOfStoryModal } from '../EndOfStoryModal'
 import { DayBreakSeparator } from '../editor/sms/day-break-separator'
@@ -354,7 +354,7 @@ function PhoneHeader({ block, characters }: PhoneHeaderProps) {
 				collectionId: 'images',
 				collectionName: 'images',
 			}
-			conversationAvatarUrl = pb.files.getURL(pbRecord, avatarRecord.image, { thumb: '100x100' })
+			conversationAvatarUrl = pbFileUrl(pbRecord, avatarRecord.image, { thumb: '100x100' })
 		}
 
 		return (
@@ -532,9 +532,9 @@ function MediaContentDisplay({ block, onImageClick }: MediaContentDisplayProps) 
 			collectionId: 'images',
 			collectionName: 'images',
 		}
-		url = pb.files.getURL(pbRecord, mediaRecord.image)
+		url = pbFileUrl(pbRecord, mediaRecord.image)
 	} else {
-		url = content.mediaUrl
+		url = toPublicPbUrl(content.mediaUrl)
 	}
 
 	if (!url) {

@@ -25,7 +25,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { pb } from '@/lib/pocketbase'
+import { pbFileUrl } from '@/lib/cover-url'
 import { updateChapterSettingsAction } from '../../actions/chapter'
 import type { ChapterWithExpand } from '../../types/creator-stories'
 import { MediaUpload } from './media-upload'
@@ -69,7 +69,7 @@ export function ChapterSettingsPanel({ chapter, onDelete, onChapterUpdate }: Cha
 		const chapterWithExpand = chapter as ChapterWithExpand
 		if (chapterWithExpand.expand?.coverImage) {
 			const imageRecord = chapterWithExpand.expand.coverImage
-			const url = `${pb.baseUrl}/api/files/images/${imageRecord.id}/${imageRecord.image}`
+			const url = pbFileUrl({ id: imageRecord.id, collectionName: 'images' }, imageRecord.image)
 			setCoverImageUrl(url)
 		} else if (!chapter.coverImage) {
 			// Only reset URL if coverImage was actually removed

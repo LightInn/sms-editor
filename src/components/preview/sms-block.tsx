@@ -9,7 +9,7 @@ import type { ImageRecord } from '@sms-editor/services/imageService'
 import type { BlockWithExpand, Character, SMSContent } from '@sms-editor/types/creator-stories'
 import { useFeatureFlag } from '@/hooks/use-feature-flag'
 import { useIsSubscribed } from '@/hooks/use-subscription'
-import { pb } from '@/lib/pocketbase'
+import { pbFileUrl } from '@/lib/cover-url'
 import { shouldTapThrough } from '@/lib/reader/tap-through'
 import { PhonePreviewReadonly } from './phone-preview-readonly'
 
@@ -62,7 +62,7 @@ export function SmsBlock({ block, characters }: SmsBlockProps) {
 			collectionId: 'images',
 			collectionName: 'images',
 		}
-		conversationAvatarUrl = pb.files.getURL(pbRecord, avatarRecord.image, { thumb: '100x100' })
+		conversationAvatarUrl = pbFileUrl(pbRecord, avatarRecord.image, { thumb: '100x100' })
 	}
 
 	return (

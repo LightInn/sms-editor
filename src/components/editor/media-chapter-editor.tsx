@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { pbFileUrl } from '@/lib/cover-url'
 import type { CreatorBlock, MediaContent } from '../../types/creator-stories'
 import { MediaUpload } from './media-upload'
 
@@ -65,7 +66,7 @@ export function MediaChapterEditor({
 		if (blockWithExpand.expand?.media) {
 			const record = blockWithExpand.expand.media
 			// Construct URL using PocketBase files API
-			const url = `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${record.id}/${record.image}`
+			const url = pbFileUrl({ id: record.id, collectionName: 'images' }, record.image)
 			setMediaUrl(url)
 		} else if (!block.media) {
 			// Only reset URL if media was actually removed

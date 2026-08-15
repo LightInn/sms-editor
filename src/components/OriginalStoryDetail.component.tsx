@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { gateStoryChapters, lockedChapterIds } from '@/lib/access/chapter-gate'
 import { currentUserHasReaderAccess, getCurrentSession } from '@/lib/auth/session'
+import { pbFileUrl } from '@/lib/cover-url'
 import type { FollowTarget } from '@/lib/social/follow-target'
 import type { StoryRef } from '@/lib/social/story-ref'
 import { isFollowing } from '@/services/follow.service'
@@ -45,7 +46,7 @@ export default async function OriginalStoryDetail({ story, chapters }: OriginalS
 
 	// Construct proper cover image URL from expanded image record
 	const coverImageUrl = story.expand?.coverImage
-		? `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${story.expand.coverImage.id}/${story.expand.coverImage.image}`
+		? pbFileUrl({ id: story.expand.coverImage.id, collectionName: 'images' }, story.expand.coverImage.image)
 		: null
 
 	// Count all displayed chapters (published + scheduled, excludes drafts)

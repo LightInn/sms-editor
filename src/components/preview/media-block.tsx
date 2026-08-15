@@ -10,7 +10,7 @@ import type { BlockWithExpand, MediaContent } from '@sms-editor/types/creator-st
 import { ImageIcon, Play } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
-import { pb } from '@/lib/pocketbase'
+import { pbFileUrl, toPublicPbUrl } from '@/lib/cover-url'
 
 export interface MediaBlockProps {
 	block: BlockWithExpand
@@ -30,9 +30,9 @@ export function MediaBlock({ block }: MediaBlockProps) {
 			collectionId: 'images',
 			collectionName: 'images',
 		}
-		url = pb.files.getURL(pbRecord, mediaRecord.image)
+		url = pbFileUrl(pbRecord, mediaRecord.image)
 	} else {
-		url = content.mediaUrl
+		url = toPublicPbUrl(content.mediaUrl)
 	}
 
 	if (!url) {

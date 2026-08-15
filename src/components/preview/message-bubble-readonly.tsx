@@ -11,7 +11,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { CharacterAvatar } from '@/components/ui/character-avatar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { proxiedCover, rewriteLegacyPocketbaseUrl } from '@/lib/cover-url'
+import { proxiedCover, toPublicPbUrl } from '@/lib/cover-url'
 import { cn } from '@/lib/utils'
 import { TimeEllipse } from '../editor/sms/time-ellipse'
 
@@ -35,8 +35,7 @@ export function MessageBubbleReadonly({
 	const isLeft = message.position === 'left'
 	// Media authored before the PocketBase server move is stored as an absolute URL on
 	// the old host, which no longer answers. Same rewrite the scraped covers get.
-	const mediaSrc =
-		message.type === 'image' ? proxiedCover(message.content) : rewriteLegacyPocketbaseUrl(message.content)
+	const mediaSrc = message.type === 'image' ? proxiedCover(message.content) : toPublicPbUrl(message.content)
 	const [imageError, setImageError] = useState(false)
 	const [imageDimensions, setImageDimensions] = useState({ width: 300, height: 300 })
 	const [isMediaViewerOpen, setIsMediaViewerOpen] = useState(false)

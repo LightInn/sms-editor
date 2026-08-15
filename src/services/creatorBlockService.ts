@@ -3,6 +3,7 @@
  * Handles CRUD operations for the c_blocks collection
  */
 
+import { pbFileUrl } from '@/lib/cover-url'
 import { pb } from '@/lib/pocketbase'
 import type {
 	BlockWithExpand,
@@ -317,7 +318,9 @@ export class CreatorBlockService {
 			let avatarUrl: string | null = null
 			if (mostRecentBlock.conversationAvatar && mostRecentBlock.expand?.conversationAvatar) {
 				const imageRecord = mostRecentBlock.expand.conversationAvatar
-				avatarUrl = `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/images/${imageRecord.id}/${imageRecord.image}?thumb=300x300`
+				avatarUrl = pbFileUrl({ id: imageRecord.id, collectionName: 'images' }, imageRecord.image, {
+					thumb: '300x300',
+				})
 			}
 
 			// Return the recovered data

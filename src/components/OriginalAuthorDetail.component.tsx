@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getCurrentSession } from '@/lib/auth/session'
+import { pbFileUrl } from '@/lib/cover-url'
 import { timeAgo } from '@/lib/datetime'
 import type { FollowTarget } from '@/lib/social/follow-target'
 import { isFollowing } from '@/services/follow.service'
@@ -121,11 +122,7 @@ function StoryCard({ story }: { story: StoryWithExpand }) {
 				{story.coverImage && (
 					<div className="aspect-4/3 relative overflow-hidden rounded-t-lg bg-muted">
 						<Image
-							src={
-								story.expand?.coverImage
-									? `${process.env.NEXT_PUBLIC_POCKETBASE_URL}/api/files/${story.expand.coverImage.collectionId}/${story.expand.coverImage.id}/${story.expand.coverImage.image}`
-									: ''
-							}
+							src={story.expand?.coverImage ? pbFileUrl(story.expand.coverImage, story.expand.coverImage.image) : ''}
 							alt={story.title}
 							fill
 							className="object-cover transition-transform duration-300 ease-out hover:scale-105"
